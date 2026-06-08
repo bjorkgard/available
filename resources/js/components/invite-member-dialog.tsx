@@ -1,5 +1,6 @@
 import { Form } from '@inertiajs/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,29 +21,46 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { store as storeInvitation } from '@/routes/teams/invitations';
-import type { RoleOption, Team } from '@/types';
+import type { CongregationRole, RoleOption } from '@/types';
 
 type Props = {
-    team: Team;
-    availableRoles: RoleOption[];
+    congregationSlug: string;
+    viewerRole: CongregationRole;
     open: boolean;
     onOpenChange: (open: boolean) => void;
 };
 
-export default function InviteMemberModal({
-    team,
-    availableRoles,
+const allRoleOptions: RoleOption[] = [
+    { value: 'member', label: 'Member' },
+    { value: 'admin', label: 'Admin' },
+    { value: 'superadmin', label: 'Superadmin' },
+];
+
+export default function InviteMemberDialog({
+    congregationSlug,
+    viewerRole,
     open,
     onOpenChange,
 }: Props) {
-    const [inviteRole, setInviteRole] = useState<RoleOption['value']>('member');
+    const [selectedRole, setSelectedRole] =
+        useState<CongregationRole>('member');
+
+    const availableRoles = useMemo<RoleOption[]>(() => {
+        if (viewerRole === 'superadmin') {
+            return allRoleOptions;
+        }
+
+        // Admin can only assign member or admin roles
+        return allRoleOptions.filter(
+            (role) => role.value === 'member' || role.value === 'admin',
+        );
+    }, [viewerRole]);
 
     const handleOpenChange = (nextOpen: boolean) => {
         onOpenChange(nextOpen);
 
         if (!nextOpen) {
-            setInviteRole('member');
+            setSelectedRole('member');
         }
     };
 
@@ -51,24 +69,41 @@ export default function InviteMemberModal({
             <DialogContent>
                 <Form
                     key={String(open)}
-                    {...storeInvitation.form(team.slug)}
+                    action={`/${congregationSlug}/members/invite`}
+                    method="post"
                     className="space-y-6"
                     onSuccess={() => onOpenChange(false)}
                 >
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
-                                <DialogTitle>Invite a team member</DialogTitle>
+                                <DialogTitle>Invite a member</DialogTitle>
                                 <DialogDescription>
-                                    Send an invitation to join this team.
+                                    Send an invitation to join this
+                                    congregation.
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email">Email address</Label>
+                                    <Label htmlFor="invite-name">Name</Label>
                                     <Input
-                                        id="email"
+                                        id="invite-name"
+                                        name="name"
+                                        type="text"
+                                        data-test="invite-name"
+                                        placeholder="John Doe"
+                                        required
+                                    />
+                                    <InputError message={errors.name} />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="invite-email">
+                                        Email address
+                                    </Label>
+                                    <Input
+                                        id="invite-email"
                                         name="email"
                                         type="email"
                                         data-test="invite-email"
@@ -79,18 +114,21 @@ export default function InviteMemberModal({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="role">Role</Label>
+                                    <Label htmlFor="invite-role">Role</Label>
                                     <Select
                                         name="role"
-                                        data-test="invite-role"
-                                        value={inviteRole}
+                                        value={selectedRole}
                                         onValueChange={(value) =>
-                                            setInviteRole(
-                                                value as RoleOption['value'],
+                                            setSelectedRole(
+                                                value as CongregationRole,
                                             )
                                         }
                                     >
-                                        <SelectTrigger className="w-full">
+                                        <SelectTrigger
+                                            id="invite-role"
+                                            data-test="invite-role"
+                                            className="w-full"
+                                        >
                                             <SelectValue placeholder="Select a role" />
                                         </SelectTrigger>
                                         <SelectContent>

@@ -1,5 +1,5 @@
 import type { Auth } from '@/types/auth';
-import type { Team } from '@/types/teams';
+import type { Congregation } from '@/types/congregations';
 
 declare module 'react' {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,8 +14,8 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             sidebarOpen: boolean;
-            currentTeam: Team | null;
-            teams: Team[];
+            currentCongregation: Congregation | null;
+            congregations: Congregation[];
             [key: string]: unknown;
         };
     }
