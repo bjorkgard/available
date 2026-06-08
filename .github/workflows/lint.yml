@@ -5,13 +5,11 @@ on:
     branches:
       - develop
       - main
-      - master
       - workos
   pull_request:
     branches:
       - develop
       - main
-      - master
       - workos
 
 permissions:
@@ -44,8 +42,8 @@ jobs:
       - name: Lint Frontend
         run: npm run lint
 
-      # - name: Commit Changes
-      #   uses: stefanzweifel/git-auto-commit-action@v7
-      #   with:
-      #     commit_message: fix code style
-      #     commit_options: '--no-verify'
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: fix code style
+          commit_options: '--no-verify'
