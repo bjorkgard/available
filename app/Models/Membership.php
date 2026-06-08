@@ -2,37 +2,40 @@
 
 namespace App\Models;
 
-use App\Enums\TeamRole;
+use App\Enums\CongregationRole;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-#[Fillable(['team_id', 'user_id', 'role'])]
+#[Fillable(['congregation_id', 'user_id', 'role'])]
 class Membership extends Pivot
 {
+    use HasUuids;
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'team_members';
+    protected $table = 'congregation_members';
 
     /**
      * Indicates if the IDs are auto-incrementing.
      *
      * @var bool
      */
-    public $incrementing = true;
+    public $incrementing = false;
 
     /**
-     * Get the team that the membership belongs to.
+     * Get the congregation that the membership belongs to.
      *
-     * @return BelongsTo<Team, $this>
+     * @return BelongsTo<Congregation, $this>
      */
-    public function team(): BelongsTo
+    public function congregation(): BelongsTo
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsTo(Congregation::class);
     }
 
     /**
@@ -53,7 +56,7 @@ class Membership extends Pivot
     protected function casts(): array
     {
         return [
-            'role' => TeamRole::class,
+            'role' => CongregationRole::class,
         ];
     }
 }

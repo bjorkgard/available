@@ -2,14 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Team;
+use App\Models\Congregation;
+use App\Models\KingdomHall;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<Team>
+ * @extends Factory<Congregation>
  */
-class TeamFactory extends Factory
+class CongregationFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -23,22 +24,22 @@ class TeamFactory extends Factory
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'is_personal' => false,
+            'congregation_number' => strtoupper(fake()->unique()->bothify('??####')),
         ];
     }
 
     /**
-     * Indicate that the team is a personal team.
+     * Indicate that the congregation belongs to a Kingdom Hall.
      */
-    public function personal(): static
+    public function withKingdomHall(?KingdomHall $kingdomHall = null): static
     {
         return $this->state(fn (array $attributes) => [
-            'is_personal' => true,
+            'kingdom_hall_id' => $kingdomHall?->id ?? KingdomHall::factory(),
         ]);
     }
 
     /**
-     * Indicate that the team has been deleted.
+     * Indicate that the congregation has been deleted.
      */
     public function trashed(): static
     {

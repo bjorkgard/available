@@ -2,16 +2,16 @@
 
 namespace Database\Factories;
 
-use App\Enums\TeamRole;
-use App\Models\Team;
-use App\Models\TeamInvitation;
+use App\Enums\CongregationRole;
+use App\Models\Congregation;
+use App\Models\CongregationInvitation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<TeamInvitation>
+ * @extends Factory<CongregationInvitation>
  */
-class TeamInvitationFactory extends Factory
+class CongregationInvitationFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -21,12 +21,12 @@ class TeamInvitationFactory extends Factory
     public function definition(): array
     {
         return [
-            'team_id' => Team::factory(),
+            'congregation_id' => Congregation::factory(),
+            'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'role' => TeamRole::Member,
+            'role' => CongregationRole::Member,
             'invited_by' => User::factory(),
-            'expires_at' => null,
-            'accepted_at' => null,
+            'expires_at' => now()->addHours(72),
         ];
     }
 
@@ -53,7 +53,7 @@ class TeamInvitationFactory extends Factory
     /**
      * Indicate that the invitation expires in the given time.
      */
-    public function expiresIn(int $value, string $unit = 'days'): static
+    public function expiresIn(int $value, string $unit = 'hours'): static
     {
         return $this->state(fn (array $attributes) => [
             'expires_at' => now()->add($unit, $value),
