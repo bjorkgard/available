@@ -182,3 +182,81 @@ test('last admin cannot demote themselves', function () {
     // Role should remain admin
     expect($membership->fresh()->role)->toBe(CongregationRole::Admin);
 });
+
+// --- Role assignment escalation prevention ---
+
+test('admin cannot promote a member to superadmin', function () {
+    $otherMember = User::factory()->create();
+    $this->congregationA->members()->attach($otherMember, ['role' => CongregationRole::Member->value]);
+
+    $membership = Membership::where('user_id', $otherMember->id)
+        ->where('congregation_id', $this->congregationA->id)
+        ->first();
+
+    $response = $this->actingAs($this->admin)
+        ->put(route('members.update', ['current_congregation' => $this->congregationA, 'member' => $membership]), [
+            'role' => CongregationRole::Superadmin->value,
+        ]);
+
+    $response->assertForbidden();
+
+    // Role should remain member
+    expect($membership->fresh()->role)->toBe(CongregationRole::Member);
+});
+
+test('admin can promote a member to admin', function () {
+    $otherMember = User::factory()->create();
+    $this->congregationA->members()->attach($otherMember, ['role' => CongregationRole::Member->value]);
+
+    $membership = Membership::where('user_id', $otherMember->id)
+        ->where('congregation_id', $this->congregationA->id)
+        ->first();
+
+    $response = $this->actingAs($this->admin)
+        ->put(route('members.update', ['current_congregation' => $this->congregationA, 'member' => $membership]), [
+            'role' => CongregationRole::Admin->value,
+        ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+
+    expect($membership->fresh()->role)->toBe(CongregationRole::Admin);
+});
+
+test('superadmin can promote a member to superadmin', function () {
+    $otherMember = User::factory()->create();
+    $this->congregationA->members()->attach($otherMember, ['role' => CongregationRole::Member->value]);
+
+    $membership = Membership::where('user_id', $otherMember->id)
+        ->where('congregation_id', $this->congregationA->id)
+        ->first();
+
+    $response = $this->actingAs($this->superadmin)
+        ->put(route('members.update', ['current_congregation' => $this->congregationA, 'member' => $membership]), [
+            'role' => CongregationRole::Superadmin->value,
+        ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+
+    expect($membership->fresh()->role)->toBe(CongregationRole::Superadmin);
+});
+
+test('update rejects invalid role value', function () {
+    $otherMember = User::factory()->create();
+    $this->congregationA->members()->attach($otherMember, ['role' => CongregationRole::Member->value]);
+
+    $membership = Membership::where('user_id', $otherMember->id)
+        ->where('congregation_id', $this->congregationA->id)
+        ->first();
+
+    $response = $this->actingAs($this->admin)
+        ->put(route('members.update', ['current_congregation' => $this->congregationA, 'member' => $membership]), [
+            'role' => 'invented-role',
+        ]);
+
+    $response->assertSessionHasErrors('role');
+
+    // Role should remain member
+    expect($membership->fresh()->role)->toBe(CongregationRole::Member);
+});

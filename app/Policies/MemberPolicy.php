@@ -55,6 +55,27 @@ class MemberPolicy
     }
 
     /**
+     * Determine whether the user can assign a specific role to a membership.
+     */
+    public function assignRole(User $user, Membership $membership, CongregationRole $role): bool
+    {
+        $congregation = $membership->congregation;
+
+        // Superadmin in same Kingdom Hall can assign any role
+        if ($this->isSuperadminInKingdomHall($user, $congregation->kingdom_hall_id)) {
+            return true;
+        }
+
+        // Admin cannot assign superadmin role
+        if ($role === CongregationRole::Superadmin) {
+            return false;
+        }
+
+        // Admin can assign admin or member roles within own congregation
+        return $user->congregationRole($congregation) === CongregationRole::Admin;
+    }
+
+    /**
      * Determine whether the user can remove a member from a congregation.
      */
     public function delete(User $user, Membership $membership): bool

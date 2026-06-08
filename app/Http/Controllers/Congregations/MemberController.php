@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Congregations;
 
 use App\Actions\Congregations\SendInvitation;
+use App\Enums\CongregationRole;
 use App\Http\Controllers\Controller;
 use App\Models\Congregation;
 use App\Models\Membership;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rules\Enum;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -52,12 +54,16 @@ class MemberController extends Controller
     {
         Gate::authorize('update', $member);
 
-        $request->validate([
-            'role' => ['required', 'string'],
+        $validated = $request->validate([
+            'role' => ['required', 'string', new Enum(CongregationRole::class)],
         ]);
 
+        $requestedRole = CongregationRole::from($validated['role']);
+
+        Gate::authorize('assignRole', [$member, $requestedRole]);
+
         $member->update([
-            'role' => $request->input('role'),
+            'role' => $requestedRole,
         ]);
 
         return back()->with('success', 'Member role updated.');
