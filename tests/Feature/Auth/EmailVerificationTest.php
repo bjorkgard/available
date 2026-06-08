@@ -14,8 +14,8 @@ test('email verification screen can be rendered', function () {
 });
 
 test('email can be verified', function () {
-    $user = User::factory()->unverified()->create();
-    $team = $user->personalTeam();
+    $user = User::factory()->withCongregation()->unverified()->create();
+    $congregation = $user->fresh()->currentCongregation;
 
     Event::fake();
 
@@ -29,7 +29,7 @@ test('email can be verified', function () {
 
     Event::assertDispatched(Verified::class);
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
-    $response->assertRedirect("/{$team->slug}/dashboard?verified=1");
+    $response->assertRedirect("/{$congregation->slug}/dashboard?verified=1");
 });
 
 test('email is not verified with invalid hash', function () {
@@ -78,8 +78,8 @@ test('verified user is redirected to dashboard from verification prompt', functi
 });
 
 test('already verified user visiting verification link is redirected without firing event again', function () {
-    $user = User::factory()->create();
-    $team = $user->personalTeam();
+    $user = User::factory()->withCongregation()->create();
+    $congregation = $user->fresh()->currentCongregation;
 
     Event::fake();
 
@@ -90,7 +90,7 @@ test('already verified user visiting verification link is redirected without fir
     );
 
     $this->actingAs($user)->get($verificationUrl)
-        ->assertRedirect("/{$team->slug}/dashboard?verified=1");
+        ->assertRedirect("/{$congregation->slug}/dashboard?verified=1");
 
     Event::assertNotDispatched(Verified::class);
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
