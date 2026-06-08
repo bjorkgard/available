@@ -1,0 +1,69 @@
+# Tech Stack
+
+## Backend
+
+- PHP 8.5, Laravel 13
+- Inertia.js v3 (server-side adapter: `inertiajs/inertia-laravel`)
+- Laravel Fortify (authentication)
+- Laravel Wayfinder (typed route generation)
+- SQLite (default database)
+- Pest v4 (testing framework)
+- Laravel Pint (code formatter, `laravel` preset)
+
+## Frontend
+
+- React 19 with TypeScript (strict mode)
+- Inertia.js v3 React client (`@inertiajs/react`)
+- Tailwind CSS v4 (via `@tailwindcss/vite` plugin)
+- shadcn/ui (new-york style, Radix primitives, lucide icons)
+- Vite 8 with `laravel-vite-plugin`, `@inertiajs/vite`, `@vitejs/plugin-react`
+- React Compiler (`babel-plugin-react-compiler`)
+- Class Variance Authority + clsx + tailwind-merge for styling utilities
+- ESLint 9 + Prettier 3
+
+## Common Commands
+
+```bash
+# Development server (runs Laravel, queue, pail logs, and Vite concurrently)
+composer run dev
+
+# Build frontend assets
+npm run build
+
+# Run all tests
+php artisan test --compact
+
+# Run specific test
+php artisan test --compact --filter=TestName
+
+# Lint PHP (auto-fix)
+vendor/bin/pint --dirty --format agent
+
+# Lint JS/TS (auto-fix)
+npm run lint
+
+# Format JS/TS
+npm run format
+
+# Type check frontend
+npm run types:check
+
+# Generate Wayfinder routes
+# (automatic via vite plugin, or manually via artisan)
+php artisan wayfinder:generate
+
+# Create a new test
+php artisan make:test --pest TestName
+
+# Create a new model (with factory, migration, etc.)
+php artisan make:model ModelName --help
+```
+
+## Key Configuration
+
+- Vite config: `vite.config.ts`
+- TypeScript: `tsconfig.json` (path alias `@/*` → `resources/js/*`)
+- ESLint: `eslint.config.js` (enforces import ordering, consistent type imports, 1tbs brace style, padding around control statements)
+- Prettier: `.prettierrc` (with tailwindcss plugin)
+- Pint: `pint.json` (laravel preset)
+- shadcn: `components.json` (new-york style, aliases configured)
