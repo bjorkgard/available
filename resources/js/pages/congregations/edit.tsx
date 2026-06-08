@@ -23,8 +23,8 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useInitials } from '@/hooks/use-initials';
-import { edit, index, update } from '@/routes/teams';
-import { update as updateMember } from '@/routes/teams/members';
+import { edit, index, update } from '@/routes/congregations';
+import { update as updateMember } from '@/routes/members';
 import type { Congregation, RoleOption } from '@/types';
 
 type CongregationPermissions = {
@@ -38,6 +38,7 @@ type CongregationPermissions = {
 
 type MemberItem = {
     id: string;
+    membership_id: string;
     name: string;
     email: string;
     avatar?: string;
@@ -82,8 +83,12 @@ export default function CongregationEdit({
 
     const updateMemberRole = (member: MemberItem, newRole: string) => {
         router.visit(
-            updateMember.url([team.slug, member.id as unknown as number]),
+            updateMember.url({
+                current_congregation: team.slug,
+                member: member.membership_id,
+            }),
             {
+                method: 'put',
                 data: { role: newRole },
                 preserveScroll: true,
             },

@@ -10,7 +10,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { edit, index } from '@/routes/teams';
+import { edit, index } from '@/routes/congregations';
 
 type CongregationListItem = {
     id: string;
