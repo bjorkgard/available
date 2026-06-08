@@ -4,18 +4,18 @@ namespace App\Http\Responses\Concerns;
 
 use Illuminate\Support\Facades\URL;
 
-trait RedirectsToCurrentTeam
+trait RedirectsToCurrentCongregation
 {
-    protected function redirectPathForCurrentTeam($request, string $redirect): string
+    protected function redirectPathForCurrentCongregation($request, string $redirect): string
     {
-        $congregation = $this->currentTeam($request);
+        $congregation = $this->currentCongregation($request);
 
-        URL::defaults(['current_team' => $congregation->slug]);
+        URL::defaults(['current_congregation' => $congregation->slug]);
 
         return "/{$congregation->slug}{$redirect}";
     }
 
-    protected function currentTeam($request)
+    protected function currentCongregation($request)
     {
         $user = $request->user();
         $congregation = $user?->currentCongregation;
