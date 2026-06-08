@@ -29,6 +29,11 @@ class InvitationAcceptController extends Controller
 
         if ($request->user()) {
             $user = $request->user();
+
+            if (strtolower($invitation->email) !== strtolower($user->email)) {
+                abort(403, 'This invitation was sent to a different email address.');
+            }
+
             $congregation = $invitation->congregation;
 
             if (! $user->belongsToCongregation($congregation)) {

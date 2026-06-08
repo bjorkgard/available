@@ -201,3 +201,32 @@ test('valid invitation can be accepted', function () {
 
     expect($invitation->fresh()->accepted_at)->not->toBeNull();
 });
+
+test('invitation cannot be accepted by a different user', function () {
+    [$kingdomHall, $congregation, $admin] = createKingdomHallWithCongregation(CongregationRole::Admin);
+
+    $intendedUser = User::factory()->create(['email' => 'intended@example.com']);
+    $wrongUser = User::factory()->create(['email' => 'wrong@example.com']);
+
+    $invitation = CongregationInvitation::factory()->create([
+        'congregation_id' => $congregation->id,
+        'email' => 'intended@example.com',
+        'role' => CongregationRole::Member,
+        'invited_by' => $admin->id,
+    ]);
+
+    $response = $this->actingAs($wrongUser)->get(
+        route('invitations.accept', ['invitation' => $invitation->code])
+    );
+
+    $response->assertForbidden();
+
+    // Wrong user should not have been added to the congregation
+    $this->assertDatabaseMissing('congregation_members', [
+        'congregation_id' => $congregation->id,
+        'user_id' => $wrongUser->id,
+    ]);
+
+    // Invitation should remain unconsumed
+    expect($invitation->fresh()->accepted_at)->toBeNull();
+});

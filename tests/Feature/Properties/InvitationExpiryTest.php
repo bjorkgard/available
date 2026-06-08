@@ -33,7 +33,7 @@ test('invitation expiry is enforced based on expires_at timestamp', function () 
 
     $invitation = CongregationInvitation::factory()->create([
         'congregation_id' => $congregation->id,
-        'email' => fake()->unique()->safeEmail(),
+        'email' => $user->email,
         'role' => CongregationRole::Member,
         'invited_by' => $inviter->id,
         'expires_at' => $scenario['expires_at'],
