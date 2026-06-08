@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
-import { Eye, Pencil, Plus } from 'lucide-react';
-import CreateTeamModal from '@/components/create-team-modal';
+import { Eye, Pencil } from 'lucide-react';
+
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,79 +11,88 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { edit, index } from '@/routes/teams';
-import type { Team } from '@/types';
 
-type Props = {
-    teams: Team[];
+type CongregationListItem = {
+    id: string;
+    name: string;
+    slug: string;
+    congregation_number?: string;
+    isPersonal?: boolean;
+    role: string;
+    roleLabel: string;
+    isCurrent: boolean;
 };
 
-export default function TeamsIndex({ teams }: Props) {
+type Props = {
+    teams: CongregationListItem[];
+};
+
+export default function CongregationsIndex({ teams }: Props) {
     return (
         <>
-            <Head title="Teams" />
+            <Head title="Congregations" />
 
-            <h1 className="sr-only">Teams</h1>
+            <h1 className="sr-only">Congregations</h1>
 
             <div className="flex flex-col space-y-6">
                 <div className="flex items-center justify-between">
                     <Heading
                         variant="small"
-                        title="Teams"
-                        description="Manage your teams and team memberships"
+                        title="Congregations"
+                        description="Manage your congregations and memberships"
                     />
-
-                    <CreateTeamModal>
-                        <Button data-test="teams-new-team-button">
-                            <Plus /> New team
-                        </Button>
-                    </CreateTeamModal>
                 </div>
 
                 <div className="space-y-3">
-                    {teams.map((team) => (
+                    {teams.map((congregation) => (
                         <div
-                            key={team.id}
-                            data-test="team-row"
+                            key={congregation.id}
+                            data-test="congregation-row"
                             className="flex items-center justify-between rounded-lg border p-4"
                         >
                             <div className="flex items-center gap-4">
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <span className="font-medium">
-                                            {team.name}
+                                            {congregation.name}
                                         </span>
-                                        {team.isPersonal ? (
+                                        {congregation.congregation_number ? (
                                             <Badge variant="secondary">
-                                                Personal
+                                                #
+                                                {
+                                                    congregation.congregation_number
+                                                }
                                             </Badge>
                                         ) : null}
                                     </div>
                                     <span className="text-sm text-muted-foreground">
-                                        {team.roleLabel}
+                                        {congregation.roleLabel}
                                     </span>
                                 </div>
                             </div>
 
                             <TooltipProvider>
                                 <div className="flex items-center gap-2">
-                                    {team.role === 'member' ? (
+                                    {congregation.role === 'member' ? (
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    data-test="team-view-button"
+                                                    data-test="congregation-view-button"
                                                     asChild
                                                 >
                                                     <Link
-                                                        href={edit(team.slug)}
+                                                        href={edit(
+                                                            congregation.slug,
+                                                        )}
                                                     >
                                                         <Eye className="h-4 w-4" />
                                                     </Link>
                                                 </Button>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p>View team</p>
+                                                <p>View congregation</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     ) : (
@@ -92,18 +101,20 @@ export default function TeamsIndex({ teams }: Props) {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    data-test="team-edit-button"
+                                                    data-test="congregation-edit-button"
                                                     asChild
                                                 >
                                                     <Link
-                                                        href={edit(team.slug)}
+                                                        href={edit(
+                                                            congregation.slug,
+                                                        )}
                                                     >
                                                         <Pencil className="h-4 w-4" />
                                                     </Link>
                                                 </Button>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p>Edit team</p>
+                                                <p>Edit congregation</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     )}
@@ -114,7 +125,7 @@ export default function TeamsIndex({ teams }: Props) {
 
                     {teams.length === 0 ? (
                         <p className="py-8 text-center text-muted-foreground">
-                            You don't belong to any teams yet.
+                            You don&apos;t belong to any congregations yet.
                         </p>
                     ) : null}
                 </div>
@@ -123,10 +134,10 @@ export default function TeamsIndex({ teams }: Props) {
     );
 }
 
-TeamsIndex.layout = {
+CongregationsIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Teams',
+            title: 'Congregations',
             href: index(),
         },
     ],

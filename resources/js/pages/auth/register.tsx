@@ -90,10 +90,48 @@ export default function Register({ passwordRules }: Props) {
                                 />
                             </div>
 
+                            <div className="grid gap-2">
+                                <Label htmlFor="congregation_name">
+                                    Congregation name
+                                </Label>
+                                <Input
+                                    id="congregation_name"
+                                    type="text"
+                                    required
+                                    tabIndex={5}
+                                    name="congregation_name"
+                                    placeholder="Congregation name"
+                                />
+                                <InputError
+                                    message={errors.congregation_name}
+                                />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="congregation_number">
+                                    Congregation number
+                                </Label>
+                                <Input
+                                    id="congregation_number"
+                                    type="text"
+                                    required
+                                    tabIndex={6}
+                                    name="congregation_number"
+                                    placeholder="Congregation number"
+                                />
+                                <p className="text-sm text-muted-foreground">
+                                    Only digits and uppercase letters (A–Z), max
+                                    20 characters
+                                </p>
+                                <InputError
+                                    message={errors.congregation_number}
+                                />
+                            </div>
+
                             <Button
                                 type="submit"
                                 className="mt-2 w-full"
-                                tabIndex={5}
+                                tabIndex={7}
                                 data-test="register-user-button"
                             >
                                 {processing && <Spinner />}
@@ -103,7 +141,7 @@ export default function Register({ passwordRules }: Props) {
 
                         <div className="text-center text-sm text-muted-foreground">
                             Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={6}>
+                            <TextLink href={login()} tabIndex={8}>
                                 Log in
                             </TextLink>
                         </div>

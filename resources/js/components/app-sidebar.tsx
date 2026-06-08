@@ -1,10 +1,17 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import {
+    BookOpen,
+    Building2,
+    FolderGit2,
+    LayoutGrid,
+    Users,
+} from 'lucide-react';
+
 import AppLogo from '@/components/app-logo';
+import { CongregationSwitcher } from '@/components/congregation-switcher';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { TeamSwitcher } from '@/components/team-switcher';
 import {
     Sidebar,
     SidebarContent,
@@ -14,20 +21,28 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 
 export function AppSidebar() {
     const page = usePage();
-    const dashboardUrl = page.props.currentTeam
-        ? dashboard(page.props.currentTeam.slug)
-        : '/';
+    const currentCongregation = page.props.currentCongregation;
+    const slug = currentCongregation?.slug;
 
     const mainNavItems: NavItem[] = [
         {
             title: 'Dashboard',
-            href: dashboardUrl,
+            href: slug ? `/${slug}/dashboard` : '/',
             icon: LayoutGrid,
+        },
+        {
+            title: 'Members',
+            href: slug ? `/${slug}/members` : '#',
+            icon: Users,
+        },
+        {
+            title: 'Kingdom Hall',
+            href: slug ? `/${slug}/kingdom-hall` : '#',
+            icon: Building2,
         },
     ];
 
@@ -44,6 +59,8 @@ export function AppSidebar() {
         },
     ];
 
+    const dashboardUrl = slug ? `/${slug}/dashboard` : '/';
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -58,7 +75,7 @@ export function AppSidebar() {
                 </SidebarMenu>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <TeamSwitcher />
+                        <CongregationSwitcher />
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>

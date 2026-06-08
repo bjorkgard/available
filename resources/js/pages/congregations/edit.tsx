@@ -1,12 +1,10 @@
 import { Form, Head, router } from '@inertiajs/react';
 import { ChevronDown, Mail, UserPlus, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import CancelInvitationModal from '@/components/cancel-invitation-modal';
-import DeleteTeamModal from '@/components/delete-team-modal';
+
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
-import InviteMemberModal from '@/components/invite-member-modal';
-import RemoveMemberModal from '@/components/remove-member-modal';
+import InviteMemberDialog from '@/components/invite-member-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,23 +25,43 @@ import {
 import { useInitials } from '@/hooks/use-initials';
 import { edit, index, update } from '@/routes/teams';
 import { update as updateMember } from '@/routes/teams/members';
-import type {
-    RoleOption,
-    Team,
-    TeamInvitation,
-    TeamMember,
-    TeamPermissions,
-} from '@/types';
+import type { Congregation, RoleOption } from '@/types';
+
+type CongregationPermissions = {
+    canUpdateTeam: boolean;
+    canDeleteTeam: boolean;
+    canCreateInvitation: boolean;
+    canUpdateMember: boolean;
+    canRemoveMember: boolean;
+    canCancelInvitation: boolean;
+};
+
+type MemberItem = {
+    id: string;
+    name: string;
+    email: string;
+    avatar?: string;
+    role: string;
+    role_label: string;
+};
+
+type InvitationItem = {
+    code: string;
+    email: string;
+    role: string;
+    role_label: string;
+    created_at: string;
+};
 
 type Props = {
-    team: Team;
-    members: TeamMember[];
-    invitations: TeamInvitation[];
-    permissions: TeamPermissions;
+    team: Congregation & { slug: string };
+    members: MemberItem[];
+    invitations: InvitationItem[];
+    permissions: CongregationPermissions;
     availableRoles: RoleOption[];
 };
 
-export default function TeamEdit({
+export default function CongregationEdit({
     team,
     members,
     invitations,
@@ -53,15 +71,6 @@ export default function TeamEdit({
     const getInitials = useInitials();
 
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [removeMemberDialogOpen, setRemoveMemberDialogOpen] = useState(false);
-    const [memberToRemove, setMemberToRemove] = useState<TeamMember | null>(
-        null,
-    );
-    const [cancelInvitationDialogOpen, setCancelInvitationDialogOpen] =
-        useState(false);
-    const [invitationToCancel, setInvitationToCancel] =
-        useState<TeamInvitation | null>(null);
 
     const pageTitle = useMemo(
         () =>
@@ -71,21 +80,14 @@ export default function TeamEdit({
         [permissions.canUpdateTeam, team.name],
     );
 
-    const updateMemberRole = (member: TeamMember, newRole: string) => {
-        router.visit(updateMember([team.slug, member.id]), {
-            data: { role: newRole },
-            preserveScroll: true,
-        });
-    };
-
-    const confirmRemoveMember = (member: TeamMember) => {
-        setMemberToRemove(member);
-        setRemoveMemberDialogOpen(true);
-    };
-
-    const confirmCancelInvitation = (invitation: TeamInvitation) => {
-        setInvitationToCancel(invitation);
-        setCancelInvitationDialogOpen(true);
+    const updateMemberRole = (member: MemberItem, newRole: string) => {
+        router.visit(
+            updateMember.url([team.slug, member.id as unknown as number]),
+            {
+                data: { role: newRole },
+                preserveScroll: true,
+            },
+        );
     };
 
     return (
@@ -100,8 +102,8 @@ export default function TeamEdit({
                         <>
                             <Heading
                                 variant="small"
-                                title="Team settings"
-                                description="Update your team name and settings"
+                                title="Congregation settings"
+                                description="Update your congregation name and settings"
                             />
 
                             <Form
@@ -112,12 +114,12 @@ export default function TeamEdit({
                                     <>
                                         <div className="grid gap-2">
                                             <Label htmlFor="name">
-                                                Team name
+                                                Congregation name
                                             </Label>
                                             <Input
                                                 id="name"
                                                 name="name"
-                                                data-test="team-name-input"
+                                                data-test="congregation-name-input"
                                                 defaultValue={team.name}
                                                 required
                                             />
@@ -127,7 +129,7 @@ export default function TeamEdit({
                                         <div className="flex items-center gap-4">
                                             <Button
                                                 type="submit"
-                                                data-test="team-save-button"
+                                                data-test="congregation-save-button"
                                                 disabled={processing}
                                             >
                                                 Save
@@ -148,10 +150,10 @@ export default function TeamEdit({
                     <div className="flex items-center justify-between">
                         <Heading
                             variant="small"
-                            title="Team members"
+                            title="Members"
                             description={
                                 permissions.canCreateInvitation
-                                    ? 'Manage who belongs to this team'
+                                    ? 'Manage who belongs to this congregation'
                                     : ''
                             }
                         />
@@ -196,8 +198,7 @@ export default function TeamEdit({
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    {member.role !== 'owner' &&
-                                    permissions.canUpdateMember ? (
+                                    {permissions.canUpdateMember ? (
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
@@ -232,8 +233,7 @@ export default function TeamEdit({
                                         </Badge>
                                     )}
 
-                                    {member.role !== 'owner' &&
-                                    permissions.canRemoveMember ? (
+                                    {permissions.canRemoveMember ? (
                                         <TooltipProvider>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
@@ -241,11 +241,6 @@ export default function TeamEdit({
                                                         variant="ghost"
                                                         size="sm"
                                                         data-test="member-remove-button"
-                                                        onClick={() =>
-                                                            confirmRemoveMember(
-                                                                member,
-                                                            )
-                                                        }
                                                     >
                                                         <X className="h-4 w-4" />
                                                     </Button>
@@ -299,11 +294,6 @@ export default function TeamEdit({
                                                         variant="ghost"
                                                         size="sm"
                                                         data-test="invitation-cancel-button"
-                                                        onClick={() =>
-                                                            confirmCancelInvitation(
-                                                                invitation,
-                                                            )
-                                                        }
                                                     >
                                                         <X className="h-4 w-4" />
                                                     </Button>
@@ -320,12 +310,12 @@ export default function TeamEdit({
                     </div>
                 ) : null}
 
-                {permissions.canDeleteTeam && !team.isPersonal ? (
+                {permissions.canDeleteTeam ? (
                     <div className="space-y-6">
                         <Heading
                             variant="small"
-                            title="Delete team"
-                            description="Permanently delete your team"
+                            title="Delete congregation"
+                            description="Permanently delete your congregation"
                         />
                         <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
                             <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
@@ -337,10 +327,9 @@ export default function TeamEdit({
                             </div>
                             <Button
                                 variant="destructive"
-                                data-test="delete-team-button"
-                                onClick={() => setDeleteDialogOpen(true)}
+                                data-test="delete-congregation-button"
                             >
-                                Delete team
+                                Delete congregation
                             </Button>
                         </div>
                     </div>
@@ -348,43 +337,23 @@ export default function TeamEdit({
             </div>
 
             {permissions.canCreateInvitation ? (
-                <InviteMemberModal
-                    team={team}
-                    availableRoles={availableRoles}
+                <InviteMemberDialog
+                    congregationSlug={team.slug}
+                    viewerRole={permissions.canUpdateTeam ? 'admin' : 'member'}
                     open={inviteDialogOpen}
                     onOpenChange={setInviteDialogOpen}
-                />
-            ) : null}
-
-            <RemoveMemberModal
-                team={team}
-                member={memberToRemove}
-                open={removeMemberDialogOpen}
-                onOpenChange={setRemoveMemberDialogOpen}
-            />
-
-            <CancelInvitationModal
-                team={team}
-                invitation={invitationToCancel}
-                open={cancelInvitationDialogOpen}
-                onOpenChange={setCancelInvitationDialogOpen}
-            />
-
-            {permissions.canDeleteTeam && !team.isPersonal ? (
-                <DeleteTeamModal
-                    team={team}
-                    open={deleteDialogOpen}
-                    onOpenChange={setDeleteDialogOpen}
                 />
             ) : null}
         </>
     );
 }
 
-TeamEdit.layout = (props: { team: { name: string; slug: string } }) => ({
+CongregationEdit.layout = (props: {
+    team: { name: string; slug: string };
+}) => ({
     breadcrumbs: [
         {
-            title: 'Teams',
+            title: 'Congregations',
             href: index(),
         },
         {
