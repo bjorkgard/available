@@ -6,7 +6,9 @@ use App\Enums\CongregationRole;
 use App\Models\Congregation;
 use App\Models\CongregationInvitation;
 use App\Models\User;
+use App\Notifications\Congregations\InvitationNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 
@@ -92,7 +94,8 @@ class SendInvitation
             'expires_at' => now()->addHours(72),
         ]);
 
-        // TODO: Send notification (will be implemented in task 13.1)
+        Notification::route('mail', $data['email'])
+            ->notify(new InvitationNotification($invitation));
 
         return $invitation;
     }
