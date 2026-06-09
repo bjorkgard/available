@@ -6,8 +6,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { updateColor } from '@/routes/congregation';
-import { edit, update } from '@/routes/congregations';
+import { edit, update, updateColor } from '@/routes/congregation';
 import type { Congregation } from '@/types';
 
 type CongregationPermissions = {
@@ -137,7 +136,7 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                                     }
                                                     placeholder="#3B82F6"
                                                     className="max-w-40 font-mono uppercase"
-                                                    type='color'
+                                                    type="color"
                                                 />
                                             </div>
                                             <p className="text-sm text-muted-foreground">
