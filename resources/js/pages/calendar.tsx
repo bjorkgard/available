@@ -20,6 +20,24 @@ import type { DateInfo } from '@/lib/calendar-utils';
 import { calendar } from '@/routes';
 import type { KingdomHall, Room } from '@/types';
 
+function getInitialViewMode(): ViewMode {
+    if (typeof window === 'undefined') {
+        return 'month';
+    }
+
+    const width = window.innerWidth;
+
+    if (width < 768) {
+        return 'day';
+    }
+
+    if (width < 1024) {
+        return 'week';
+    }
+
+    return 'month';
+}
+
 export default function Calendar() {
     const { currentCongregation } = usePage<{
         currentCongregation?: { slug: string; kingdom_hall?: KingdomHall };
@@ -33,7 +51,7 @@ export default function Calendar() {
     const currentMonth = now.getMonth();
     const currentDay = now.getDate();
 
-    const [viewMode, setViewMode] = useState<ViewMode>('month');
+    const [viewMode, setViewMode] = useState<ViewMode>(getInitialViewMode);
     const [displayedYear, setDisplayedYear] = useState(currentYear);
     const [displayedMonth, setDisplayedMonth] = useState(currentMonth);
     const [displayedDay, setDisplayedDay] = useState(currentDay);
