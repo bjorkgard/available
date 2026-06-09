@@ -1,6 +1,31 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+// Mock window.matchMedia for jsdom
+function createMatchMedia(width: number) {
+    Object.defineProperty(window, 'innerWidth', {
+        writable: true,
+        configurable: true,
+        value: width,
+    });
+
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+        matches: (() => {
+            const match = query.match(/\(min-width:\s*(\d+)px\)/);
+
+            if (match) {
+                return width >= Number(match[1]);
+            }
+
+            return false;
+        })(),
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+    }));
+}
 
 // Mock @inertiajs/react to provide a no-op Head component
 vi.mock('@inertiajs/react', () => ({
@@ -14,6 +39,11 @@ vi.mock('@/routes', () => ({
 }));
 
 import Calendar from '@/pages/calendar';
+
+beforeEach(() => {
+    // Default to large screen so month view is shown (tests expect month nav)
+    createMatchMedia(1280);
+});
 
 afterEach(() => {
     cleanup();

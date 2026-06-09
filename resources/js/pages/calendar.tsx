@@ -1,11 +1,11 @@
 import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { CalendarHeader } from '@/components/calendar-header';
-import type { ViewMode } from '@/components/calendar-header';
 import { DayGrid } from '@/components/day-grid';
 import { MonthGrid } from '@/components/month-grid';
 import { WeekGrid } from '@/components/week-grid';
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
+import { useResponsiveViewMode } from '@/hooks/use-responsive-view-mode';
 import {
     generateMonthGrid,
     getNextDay,
@@ -20,24 +20,6 @@ import type { DateInfo } from '@/lib/calendar-utils';
 import { calendar } from '@/routes';
 import type { KingdomHall, Room } from '@/types';
 
-function getInitialViewMode(): ViewMode {
-    if (typeof window === 'undefined') {
-        return 'month';
-    }
-
-    const width = window.innerWidth;
-
-    if (width < 768) {
-        return 'day';
-    }
-
-    if (width < 1024) {
-        return 'week';
-    }
-
-    return 'month';
-}
-
 export default function Calendar() {
     const { currentCongregation } = usePage<{
         currentCongregation?: { slug: string; kingdom_hall?: KingdomHall };
@@ -51,7 +33,7 @@ export default function Calendar() {
     const currentMonth = now.getMonth();
     const currentDay = now.getDate();
 
-    const [viewMode, setViewMode] = useState<ViewMode>(getInitialViewMode);
+    const { viewMode, setViewMode } = useResponsiveViewMode();
     const [displayedYear, setDisplayedYear] = useState(currentYear);
     const [displayedMonth, setDisplayedMonth] = useState(currentMonth);
     const [displayedDay, setDisplayedDay] = useState(currentDay);
