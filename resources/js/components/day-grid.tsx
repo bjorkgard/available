@@ -1,3 +1,4 @@
+import { APP_LOCALE } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 import type { Room } from '@/types';
 interface DayGridProps {
@@ -16,9 +17,7 @@ export function DayGrid({ date, rooms, isToday }: DayGridProps) {
     const roomCount = Math.max(rooms.length, 1);
     const gridColsStyle = `auto repeat(${roomCount}, 1fr)`;
 
-    const locale =
-        typeof navigator !== 'undefined' ? navigator.language : 'en';
-    const dateFormatter = new Intl.DateTimeFormat(locale, {
+    const dateFormatter = new Intl.DateTimeFormat(APP_LOCALE, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',

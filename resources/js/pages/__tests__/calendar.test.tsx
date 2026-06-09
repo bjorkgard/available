@@ -2,6 +2,8 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { APP_LOCALE } from '@/lib/locale';
+
 // Mock window.matchMedia for jsdom
 function createMatchMedia(width: number) {
     Object.defineProperty(window, 'innerWidth', {
@@ -56,7 +58,7 @@ describe('Calendar page state logic', () => {
             render(<Calendar />);
 
             const now = new Date();
-            const currentMonthName = new Intl.DateTimeFormat(undefined, {
+            const currentMonthName = new Intl.DateTimeFormat(APP_LOCALE, {
                 month: 'long',
             }).format(now);
 
@@ -101,7 +103,7 @@ describe('Calendar page state logic', () => {
             }
 
             // Should be at Jan 2024
-            const januaryName = new Intl.DateTimeFormat(undefined, {
+            const januaryName = new Intl.DateTimeFormat(APP_LOCALE, {
                 month: 'long',
             }).format(new Date(2025, 0, 1));
             expect(screen.getByText(januaryName)).toBeInTheDocument();
@@ -136,7 +138,7 @@ describe('Calendar page state logic', () => {
             }
 
             // Should be at Dec 2035
-            const decemberName = new Intl.DateTimeFormat(undefined, {
+            const decemberName = new Intl.DateTimeFormat(APP_LOCALE, {
                 month: 'long',
             }).format(new Date(2025, 11, 1));
             expect(screen.getByText(decemberName)).toBeInTheDocument();
@@ -172,7 +174,7 @@ describe('Calendar page state logic', () => {
             fireEvent.click(fillerButtons[0]);
 
             // After clicking, should navigate to February
-            const februaryName = new Intl.DateTimeFormat(undefined, {
+            const februaryName = new Intl.DateTimeFormat(APP_LOCALE, {
                 month: 'long',
             }).format(new Date(2025, 1, 1));
             expect(screen.getByText(februaryName)).toBeInTheDocument();
@@ -200,7 +202,7 @@ describe('Calendar page state logic', () => {
             fireEvent.click(lastFiller);
 
             // After clicking, should navigate to April
-            const aprilName = new Intl.DateTimeFormat(undefined, {
+            const aprilName = new Intl.DateTimeFormat(APP_LOCALE, {
                 month: 'long',
             }).format(new Date(2025, 3, 1));
             expect(screen.getByText(aprilName)).toBeInTheDocument();
@@ -212,7 +214,7 @@ describe('Calendar page state logic', () => {
             render(<Calendar />);
 
             const now = new Date();
-            const currentMonthName = new Intl.DateTimeFormat(undefined, {
+            const currentMonthName = new Intl.DateTimeFormat(APP_LOCALE, {
                 month: 'long',
             }).format(now);
             const currentYear = now.getFullYear();
@@ -246,7 +248,7 @@ describe('Calendar page state logic', () => {
             render(<Calendar />);
 
             const now = new Date();
-            const currentMonthName = new Intl.DateTimeFormat(undefined, {
+            const currentMonthName = new Intl.DateTimeFormat(APP_LOCALE, {
                 month: 'long',
             }).format(now);
 

@@ -17,6 +17,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { APP_LOCALE } from '@/lib/locale';
 
 export type ViewMode = 'month' | 'week' | 'day';
 
@@ -35,9 +36,7 @@ interface CalendarHeaderProps {
 }
 
 function getMonthNames(): string[] {
-    const locale =
-        typeof navigator !== 'undefined' ? navigator.language : 'en';
-    const formatter = new Intl.DateTimeFormat(locale, { month: 'long' });
+    const formatter = new Intl.DateTimeFormat(APP_LOCALE, { month: 'long' });
 
     return Array.from({ length: 12 }, (_, i) =>
         formatter.format(new Date(2025, i, 1)),
@@ -65,9 +64,7 @@ function getNavigationLabel(viewMode: ViewMode): {
 }
 
 function formatDayContext(year: number, month: number, day: number): string {
-    const locale =
-        typeof navigator !== 'undefined' ? navigator.language : 'en';
-    const formatter = new Intl.DateTimeFormat(locale, {
+    const formatter = new Intl.DateTimeFormat(APP_LOCALE, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
@@ -84,9 +81,7 @@ function formatWeekContext(year: number, month: number, day: number): string {
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
 
-    const locale =
-        typeof navigator !== 'undefined' ? navigator.language : 'en';
-    const formatter = new Intl.DateTimeFormat(locale, {
+    const formatter = new Intl.DateTimeFormat(APP_LOCALE, {
         day: 'numeric',
         month: 'short',
     });
