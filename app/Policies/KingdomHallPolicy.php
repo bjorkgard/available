@@ -52,6 +52,26 @@ class KingdomHallPolicy
     }
 
     /**
+     * Determine whether the user can manage rooms in the Kingdom Hall.
+     *
+     * Only users with superadmin role in a congregation belonging to this KH.
+     */
+    public function manageRooms(User $user, KingdomHall $kingdomHall): bool
+    {
+        return $this->isSuperadminInKingdomHall($user, $kingdomHall);
+    }
+
+    /**
+     * Determine whether the user can delete a congregation from the Kingdom Hall.
+     *
+     * Only users with superadmin role in a congregation belonging to this KH.
+     */
+    public function deleteCongregation(User $user, KingdomHall $kingdomHall): bool
+    {
+        return $this->isSuperadminInKingdomHall($user, $kingdomHall);
+    }
+
+    /**
      * Check if the user has superadmin membership in any congregation
      * where congregation.kingdom_hall_id = $kingdomHall->id.
      */
