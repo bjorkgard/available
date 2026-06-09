@@ -1,19 +1,27 @@
 # Product
 
-A room-booking calendar for co-located teams to reserve shared spaces. Users can see room availability at a glance and book in seconds without double-bookings.
+A Kingdom Hall room-scheduling app for congregations to coordinate shared spaces. Congregations that share a Kingdom Hall can see room availability at a glance and book slots without conflicts.
 
 ## Target Users
 
-Office managers, team leads, and individual team members who share a physical building and need to coordinate room usage.
+Congregation elders (superadmins), ministerial servants (admins), and publishers (members) who share a Kingdom Hall and need to coordinate room usage for meetings, service groups, and events.
+
+## Domain Model
+
+- **Kingdom Hall** — a physical building with an address and multiple rooms
+- **Room** — a bookable space inside a Kingdom Hall (e.g., main hall, second school, library)
+- **Congregation** — an organization tied to a Kingdom Hall; has members with roles
+- **Membership** — a user's role within a congregation (Superadmin, Admin, Member)
+- **Invitation** — a pending invite to join a congregation with a specific role
 
 ## Current State
 
-The app is built on the Laravel React Starter Kit with team management (create, invite members, switch teams), authentication (login, register, passkeys, 2FA), and user settings. The room-booking feature itself is not yet implemented — the dashboard is a placeholder.
+The app has full authentication (login, register, passkeys, 2FA), congregation management (create via setup wizard, invite members, switch congregations, edit settings), Kingdom Hall management (address, rooms, multi-congregation sharing), and user settings. The room-booking/scheduling feature itself is not yet implemented — the dashboard is a placeholder.
 
 ## Design Principles
 
 - Clarity over density: scannable availability in under two seconds
 - Respect the context: works fast mid-conversation or between meetings
 - Quiet confidence: no urgency theater, calm certainty
-- Team-first: shared awareness of who has what and when
+- Congregation-first: shared awareness of who has what and when
 - Physical grounding: tangible copy and affordances for real spaces

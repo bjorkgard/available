@@ -4,8 +4,9 @@
 
 - PHP 8.5, Laravel 13
 - Inertia.js v3 (server-side adapter: `inertiajs/inertia-laravel`)
-- Laravel Fortify (authentication)
+- Laravel Fortify (authentication with passkeys and 2FA)
 - Laravel Wayfinder (typed route generation)
+- Laravel Chisel (AI tooling)
 - SQLite (default database)
 - Pest v4 (testing framework)
 - Laravel Pint (code formatter, `laravel` preset)
@@ -13,12 +14,15 @@
 ## Frontend
 
 - React 19 with TypeScript (strict mode)
-- Inertia.js v3 React client (`@inertiajs/react`)
+- Inertia.js v3 React client (`@inertiajs/react`) + `@inertiajs/vite` (SSR plugin)
 - Tailwind CSS v4 (via `@tailwindcss/vite` plugin)
 - shadcn/ui (new-york style, Radix primitives, lucide icons)
 - Vite 8 with `laravel-vite-plugin`, `@inertiajs/vite`, `@vitejs/plugin-react`
 - React Compiler (`babel-plugin-react-compiler`)
 - Class Variance Authority + clsx + tailwind-merge for styling utilities
+- Sonner (toast notifications)
+- `@laravel/passkeys` (WebAuthn/passkey support)
+- `input-otp` (OTP input for 2FA)
 - ESLint 9 + Prettier 3
 
 ## Common Commands
@@ -65,11 +69,14 @@ php artisan make:model ModelName --help
 - Use Laravel's `HasUuids` trait on every Eloquent model.
 - Migrations use `$table->uuid('id')->primary()` for primary keys and `$table->foreignUuid(...)` for foreign keys.
 - Never expose numeric/sequential IDs in URLs, API responses, or frontend code.
-- Route model binding uses UUID columns by default (`getRouteKeyName()` returns `'id'` which is a UUID).
+- Route model binding varies by model:
+  - `Congregation` binds by `slug`
+  - `CongregationInvitation` binds by `code`
+  - Other models bind by UUID `id`
 
 ## Key Configuration
 
-- Vite config: `vite.config.ts`
+- Vite config: `vite.config.ts` (includes `laravel-vite-plugin` with Bunny font loader, `@inertiajs/vite`, `@vitejs/plugin-react` with React Compiler, `@tailwindcss/vite`, `@laravel/vite-plugin-wayfinder` with `formVariants: true`)
 - TypeScript: `tsconfig.json` (path alias `@/*` → `resources/js/*`)
 - ESLint: `eslint.config.js` (enforces import ordering, consistent type imports, 1tbs brace style, padding around control statements)
 - Prettier: `.prettierrc` (with tailwindcss plugin)
