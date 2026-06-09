@@ -34,7 +34,7 @@ export function CongregationSwitcher({
 
         const previousSlug = currentCongregation?.slug;
 
-        router.visit(`/${congregation.slug}/dashboard`, {
+        router.visit(`/${congregation.slug}/calendar`, {
             onFinish: () => {
                 if (!previousSlug || typeof window === 'undefined') {
                     router.reload();

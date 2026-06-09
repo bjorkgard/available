@@ -103,7 +103,7 @@ class InvitationAcceptController extends Controller
 
         $congregation = $invitation->congregation;
 
-        return redirect()->route('dashboard', ['current_congregation' => $congregation->slug]);
+        return redirect()->route('calendar', ['current_congregation' => $congregation->slug]);
     }
 
     /**
@@ -129,7 +129,7 @@ class InvitationAcceptController extends Controller
 
         $user->switchCongregation($congregation);
 
-        return redirect()->route('dashboard', ['current_congregation' => $congregation->slug]);
+        return redirect()->route('calendar', ['current_congregation' => $congregation->slug]);
     }
 
     /**

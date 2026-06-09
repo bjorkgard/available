@@ -19,7 +19,7 @@ Route::middleware(['auth'])->group(function () {
 Route::prefix('{current_congregation}')
     ->middleware(['auth', 'verified', EnsureCongregationMembership::class, EnsureHasKingdomHall::class])
     ->group(function () {
-        Route::inertia('dashboard', 'dashboard')->name('dashboard');
+        Route::inertia('calendar', 'calendar')->name('calendar');
 
         Route::middleware(EnsureCongregationMembership::class.':admin')->group(function () {
             Route::get('members', [MemberController::class, 'index'])->name('members.index');

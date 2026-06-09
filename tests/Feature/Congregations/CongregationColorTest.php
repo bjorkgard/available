@@ -209,7 +209,7 @@ test('shared props include color on congregation objects', function () {
     ]);
 
     $response = $this->actingAs($admin)
-        ->get("/{$congregation->slug}/dashboard");
+        ->get("/{$congregation->slug}/calendar");
 
     $response->assertInertia(fn ($page) => $page
         ->has('currentCongregation')

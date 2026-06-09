@@ -22,7 +22,7 @@ test('users can authenticate using the login screen', function () {
 
     $this->assertAuthenticated();
     $congregation = $user->fresh()->currentCongregation;
-    $response->assertRedirect(route('dashboard', ['current_congregation' => $congregation->slug]));
+    $response->assertRedirect(route('calendar', ['current_congregation' => $congregation->slug]));
 });
 
 test('passkey login response redirects to the current congregation dashboard', function () {
@@ -37,7 +37,7 @@ test('passkey login response redirects to the current congregation dashboard', f
     $jsonResponse = app(PasskeyLoginResponse::class)->toResponse($request);
 
     $congregation = $user->fresh()->currentCongregation;
-    expect($jsonResponse->getData()->redirect)->toBe(route('dashboard', ['current_congregation' => $congregation->slug]));
+    expect($jsonResponse->getData()->redirect)->toBe(route('calendar', ['current_congregation' => $congregation->slug]));
 });
 
 test('users with two factor enabled are redirected to two factor challenge', function () {

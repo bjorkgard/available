@@ -31,7 +31,7 @@ export function AppSidebar() {
     const mainNavItems: NavItem[] = [
         {
             title: 'Calendar',
-            href: slug ? `/${slug}/dashboard` : '/',
+            href: slug ? `/${slug}/calendar` : '/',
             icon: CalendarDays,
         },
         ...(isAdmin
@@ -59,7 +59,7 @@ export function AppSidebar() {
             : []),
     ];
 
-    const dashboardUrl = slug ? `/${slug}/dashboard` : '/';
+    const calendarUrl = slug ? `/${slug}/calendar` : '/';
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -67,7 +67,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboardUrl} prefetch>
+                            <Link href={calendarUrl} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>

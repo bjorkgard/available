@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'currentCongregation' => fn () => $user?->currentCongregation,
+            'currentCongregation' => fn () => $user?->currentCongregation?->load('kingdomHall.rooms'),
             'currentCongregationRole' => function () use ($user) {
                 $congregation = $user?->currentCongregation;
 

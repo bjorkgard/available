@@ -10,7 +10,7 @@ uses(RefreshDatabase::class);
 // Feature: congregation-management, Property 7: Setup wizard gate blocks all protected routes
 test('setup wizard gate redirects all protected routes when congregation has no kingdom hall', function () {
     $protectedRoutes = [
-        'dashboard',
+        'calendar',
         'members.index',
         'members.invite',
         'members.update',

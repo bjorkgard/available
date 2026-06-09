@@ -30,6 +30,6 @@ class SetupWizardController extends Controller
 
         $action->handle($user, $congregation, $request->validated());
 
-        return to_route('dashboard', ['current_congregation' => $congregation->slug]);
+        return to_route('calendar', ['current_congregation' => $congregation->slug]);
     }
 }
