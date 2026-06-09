@@ -35,7 +35,9 @@ class InvitationAcceptController extends Controller
         $existingUser = User::where('email', $invitation->email)->first();
 
         if ($existingUser) {
-            // Redirect to login, then back to this invitation
+            // Store the invitation URL as the intended destination so redirect()->intended() returns here after login
+            redirect()->setIntendedUrl($request->url());
+
             return redirect()->route('login')->with('status', 'Please log in to accept this invitation.');
         }
 

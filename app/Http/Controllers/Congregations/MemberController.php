@@ -26,7 +26,11 @@ class MemberController extends Controller
     {
         $congregation = $this->resolveCongregation($request);
 
-        $members = $congregation->memberships()->with('user')->get();
+        $members = $congregation->memberships()
+            ->with('user')
+            ->get()
+            ->sortBy(fn ($membership) => $membership->user->name)
+            ->values();
 
         $pendingInvitations = $congregation->invitations()
             ->whereNull('accepted_at')
@@ -34,7 +38,7 @@ class MemberController extends Controller
                 $query->whereNull('expires_at')
                     ->orWhere('expires_at', '>', now());
             })
-            ->latest()
+            ->oldest('updated_at')
             ->get();
 
         return Inertia::render('congregations/members/index', [
