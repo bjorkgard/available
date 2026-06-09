@@ -6,13 +6,16 @@ use App\Actions\Congregations\SendInvitation;
 use App\Enums\CongregationRole;
 use App\Http\Controllers\Controller;
 use App\Models\Congregation;
+use App\Models\CongregationInvitation;
 use App\Models\Membership;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class MemberController extends Controller
 {
@@ -25,8 +28,18 @@ class MemberController extends Controller
 
         $members = $congregation->memberships()->with('user')->get();
 
+        $pendingInvitations = $congregation->invitations()
+            ->whereNull('accepted_at')
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            })
+            ->latest()
+            ->get();
+
         return Inertia::render('congregations/members/index', [
             'members' => $members,
+            'pendingInvitations' => $pendingInvitations,
             'congregation' => $congregation,
             'viewerRole' => $request->user()->congregationRole($congregation)?->value,
         ]);
@@ -41,10 +54,22 @@ class MemberController extends Controller
 
         Gate::authorize('invite', [Membership::class, $congregation]);
 
-        $action = new SendInvitation;
-        $action->handle($request->user(), $congregation, $request->only(['name', 'email', 'role']));
+        try {
+            $action = new SendInvitation;
+            $action->handle($request->user(), $congregation, $request->only(['name', 'email', 'role']));
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            return Inertia::flash('toast', [
+                'type' => 'error',
+                'message' => 'Failed to send invitation. Please try again.',
+            ])->back();
+        }
 
-        return back()->with('success', 'Invitation sent successfully.');
+        return Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => 'Invitation sent successfully.',
+        ])->back();
     }
 
     /**
@@ -79,6 +104,24 @@ class MemberController extends Controller
         $member->delete();
 
         return back()->with('success', 'Member removed from congregation.');
+    }
+
+    /**
+     * Cancel a pending invitation.
+     */
+    public function destroyInvitation(Request $request, string $currentCongregation, CongregationInvitation $invitation): RedirectResponse
+    {
+        $congregation = $this->resolveCongregation($request);
+
+        abort_unless($invitation->congregation_id === $congregation->id, 404);
+        abort_unless($invitation->isPending(), 404);
+
+        $invitation->delete();
+
+        return Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => 'Invitation cancelled.',
+        ])->back();
     }
 
     /**
