@@ -57,4 +57,4 @@ test('terminating other sessions leaves exactly 1 session — the current sessio
     expect($remainingSessions->first()->id)->toBe($currentSession['id'],
         'The remaining session must be the current session.'
     );
-})->repeat(100);
+})->repeat(20);

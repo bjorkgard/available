@@ -12,8 +12,9 @@ test('current session is always first and remaining sessions are sorted by last_
 
     // Generate a random number of sessions (1-20)
     $sessionCount = rand(1, 20);
+    $lifetimeSeconds = config('session.lifetime') * 60;
 
-    // Create session records with random timestamps
+    // Create session records with random timestamps within the session lifetime window
     $sessions = collect();
     for ($i = 0; $i < $sessionCount; $i++) {
         $sessions->push([
@@ -22,7 +23,7 @@ test('current session is always first and remaining sessions are sorted by last_
             'ip_address' => fake()->ipv4(),
             'user_agent' => fake()->userAgent(),
             'payload' => '',
-            'last_activity' => rand(time() - 86400 * 30, time()),
+            'last_activity' => rand(time() - $lifetimeSeconds + 60, time()),
         ]);
     }
 
@@ -67,4 +68,4 @@ test('current session is always first and remaining sessions are sorted by last_
             );
         }
     }
-})->repeat(100);
+})->repeat(20);

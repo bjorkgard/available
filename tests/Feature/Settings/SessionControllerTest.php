@@ -56,7 +56,7 @@ test('current session is listed first', function () {
             'ip_address' => '192.168.1.1',
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0',
             'payload' => '',
-            'last_activity' => now()->subHours(2)->timestamp,
+            'last_activity' => now()->subMinutes(30)->timestamp,
         ],
         [
             'id' => 'newer-session-id',
@@ -64,7 +64,7 @@ test('current session is listed first', function () {
             'ip_address' => '10.0.0.1',
             'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Safari/537.36',
             'payload' => '',
-            'last_activity' => now()->addHour()->timestamp,
+            'last_activity' => now()->subMinutes(5)->timestamp,
         ],
     ]);
 
