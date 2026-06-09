@@ -4,16 +4,77 @@ namespace App\Http\Controllers\Congregations;
 
 use App\Actions\Congregations\DeleteCongregation;
 use App\Actions\Congregations\MoveCongregation;
+use App\Enums\CongregationRole;
 use App\Http\Controllers\Controller;
 use App\Models\Congregation;
 use App\Models\KingdomHall;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CongregationController extends Controller
 {
     use AuthorizesRequests;
+
+    /**
+     * Show the congregation edit page.
+     */
+    public function edit(Request $request): Response
+    {
+        $congregation = $request->route('current_congregation');
+
+        if (is_string($congregation)) {
+            $congregation = Congregation::where('slug', $congregation)->firstOrFail();
+        }
+
+        $user = $request->user();
+
+        return Inertia::render('congregations/edit', [
+            'team' => [
+                'id' => $congregation->id,
+                'name' => $congregation->name,
+                'slug' => $congregation->slug,
+                'congregation_number' => $congregation->congregation_number,
+                'isPersonal' => false,
+            ],
+            'permissions' => [
+                'canUpdateTeam' => $user->congregationRole($congregation)?->isAtLeast(CongregationRole::Admin) ?? false,
+                'canDeleteTeam' => $user->congregationRole($congregation) === CongregationRole::Superadmin,
+            ],
+        ]);
+    }
+
+    /**
+     * Update the congregation.
+     */
+    public function update(Request $request): RedirectResponse
+    {
+        $congregation = $request->route('current_congregation');
+
+        if (is_string($congregation)) {
+            $congregation = Congregation::where('slug', $congregation)->firstOrFail();
+        }
+
+        $user = $request->user();
+
+        abort_unless(
+            $user->congregationRole($congregation)?->isAtLeast(CongregationRole::Admin) ?? false,
+            403
+        );
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'congregation_number' => ['nullable', 'string', 'max:255', 'unique:congregations,congregation_number,'.$congregation->id],
+        ]);
+
+        $congregation->update($validated);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Congregation updated.')]);
+
+        return to_route('congregation.edit', ['current_congregation' => $congregation->slug]);
+    }
 
     /**
      * Delete the congregation.

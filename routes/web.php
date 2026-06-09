@@ -21,15 +21,22 @@ Route::prefix('{current_congregation}')
     ->group(function () {
         Route::inertia('dashboard', 'dashboard')->name('dashboard');
 
-        Route::get('members', [MemberController::class, 'index'])->name('members.index');
-        Route::post('members/invite', [MemberController::class, 'invite'])->name('members.invite');
-        Route::put('members/{member}', [MemberController::class, 'update'])->name('members.update');
-        Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
+        Route::middleware(EnsureCongregationMembership::class.':admin')->group(function () {
+            Route::get('members', [MemberController::class, 'index'])->name('members.index');
+            Route::post('members/invite', [MemberController::class, 'invite'])->name('members.invite');
+            Route::put('members/{member}', [MemberController::class, 'update'])->name('members.update');
+            Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
 
-        Route::get('kingdom-hall', [KingdomHallController::class, 'show'])->name('kingdom-hall.show');
-        Route::put('kingdom-hall', [KingdomHallController::class, 'update'])->name('kingdom-hall.update');
-        Route::delete('kingdom-hall', [KingdomHallController::class, 'destroy'])->name('kingdom-hall.destroy');
-        Route::post('kingdom-hall/congregations', [KingdomHallController::class, 'addCongregation'])->name('kingdom-hall.add-congregation');
+            Route::get('congregation', [CongregationController::class, 'edit'])->name('congregation.edit');
+            Route::patch('congregation', [CongregationController::class, 'update'])->name('congregation.update');
+        });
+
+        Route::middleware(EnsureCongregationMembership::class.':superadmin')->group(function () {
+            Route::get('kingdom-hall', [KingdomHallController::class, 'show'])->name('kingdom-hall.show');
+            Route::put('kingdom-hall', [KingdomHallController::class, 'update'])->name('kingdom-hall.update');
+            Route::delete('kingdom-hall', [KingdomHallController::class, 'destroy'])->name('kingdom-hall.destroy');
+            Route::post('kingdom-hall/congregations', [KingdomHallController::class, 'addCongregation'])->name('kingdom-hall.add-congregation');
+        });
 
         Route::post('move', [CongregationController::class, 'move'])->name('congregation.move');
         Route::delete('/', [CongregationController::class, 'destroy'])->name('congregation.destroy');
