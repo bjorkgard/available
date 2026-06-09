@@ -141,7 +141,7 @@ test('superadmin can invite to any congregation in kingdom hall', function () {
     $otherCongregation = Congregation::factory()->create(['kingdom_hall_id' => $kingdomHall->id]);
 
     // Superadmin needs to be a member of the other congregation for the membership middleware to allow access
-    $otherCongregation->members()->attach($superadmin, ['role' => CongregationRole::Member->value]);
+    $otherCongregation->members()->attach($superadmin, ['role' => CongregationRole::Admin->value]);
 
     $response = $this->actingAs($superadmin)->post(
         route('members.invite', ['current_congregation' => $otherCongregation->slug]),
