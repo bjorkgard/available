@@ -28,7 +28,7 @@ test('registration rejects duplicate congregation number', function () {
     $this->assertGuest();
 
     expect(Congregation::where('congregation_number', $congregationNumber)->count())->toBe(1);
-})->repeat(100);
+})->repeat(30);
 
 test('registration rejects duplicate email', function () {
     $email = fake()->unique()->safeEmail();
@@ -51,4 +51,4 @@ test('registration rejects duplicate email', function () {
 
     expect(User::where('email', $email)->count())->toBe(1);
     expect(Congregation::where('congregation_number', $congregationNumber)->exists())->toBeFalse();
-})->repeat(100);
+})->repeat(30);

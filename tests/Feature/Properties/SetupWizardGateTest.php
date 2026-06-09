@@ -51,4 +51,4 @@ test('setup wizard gate redirects all protected routes when congregation has no 
 
     expect($response->status())->toBe(302, "Route [{$route}] should redirect when no Kingdom Hall");
     expect($response->headers->get('Location'))->toBe(route('setup.show'), "Route [{$route}] should redirect to setup wizard");
-})->repeat(100);
+})->repeat(30);

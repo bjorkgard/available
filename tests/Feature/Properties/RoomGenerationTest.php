@@ -41,4 +41,4 @@ test('room auto-generation produces correctly named rooms for random room counts
         expect($rooms[$i - 1]->name)->toBe("Room {$i}")
             ->and($rooms[$i - 1]->sort_order)->toBe($i);
     }
-})->repeat(100);
+})->repeat(30);

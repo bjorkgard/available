@@ -37,7 +37,7 @@ test('congregation number accepts only valid uppercase alphanumeric strings 1-20
 
     // Clean up auth state for next iteration
     auth()->logout();
-})->repeat(100);
+})->repeat(30);
 
 /**
  * Generates a random string that mixes valid and invalid congregation number inputs.

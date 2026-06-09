@@ -97,3 +97,9 @@ php artisan make:model ModelName --help
 - Prettier: `.prettierrc` (with tailwindcss plugin)
 - Pint: `pint.json` (laravel preset)
 - shadcn: `components.json` (new-york style, aliases configured)
+
+## Testing Conventions
+
+- Property-based tests use `->repeat(30)` — not 100. This keeps CI memory usage manageable while still providing meaningful coverage.
+- Property tests live in `tests/Feature/Properties/` and use randomized inputs to validate invariants.
+- Feature tests live in `tests/Feature/` grouped by domain (e.g., `KingdomHalls/`, `Auth/`, `Congregations/`).

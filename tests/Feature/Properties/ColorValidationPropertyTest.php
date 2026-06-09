@@ -34,4 +34,4 @@ test('isValidHex accepts valid hex colors and rejects invalid strings', function
     expect(ColorService::isValidHex($invalidChars))->toBeFalse("Expected invalid: {$invalidChars}");
     expect(ColorService::isValidHex($invalidEmpty))->toBeFalse();
     expect(ColorService::isValidHex($invalidSpace))->toBeFalse();
-})->repeat(100);
+})->repeat(30);

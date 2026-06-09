@@ -52,7 +52,7 @@ test('invitation expiry is enforced based on expires_at timestamp', function () 
         // Valid (future expiry or null expires_at) → redirect (302)
         expect($response->status())->toBe(302, 'Valid invitations should redirect on acceptance');
     }
-})->repeat(100);
+})->repeat(30);
 
 /**
  * Generates a random invitation expiry scenario.
