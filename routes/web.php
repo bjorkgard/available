@@ -24,6 +24,7 @@ Route::prefix('{current_congregation}')
         Route::middleware(EnsureCongregationMembership::class.':admin')->group(function () {
             Route::get('members', [MemberController::class, 'index'])->name('members.index');
             Route::post('members/invite', [MemberController::class, 'invite'])->name('members.invite');
+            Route::delete('members/invitations/{invitation}', [MemberController::class, 'destroyInvitation'])->name('members.invitations.destroy');
             Route::put('members/{member}', [MemberController::class, 'update'])->name('members.update');
             Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
 
@@ -42,8 +43,7 @@ Route::prefix('{current_congregation}')
         Route::delete('/', [CongregationController::class, 'destroy'])->name('congregation.destroy');
     });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('invitations/{invitation}/accept', [InvitationAcceptController::class, 'accept'])->name('invitations.accept');
-});
+Route::get('invitations/{invitation}/accept', [InvitationAcceptController::class, 'accept'])->name('invitations.accept');
+Route::post('invitations/{invitation}/accept', [InvitationAcceptController::class, 'store'])->name('invitations.accept.store');
 
 require __DIR__.'/settings.php';

@@ -34,7 +34,7 @@ test('admin can invite to own congregation', function () {
     );
 
     $response->assertRedirect();
-    $response->assertSessionHas('success');
+    $response->assertInertiaFlash('toast.type', 'success');
 
     $this->assertDatabaseHas('congregation_invitations', [
         'congregation_id' => $congregation->id,
@@ -153,7 +153,7 @@ test('superadmin can invite to any congregation in kingdom hall', function () {
     );
 
     $response->assertRedirect();
-    $response->assertSessionHas('success');
+    $response->assertInertiaFlash('toast.type', 'success');
 
     $this->assertDatabaseHas('congregation_invitations', [
         'congregation_id' => $otherCongregation->id,
@@ -229,4 +229,82 @@ test('invitation cannot be accepted by a different user', function () {
 
     // Invitation should remain unconsumed
     expect($invitation->fresh()->accepted_at)->toBeNull();
+});
+
+test('unauthenticated new user sees registration form on invitation accept', function () {
+    [$kingdomHall, $congregation, $admin] = createKingdomHallWithCongregation(CongregationRole::Admin);
+
+    $invitation = CongregationInvitation::factory()->create([
+        'congregation_id' => $congregation->id,
+        'email' => 'newuser@example.com',
+        'name' => 'New User',
+        'role' => CongregationRole::Member,
+        'invited_by' => $admin->id,
+    ]);
+
+    $response = $this->get(
+        route('invitations.accept', ['invitation' => $invitation->code])
+    );
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('auth/accept-invitation')
+        ->has('invitation')
+        ->where('invitation.email', 'newuser@example.com')
+        ->where('invitation.name', 'New User')
+    );
+});
+
+test('unauthenticated new user can create account and accept invitation', function () {
+    [$kingdomHall, $congregation, $admin] = createKingdomHallWithCongregation(CongregationRole::Admin);
+
+    $invitation = CongregationInvitation::factory()->create([
+        'congregation_id' => $congregation->id,
+        'email' => 'newuser@example.com',
+        'name' => 'New User',
+        'role' => CongregationRole::Member,
+        'invited_by' => $admin->id,
+    ]);
+
+    $response = $this->post(
+        route('invitations.accept.store', ['invitation' => $invitation->code]),
+        [
+            'password' => 'SecurePassword123!',
+            'password_confirmation' => 'SecurePassword123!',
+        ]
+    );
+
+    $response->assertRedirect();
+
+    $this->assertDatabaseHas('users', [
+        'email' => 'newuser@example.com',
+        'name' => 'New User',
+    ]);
+
+    $this->assertDatabaseHas('congregation_members', [
+        'congregation_id' => $congregation->id,
+        'role' => CongregationRole::Member->value,
+    ]);
+
+    expect($invitation->fresh()->accepted_at)->not->toBeNull();
+    $this->assertAuthenticated();
+});
+
+test('unauthenticated existing user is redirected to login', function () {
+    [$kingdomHall, $congregation, $admin] = createKingdomHallWithCongregation(CongregationRole::Admin);
+    $existingUser = User::factory()->create(['email' => 'existing@example.com']);
+
+    $invitation = CongregationInvitation::factory()->create([
+        'congregation_id' => $congregation->id,
+        'email' => 'existing@example.com',
+        'name' => 'Existing User',
+        'role' => CongregationRole::Member,
+        'invited_by' => $admin->id,
+    ]);
+
+    $response = $this->get(
+        route('invitations.accept', ['invitation' => $invitation->code])
+    );
+
+    $response->assertRedirect(route('login'));
 });

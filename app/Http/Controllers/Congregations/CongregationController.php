@@ -66,7 +66,16 @@ class CongregationController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'congregation_number' => ['nullable', 'string', 'max:255', 'unique:congregations,congregation_number,'.$congregation->id],
+            'congregation_number' => [
+                'required',
+                'string',
+                'max:20',
+                'regex:/^[A-Z0-9]+$/',
+                'unique:congregations,congregation_number,'.$congregation->id,
+            ],
+        ], [
+            'congregation_number.regex' => 'The congregation number must contain only digits and uppercase letters (A–Z).',
+            'congregation_number.unique' => 'This congregation number is already in use.',
         ]);
 
         $congregation->update($validated);
