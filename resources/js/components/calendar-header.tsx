@@ -35,7 +35,9 @@ interface CalendarHeaderProps {
 }
 
 function getMonthNames(): string[] {
-    const formatter = new Intl.DateTimeFormat(undefined, { month: 'long' });
+    const locale =
+        typeof navigator !== 'undefined' ? navigator.language : 'en';
+    const formatter = new Intl.DateTimeFormat(locale, { month: 'long' });
 
     return Array.from({ length: 12 }, (_, i) =>
         formatter.format(new Date(2025, i, 1)),
@@ -63,7 +65,9 @@ function getNavigationLabel(viewMode: ViewMode): {
 }
 
 function formatDayContext(year: number, month: number, day: number): string {
-    const formatter = new Intl.DateTimeFormat(undefined, {
+    const locale =
+        typeof navigator !== 'undefined' ? navigator.language : 'en';
+    const formatter = new Intl.DateTimeFormat(locale, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
@@ -80,7 +84,9 @@ function formatWeekContext(year: number, month: number, day: number): string {
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
 
-    const formatter = new Intl.DateTimeFormat(undefined, {
+    const locale =
+        typeof navigator !== 'undefined' ? navigator.language : 'en';
+    const formatter = new Intl.DateTimeFormat(locale, {
         day: 'numeric',
         month: 'short',
     });

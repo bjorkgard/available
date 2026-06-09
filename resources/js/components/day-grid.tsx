@@ -16,7 +16,9 @@ export function DayGrid({ date, rooms, isToday }: DayGridProps) {
     const roomCount = Math.max(rooms.length, 1);
     const gridColsStyle = `auto repeat(${roomCount}, 1fr)`;
 
-    const dateFormatter = new Intl.DateTimeFormat(undefined, {
+    const locale =
+        typeof navigator !== 'undefined' ? navigator.language : 'en';
+    const dateFormatter = new Intl.DateTimeFormat(locale, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',

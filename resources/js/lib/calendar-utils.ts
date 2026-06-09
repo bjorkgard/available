@@ -124,7 +124,12 @@ export function getNextMonth(
  */
 export function getFirstDayOfWeek(locale?: string): number {
     try {
-        const loc = new Intl.Locale(locale ?? navigator.language);
+        const loc = new Intl.Locale(
+            locale ??
+                (typeof navigator !== 'undefined'
+                    ? navigator.language
+                    : 'en'),
+        );
 
         // Use weekInfo if available (modern browsers)
         if ('weekInfo' in loc && loc.weekInfo) {
@@ -161,7 +166,9 @@ export function getFirstDayOfWeek(locale?: string): number {
  */
 export function getWeekdayNames(locale?: string): string[] {
     const firstDay = getFirstDayOfWeek(locale);
-    const resolvedLocale = locale ?? navigator.language;
+    const resolvedLocale =
+        locale ??
+        (typeof navigator !== 'undefined' ? navigator.language : 'en');
 
     try {
         const formatter = new Intl.DateTimeFormat(resolvedLocale, {
@@ -231,9 +238,12 @@ export function getWeekDays(
     const todayMonth = today.getMonth();
     const todayYear = today.getFullYear();
 
-    const formatter = new Intl.DateTimeFormat(locale ?? navigator.language, {
-        weekday: 'short',
-    });
+    const formatter = new Intl.DateTimeFormat(
+        locale ?? (typeof navigator !== 'undefined' ? navigator.language : 'en'),
+        {
+            weekday: 'short',
+        },
+    );
 
     const days: WeekDay[] = [];
 
