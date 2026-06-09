@@ -72,7 +72,7 @@ export default function MembersIndex({
 
             <h1 className="sr-only">Members</h1>
 
-            <div className="flex flex-col space-y-6">
+            <div className="mx-auto w-full max-w-2xl px-4 py-6 flex flex-col space-y-6">
                 <div className="flex items-center justify-between">
                     <Heading
                         variant="small"
