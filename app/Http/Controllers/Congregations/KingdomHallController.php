@@ -8,8 +8,10 @@ use App\Actions\Congregations\DeleteKingdomHall;
 use App\Actions\Congregations\UpdateKingdomHall;
 use App\Http\Controllers\Controller;
 use App\Models\Congregation;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -100,7 +102,37 @@ class KingdomHallController extends Controller
         // Validate that the congregation belongs to this Kingdom Hall
         abort_unless($congregation->kingdom_hall_id === $kingdomHall->id, 403);
 
+        $actingUser = $request->user();
+        $isDeletingCurrentCongregation = $actingUser->current_congregation_id === $congregation->id;
+
         $deleteCongregation->handle($congregation);
+
+        // If the acting user was deleted (exclusive to the deleted congregation), log them out
+        if (! User::find($actingUser->id)) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('home');
+        }
+
+        // If we deleted the congregation the user was acting from, redirect to fallback
+        if ($isDeletingCurrentCongregation) {
+            $actingUser->refresh();
+            $fallback = $actingUser->currentCongregation;
+
+            if ($fallback) {
+                return redirect("/{$fallback->slug}/kingdom-hall")
+                    ->with('success', 'Congregation deleted successfully.');
+            }
+
+            // No remaining congregations — log out
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('home');
+        }
 
         return back()->with('success', 'Congregation deleted successfully.');
     }
