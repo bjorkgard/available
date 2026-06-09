@@ -231,7 +231,7 @@ export default function MembersIndex({
                                             className="h-7 w-7 text-muted-foreground hover:text-destructive"
                                             onClick={() =>
                                                 router.delete(
-                                                    `/${congregation.slug}/members/invitations/${invitation.id}`,
+                                                    `/${congregation.slug}/members/invitations/${invitation.code}`,
                                                     { preserveScroll: true },
                                                 )
                                             }
