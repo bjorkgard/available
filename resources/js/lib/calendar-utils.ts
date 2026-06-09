@@ -35,6 +35,10 @@ export function generateMonthGrid(year: number, month: number): GridDate[] {
     const firstDayOfMonth = new Date(year, month, 1);
     const firstWeekday = firstDayOfMonth.getDay(); // 0 = Sunday
 
+    // Offset relative to locale's first day of week
+    const localeFirstDay = getFirstDayOfWeek();
+    const leadingDays = (firstWeekday - localeFirstDay + 7) % 7;
+
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const prev = getPreviousMonth(year, month);
@@ -45,7 +49,7 @@ export function generateMonthGrid(year: number, month: number): GridDate[] {
     const grid: GridDate[] = [];
 
     // Leading filler dates from previous month
-    for (let i = firstWeekday - 1; i >= 0; i--) {
+    for (let i = leadingDays - 1; i >= 0; i--) {
         grid.push({
             day: daysInPrevMonth - i,
             month: prev.month,
