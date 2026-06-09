@@ -34,7 +34,7 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
         <>
             <Head title="Kingdom Hall" />
 
-            <div className="mx-auto w-full max-w-4xl px-4 py-6 flex flex-col space-y-8">
+            <div className="mx-auto flex w-full max-w-4xl flex-col space-y-8 px-4 py-6">
                 <Heading
                     title="Kingdom Hall"
                     description={`${kingdomHall.street_address}, ${kingdomHall.zip_code} ${kingdomHall.city}`}

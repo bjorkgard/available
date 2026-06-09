@@ -104,7 +104,7 @@ export default function MembersIndex({
 
             <h1 className="sr-only">Members</h1>
 
-            <div className="mx-auto w-full max-w-2xl px-4 py-6 flex flex-col space-y-6">
+            <div className="mx-auto flex w-full max-w-2xl flex-col space-y-6 px-4 py-6">
                 <div className="flex items-center justify-between">
                     <Heading
                         variant="small"
@@ -222,7 +222,10 @@ export default function MembersIndex({
                                     </div>
 
                                     <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="text-xs">
+                                        <Badge
+                                            variant="outline"
+                                            className="text-xs"
+                                        >
                                             {roleLabel[invitation.role]}
                                         </Badge>
                                         <Button

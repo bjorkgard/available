@@ -1,10 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import {
-    Building2,
-    CalendarDays,
-    Church,
-    Users,
-} from 'lucide-react';
+import { Building2, CalendarDays, Church, Users } from 'lucide-react';
 
 import AppLogo from '@/components/app-logo';
 import { CongregationSwitcher } from '@/components/congregation-switcher';
@@ -24,7 +19,9 @@ import type { NavItem } from '@/types';
 export function AppSidebar() {
     const page = usePage();
     const currentCongregation = page.props.currentCongregation;
-    const congregations = (page.props.congregations ?? []) as Array<{ id: string }>;
+    const congregations = (page.props.congregations ?? []) as Array<{
+        id: string;
+    }>;
     const role = page.props.currentCongregationRole;
     const slug = currentCongregation?.slug;
 
