@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use Symfony\Component\HttpFoundation\Response;
+
+class SetCongregationUrlDefaults
+{
+    /**
+     * Set the default URL parameters for congregation-based routes.
+     *
+     * @param  Closure(Request): (Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        if ($currentCongregation = $request->user()?->currentCongregation) {
+            URL::defaults([
+                'current_congregation' => $currentCongregation->slug,
+            ]);
+        }
+
+        return $next($request);
+    }
+}

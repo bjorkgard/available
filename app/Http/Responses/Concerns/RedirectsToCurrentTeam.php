@@ -8,22 +8,22 @@ trait RedirectsToCurrentTeam
 {
     protected function redirectPathForCurrentTeam($request, string $redirect): string
     {
-        $team = $this->currentTeam($request);
+        $congregation = $this->currentTeam($request);
 
-        URL::defaults(['current_team' => $team->slug]);
+        URL::defaults(['current_team' => $congregation->slug]);
 
-        return "/{$team->slug}{$redirect}";
+        return "/{$congregation->slug}{$redirect}";
     }
 
     protected function currentTeam($request)
     {
         $user = $request->user();
-        $team = $user?->currentTeam ?? $user?->personalTeam();
+        $congregation = $user?->currentCongregation;
 
-        if (! $team) {
+        if (! $congregation) {
             abort(403);
         }
 
-        return $team;
+        return $congregation;
     }
 }

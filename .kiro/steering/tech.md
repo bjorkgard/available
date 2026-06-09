@@ -59,6 +59,14 @@ php artisan make:test --pest TestName
 php artisan make:model ModelName --help
 ```
 
+## Database Conventions
+
+- All models use UUID v7 (time-ordered) as primary keys — never auto-incrementing integers.
+- Use Laravel's `HasUuids` trait on every Eloquent model.
+- Migrations use `$table->uuid('id')->primary()` for primary keys and `$table->foreignUuid(...)` for foreign keys.
+- Never expose numeric/sequential IDs in URLs, API responses, or frontend code.
+- Route model binding uses UUID columns by default (`getRouteKeyName()` returns `'id'` which is a UUID).
+
 ## Key Configuration
 
 - Vite config: `vite.config.ts`

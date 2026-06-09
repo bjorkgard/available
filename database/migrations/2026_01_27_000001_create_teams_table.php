@@ -11,35 +11,45 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('teams', function (Blueprint $table) {
-            $table->id();
+        Schema::create('congregations', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->boolean('is_personal')->default(false);
+            $table->string('congregation_number', 20)->unique();
+            $table->foreignUuid('kingdom_hall_id')->nullable()->constrained('kingdom_halls')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::create('team_members', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+        Schema::create('congregation_members', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('congregation_id')->constrained('congregations')->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('role');
             $table->timestamps();
 
-            $table->unique(['team_id', 'user_id']);
+            $table->unique(['congregation_id', 'user_id']);
         });
 
-        Schema::create('team_invitations', function (Blueprint $table) {
-            $table->id();
+        Schema::create('congregation_invitations', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('code', 64)->unique();
-            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
-            $table->string('email');
+            $table->foreignUuid('congregation_id')->constrained('congregations')->cascadeOnDelete();
+            $table->string('name', 255);
+            $table->string('email', 255);
             $table->string('role');
-            $table->foreignId('invited_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('invited_by')->constrained('users')->cascadeOnDelete();
             $table->timestamp('expires_at')->nullable();
             $table->timestamp('accepted_at')->nullable();
             $table->timestamps();
+        });
+
+        // Add the FK constraint on users now that congregations table exists
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('current_congregation_id')
+                ->references('id')
+                ->on('congregations')
+                ->nullOnDelete();
         });
     }
 
@@ -48,8 +58,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('team_invitations');
-        Schema::dropIfExists('team_members');
-        Schema::dropIfExists('teams');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['current_congregation_id']);
+        });
+
+        Schema::dropIfExists('congregation_invitations');
+        Schema::dropIfExists('congregation_members');
+        Schema::dropIfExists('congregations');
     }
 };

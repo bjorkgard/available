@@ -13,7 +13,7 @@ test('login screen can be rendered', function () {
 });
 
 test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->withCongregation()->create();
 
     $response = $this->post(route('login.store'), [
         'email' => $user->email,
@@ -21,11 +21,12 @@ test('users can authenticate using the login screen', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard'));
+    $congregation = $user->fresh()->currentCongregation;
+    $response->assertRedirect(route('dashboard', ['current_congregation' => $congregation->slug]));
 });
 
-test('passkey login response redirects to the current team dashboard', function () {
-    $user = User::factory()->create();
+test('passkey login response redirects to the current congregation dashboard', function () {
+    $user = User::factory()->withCongregation()->create();
 
     $request = Request::create(route('login', absolute: false), 'GET', server: [
         'HTTP_ACCEPT' => 'application/json',
@@ -35,7 +36,8 @@ test('passkey login response redirects to the current team dashboard', function 
 
     $jsonResponse = app(PasskeyLoginResponse::class)->toResponse($request);
 
-    expect($jsonResponse->getData()->redirect)->toBe(route('dashboard', ['current_team' => $user->personalTeam()->slug]));
+    $congregation = $user->fresh()->currentCongregation;
+    expect($jsonResponse->getData()->redirect)->toBe(route('dashboard', ['current_congregation' => $congregation->slug]));
 });
 
 test('users with two factor enabled are redirected to two factor challenge', function () {
@@ -48,7 +50,7 @@ test('users with two factor enabled are redirected to two factor challenge', fun
         'confirmPassword' => true,
     ]);
 
-    $user = User::factory()->withTwoFactor()->create();
+    $user = User::factory()->withCongregation()->withTwoFactor()->create();
 
     $response = $this->post(route('login'), [
         'email' => $user->email,
