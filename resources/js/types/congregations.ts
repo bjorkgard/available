@@ -8,6 +8,7 @@ export type Congregation = {
     slug: string;
     congregation_number: string;
     kingdom_hall_id: string | null;
+    color: string | null;
     kingdom_hall?: KingdomHall;
 };
 

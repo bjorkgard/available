@@ -6,6 +6,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { updateColor } from '@/routes/congregation';
 import { edit, update } from '@/routes/congregations';
 import type { Congregation } from '@/types';
 
@@ -109,6 +110,58 @@ export default function CongregationEdit({ team, permissions }: Props) {
                             <Heading variant="small" title={team.name} />
                         )}
                     </div>
+
+                    {permissions.canUpdateTeam ? (
+                        <div className="space-y-6">
+                            <Heading
+                                variant="small"
+                                title="Congregation color"
+                                description="Choose a color to identify your congregation"
+                            />
+
+                            <Form
+                                {...updateColor.form(team.slug)}
+                                className="space-y-6"
+                            >
+                                {({ errors, processing }) => (
+                                    <>
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="color">Color</Label>
+                                            <div className="flex items-center gap-3">
+                                                <Input
+                                                    id="color"
+                                                    name="color"
+                                                    data-test="congregation-color-input"
+                                                    defaultValue={
+                                                        team.color ?? ''
+                                                    }
+                                                    placeholder="#3B82F6"
+                                                    className="max-w-40 font-mono uppercase"
+                                                    type='color'
+                                                />
+                                            </div>
+                                            <p className="text-sm text-muted-foreground">
+                                                Select a color and click on Save
+                                            </p>
+                                            <InputError
+                                                message={errors.color}
+                                            />
+                                        </div>
+
+                                        <div className="flex items-center gap-4">
+                                            <Button
+                                                type="submit"
+                                                data-test="congregation-color-save-button"
+                                                disabled={processing}
+                                            >
+                                                Save color
+                                            </Button>
+                                        </div>
+                                    </>
+                                )}
+                            </Form>
+                        </div>
+                    ) : null}
 
                     {permissions.canDeleteTeam ? (
                         <div className="space-y-6">
