@@ -3,14 +3,19 @@
 namespace App\Actions\Congregations;
 
 use App\Enums\CongregationRole;
+use App\Exceptions\ColorGenerationException;
 use App\Models\Congregation;
 use App\Models\KingdomHall;
 use App\Models\User;
+use App\Services\ColorService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class CreateKingdomHall
 {
+    public function __construct(private ColorService $colorService) {}
+
     /**
      * Validate and create a new Kingdom Hall with auto-generated rooms.
      *
@@ -44,6 +49,24 @@ class CreateKingdomHall
             }
 
             $congregation->update(['kingdom_hall_id' => $kingdomHall->id]);
+
+            // Validate/regenerate color against siblings in the new hall
+            $siblingColors = Congregation::where('kingdom_hall_id', $kingdomHall->id)
+                ->where('id', '!=', $congregation->id)
+                ->whereNotNull('color')
+                ->pluck('color')
+                ->all();
+
+            if (! $congregation->color || ! $this->colorService->isDistinctFromAll($congregation->color, $siblingColors)) {
+                try {
+                    $color = $this->colorService->generateDistinctColor($siblingColors);
+                    $congregation->update(['color' => $color]);
+                } catch (ColorGenerationException $e) {
+                    throw ValidationException::withMessages([
+                        'color' => ['Unable to generate a sufficiently distinct color. The Kingdom Hall may have too many congregations with similar colors.'],
+                    ]);
+                }
+            }
 
             $membership = $congregation->memberships()
                 ->where('user_id', $user->id)

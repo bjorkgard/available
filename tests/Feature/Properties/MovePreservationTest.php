@@ -43,7 +43,7 @@ test('congregation move preserves all memberships and roles', function () {
     }
 
     // Perform the move
-    $action = new MoveCongregation;
+    $action = app(MoveCongregation::class);
     $action->handle($congregation, $kh2);
 
     // Verify ALL memberships still exist with the same congregation_id + user_id + role

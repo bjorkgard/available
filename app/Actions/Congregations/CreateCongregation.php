@@ -3,15 +3,20 @@
 namespace App\Actions\Congregations;
 
 use App\Enums\CongregationRole;
+use App\Exceptions\ColorGenerationException;
 use App\Models\Congregation;
 use App\Models\CongregationInvitation;
 use App\Models\KingdomHall;
 use App\Models\User;
+use App\Services\ColorService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class CreateCongregation
 {
+    public function __construct(private ColorService $colorService) {}
+
     /**
      * Create a new congregation linked to a Kingdom Hall and invite the initial user.
      *
@@ -27,10 +32,24 @@ class CreateCongregation
         ])->validate();
 
         return DB::transaction(function () use ($creator, $kingdomHall, $data): Congregation {
+            $siblingColors = Congregation::where('kingdom_hall_id', $kingdomHall->id)
+                ->whereNotNull('color')
+                ->pluck('color')
+                ->all();
+
+            try {
+                $color = $this->colorService->generateDistinctColor($siblingColors);
+            } catch (ColorGenerationException $e) {
+                throw ValidationException::withMessages([
+                    'color' => ['Unable to generate a sufficiently distinct color. The Kingdom Hall may have too many congregations with similar colors.'],
+                ]);
+            }
+
             $congregation = Congregation::create([
                 'name' => $data['name'],
                 'congregation_number' => $data['congregation_number'],
                 'kingdom_hall_id' => $kingdomHall->id,
+                'color' => $color,
             ]);
 
             CongregationInvitation::create([

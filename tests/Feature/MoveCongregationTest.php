@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->action = new MoveCongregation;
+    $this->action = app(MoveCongregation::class);
 });
 
 test('it moves a congregation to a different kingdom hall', function () {
