@@ -23,7 +23,7 @@ test('room auto-generation produces correctly named rooms for random room counts
         'role' => CongregationRole::Admin,
     ]);
 
-    $action = new CreateKingdomHall;
+    $action = app(CreateKingdomHall::class);
     $kingdomHall = $action->handle($user, $congregation, [
         'street_address' => fake()->streetAddress(),
         'zip_code' => fake()->postcode(),

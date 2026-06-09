@@ -118,7 +118,11 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                             {kingdomHall.congregations.map((congregation) => (
                                 <li
                                     key={congregation.id}
-                                    className="flex items-center justify-between rounded-lg border px-4 py-3"
+                                    className="flex items-center justify-between rounded-lg border border-l-4 px-4 py-3"
+                                    style={{
+                                        borderLeftColor:
+                                            congregation.color ?? '#94A3B8',
+                                    }}
                                 >
                                     <div>
                                         <div className="font-medium">

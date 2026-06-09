@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Congregations;
 
 use App\Actions\Congregations\DeleteCongregation;
 use App\Actions\Congregations\MoveCongregation;
+use App\Actions\Congregations\UpdateCongregationColor;
 use App\Enums\CongregationRole;
 use App\Http\Controllers\Controller;
 use App\Models\Congregation;
@@ -17,6 +18,18 @@ use Inertia\Response;
 class CongregationController extends Controller
 {
     use AuthorizesRequests;
+
+    /**
+     * Display a listing of the user's congregations.
+     */
+    public function index(Request $request): Response
+    {
+        $user = $request->user();
+
+        return Inertia::render('congregations/index', [
+            'teams' => $user->toUserCongregations(includeCurrent: true),
+        ]);
+    }
 
     /**
      * Show the congregation edit page.
@@ -37,6 +50,7 @@ class CongregationController extends Controller
                 'name' => $congregation->name,
                 'slug' => $congregation->slug,
                 'congregation_number' => $congregation->congregation_number,
+                'color' => $congregation->color,
                 'isPersonal' => false,
             ],
             'permissions' => [
@@ -81,6 +95,35 @@ class CongregationController extends Controller
         $congregation->update($validated);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Congregation updated.')]);
+
+        return to_route('congregation.edit', ['current_congregation' => $congregation->slug]);
+    }
+
+    /**
+     * Update the congregation's color.
+     */
+    public function updateColor(Request $request, UpdateCongregationColor $action): RedirectResponse
+    {
+        $congregation = $request->route('current_congregation');
+
+        if (is_string($congregation)) {
+            $congregation = Congregation::where('slug', $congregation)->firstOrFail();
+        }
+
+        $user = $request->user();
+
+        abort_unless(
+            $user->congregationRole($congregation)?->isAtLeast(CongregationRole::Admin) ?? false,
+            403
+        );
+
+        $validated = $request->validate([
+            'color' => ['required', 'string'],
+        ]);
+
+        $action->handle($congregation, $validated['color']);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Congregation color updated.')]);
 
         return to_route('congregation.edit', ['current_congregation' => $congregation->slug]);
     }

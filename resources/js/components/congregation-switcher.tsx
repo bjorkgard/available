@@ -130,6 +130,13 @@ export function CongregationSwitcher({
                         }
                         onSelect={() => switchCongregation(congregation)}
                     >
+                        <span
+                            className="size-3 shrink-0 rounded-full"
+                            style={{
+                                backgroundColor:
+                                    congregation.color ?? '#94A3B8',
+                            }}
+                        />
                         {congregation.name}
                         {currentCongregation?.id === congregation.id && (
                             <Check
