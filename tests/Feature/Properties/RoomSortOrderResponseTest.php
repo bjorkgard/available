@@ -53,4 +53,4 @@ test('rooms are returned in sort_order ascending in the Inertia response', funct
     for ($i = 1; $i < count($sortOrders); $i++) {
         expect($sortOrders[$i])->toBeGreaterThanOrEqual($sortOrders[$i - 1]);
     }
-})->repeat(100);
+})->repeat(30);

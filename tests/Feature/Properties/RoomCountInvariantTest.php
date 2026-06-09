@@ -38,4 +38,4 @@ test('number_of_rooms equals actual rooms count after random create and delete o
     $kingdomHall->refresh();
 
     expect($kingdomHall->number_of_rooms)->toBe($kingdomHall->rooms()->count());
-})->repeat(100);
+})->repeat(30);

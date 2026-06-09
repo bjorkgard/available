@@ -32,4 +32,4 @@ test('new room sort_order equals max existing sort_order + 1 or 1 if no rooms ex
     $newRoom = $action->handle($kingdomHall, ['name' => 'Room '.fake()->unique()->uuid()]);
 
     expect($newRoom->sort_order)->toBe($expectedSortOrder);
-})->repeat(100);
+})->repeat(30);

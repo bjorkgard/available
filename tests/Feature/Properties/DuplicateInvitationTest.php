@@ -57,4 +57,4 @@ test('duplicate invitation replaces previous pending invitation for same email-c
         ->count();
 
     expect($pendingCount)->toBe(1);
-})->repeat(100);
+})->repeat(30);

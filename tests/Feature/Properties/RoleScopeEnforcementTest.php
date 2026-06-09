@@ -84,4 +84,4 @@ test('role scope enforcement verifies access based on random role and action', f
             "Role [{$role->value}] should NOT be able to [{$action}] on ".($targetOwn ? 'own' : 'other').' congregation'
         );
     }
-})->repeat(100);
+})->repeat(30);

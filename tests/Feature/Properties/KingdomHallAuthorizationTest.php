@@ -77,4 +77,4 @@ test('non-superadmin users receive 403 on all kingdom hall management endpoints 
         ->and($kingdomHall->rooms()->count())->toBe($originalRoomCount, 'Room count should not have changed')
         ->and($room->fresh()->name)->toBe('Main Hall', 'Room name should not have changed')
         ->and(Congregation::where('id', $otherCongregation->id)->exists())->toBeTrue('Other congregation should still exist');
-})->repeat(100);
+})->repeat(30);

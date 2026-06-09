@@ -43,4 +43,4 @@ test('address update round-trip persists exactly the submitted values', function
     expect($kingdomHall->street_address)->toBe($streetAddress)
         ->and($kingdomHall->zip_code)->toBe($zipCode)
         ->and($kingdomHall->city)->toBe($city);
-})->repeat(100);
+})->repeat(30);

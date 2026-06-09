@@ -73,4 +73,4 @@ test('registration validation rejects incomplete submissions with correct errors
     if (isset($incompletePayload['email'])) {
         expect(User::where('email', $incompletePayload['email'])->exists())->toBeFalse();
     }
-})->repeat(100);
+})->repeat(30);

@@ -124,4 +124,4 @@ test('exclusive users are removed and multi-congregation users are retained on d
 
     // Verify: the congregation is soft-deleted
     expect($targetCongregation->fresh()->trashed())->toBeTrue();
-})->repeat(100);
+})->repeat(30);

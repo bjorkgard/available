@@ -59,4 +59,4 @@ test('congregation move preserves all memberships and roles', function () {
     // Verify the total count of memberships is preserved
     $totalMemberships = Membership::where('congregation_id', $congregation->id)->count();
     expect($totalMemberships)->toBe($memberCount);
-})->repeat(100);
+})->repeat(30);

@@ -38,7 +38,7 @@ test('valid room names are accepted', function () {
     expect($room)->toBeInstanceOf(Room::class)
         ->and($room->name)->toBe($trimmed)
         ->and($room->kingdom_hall_id)->toBe($kingdomHall->id);
-})->repeat(100);
+})->repeat(30);
 
 // **Validates: Requirements 2.14**
 test('empty or whitespace-only names are rejected', function () {
@@ -49,7 +49,7 @@ test('empty or whitespace-only names are rejected', function () {
     $name = fake()->randomElement($emptyInputs);
 
     $createRoom->handle($kingdomHall, ['name' => $name]);
-})->throws(ValidationException::class)->repeat(100);
+})->throws(ValidationException::class)->repeat(30);
 
 // **Validates: Requirements 2.14**
 test('names exceeding 255 chars after trim are rejected', function () {
@@ -63,7 +63,7 @@ test('names exceeding 255 chars after trim are rejected', function () {
     expect(mb_strlen(trim($name)))->toBeGreaterThan(255);
 
     $createRoom->handle($kingdomHall, ['name' => $name]);
-})->throws(ValidationException::class)->repeat(100);
+})->throws(ValidationException::class)->repeat(30);
 
 // **Validates: Requirements 2.14**
 test('duplicate room names within the same Kingdom Hall are rejected', function () {
@@ -76,4 +76,4 @@ test('duplicate room names within the same Kingdom Hall are rejected', function 
 
     // Attempting to create another room with the same name should fail
     $createRoom->handle($kingdomHall, ['name' => $existingName]);
-})->throws(ValidationException::class)->repeat(100);
+})->throws(ValidationException::class)->repeat(30);

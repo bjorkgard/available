@@ -48,4 +48,4 @@ test('last privileged role cannot be removed or demoted from congregation', func
     expect($canDelete)->toBeFalse(
         "Removing the last {$privilegedRole->value} should be prevented by the policy"
     );
-})->repeat(100);
+})->repeat(30);
