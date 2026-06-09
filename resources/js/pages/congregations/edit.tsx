@@ -4,6 +4,13 @@ import { useMemo } from 'react';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { edit, update, updateColor } from '@/routes/congregation';
@@ -32,19 +39,26 @@ export default function CongregationEdit({ team, permissions }: Props) {
         <>
             <Head title={pageTitle} />
 
-            <h1 className="sr-only">{pageTitle}</h1>
-
             <div className="mx-auto w-full max-w-2xl px-4 py-6">
-                <div className="flex flex-col space-y-10">
-                    <div className="space-y-6">
-                        {permissions.canUpdateTeam ? (
-                            <>
-                                <Heading
-                                    variant="small"
-                                    title="Congregation settings"
-                                    description="Update your congregation name and settings"
-                                />
+                <div className="flex flex-col space-y-8">
+                    <Heading
+                        title={pageTitle}
+                        description={
+                            permissions.canUpdateTeam
+                                ? 'Manage your congregation settings'
+                                : undefined
+                        }
+                    />
 
+                    {permissions.canUpdateTeam ? (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Congregation settings</CardTitle>
+                                <CardDescription>
+                                    Update your congregation name and settings
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
                                 <Form
                                     {...update.form(team.slug)}
                                     className="space-y-6"
@@ -104,87 +118,93 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                         </>
                                     )}
                                 </Form>
-                            </>
-                        ) : (
-                            <Heading variant="small" title={team.name} />
-                        )}
-                    </div>
+                            </CardContent>
+                        </Card>
+                    ) : null}
 
                     {permissions.canUpdateTeam ? (
-                        <div className="space-y-6">
-                            <Heading
-                                variant="small"
-                                title="Congregation color"
-                                description="Choose a color to identify your congregation"
-                            />
-
-                            <Form
-                                {...updateColor.form(team.slug)}
-                                className="space-y-6"
-                            >
-                                {({ errors, processing }) => (
-                                    <>
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="color">Color</Label>
-                                            <div className="flex items-center gap-3">
-                                                <Input
-                                                    id="color"
-                                                    name="color"
-                                                    data-test="congregation-color-input"
-                                                    defaultValue={
-                                                        team.color ?? ''
-                                                    }
-                                                    placeholder="#3B82F6"
-                                                    className="max-w-40 font-mono uppercase"
-                                                    type="color"
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Congregation color</CardTitle>
+                                <CardDescription>
+                                    Choose a color to identify your congregation
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Form
+                                    {...updateColor.form(team.slug)}
+                                    className="space-y-6"
+                                >
+                                    {({ errors, processing }) => (
+                                        <>
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="color">
+                                                    Color
+                                                </Label>
+                                                <div className="flex items-center gap-3">
+                                                    <Input
+                                                        id="color"
+                                                        name="color"
+                                                        data-test="congregation-color-input"
+                                                        defaultValue={
+                                                            team.color ?? ''
+                                                        }
+                                                        placeholder="#3B82F6"
+                                                        className="max-w-40 font-mono uppercase"
+                                                        type="color"
+                                                    />
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Select a color and click on
+                                                    Save
+                                                </p>
+                                                <InputError
+                                                    message={errors.color}
                                                 />
                                             </div>
-                                            <p className="text-sm text-muted-foreground">
-                                                Select a color and click on Save
-                                            </p>
-                                            <InputError
-                                                message={errors.color}
-                                            />
-                                        </div>
 
-                                        <div className="flex items-center gap-4">
-                                            <Button
-                                                type="submit"
-                                                data-test="congregation-color-save-button"
-                                                disabled={processing}
-                                            >
-                                                Save color
-                                            </Button>
-                                        </div>
-                                    </>
-                                )}
-                            </Form>
-                        </div>
+                                            <div className="flex items-center gap-4">
+                                                <Button
+                                                    type="submit"
+                                                    data-test="congregation-color-save-button"
+                                                    disabled={processing}
+                                                >
+                                                    Save color
+                                                </Button>
+                                            </div>
+                                        </>
+                                    )}
+                                </Form>
+                            </CardContent>
+                        </Card>
                     ) : null}
 
                     {permissions.canDeleteTeam ? (
-                        <div className="space-y-6">
-                            <Heading
-                                variant="small"
-                                title="Delete congregation"
-                                description="Permanently delete your congregation"
-                            />
-                            <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
-                                <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
-                                    <p className="font-medium">Warning</p>
-                                    <p className="text-sm">
-                                        Please proceed with caution, this cannot
-                                        be undone.
-                                    </p>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Delete congregation</CardTitle>
+                                <CardDescription>
+                                    Permanently delete your congregation
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
+                                    <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
+                                        <p className="font-medium">Warning</p>
+                                        <p className="text-sm">
+                                            Please proceed with caution, this
+                                            cannot be undone.
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant="destructive"
+                                        data-test="delete-congregation-button"
+                                    >
+                                        Delete congregation
+                                    </Button>
                                 </div>
-                                <Button
-                                    variant="destructive"
-                                    data-test="delete-congregation-button"
-                                >
-                                    Delete congregation
-                                </Button>
-                            </div>
-                        </div>
+                            </CardContent>
+                        </Card>
                     ) : null}
                 </div>
             </div>

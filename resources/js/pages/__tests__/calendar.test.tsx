@@ -2,8 +2,6 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { APP_LOCALE } from '@/lib/locale';
-
 // Mock window.matchMedia for jsdom
 function createMatchMedia(width: number) {
     Object.defineProperty(window, 'innerWidth', {
@@ -40,8 +38,9 @@ vi.mock('@/routes', () => ({
     calendar: () => ({ url: '/test/calendar', method: 'get' as const }),
 }));
 
-import Calendar from '@/pages/calendar';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { APP_LOCALE } from '@/lib/locale';
+import Calendar from '@/pages/calendar';
 
 function renderCalendar() {
     return render(
