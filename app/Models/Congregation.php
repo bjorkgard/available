@@ -27,6 +27,7 @@ class Congregation extends Model
         'slug',
         'congregation_number',
         'kingdom_hall_id',
+        'color',
     ];
 
     /**
