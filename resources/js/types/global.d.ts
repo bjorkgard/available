@@ -15,6 +15,7 @@ declare module '@inertiajs/core' {
             auth: Auth;
             sidebarOpen: boolean;
             currentCongregation: Congregation | null;
+            currentCongregationRole: 'superadmin' | 'admin' | 'member' | null;
             congregations: Congregation[];
             [key: string]: unknown;
         };
