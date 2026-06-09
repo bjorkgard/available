@@ -30,6 +30,7 @@ Route::prefix('{current_congregation}')
 
             Route::get('congregation', [CongregationController::class, 'edit'])->name('congregation.edit');
             Route::patch('congregation', [CongregationController::class, 'update'])->name('congregation.update');
+            Route::patch('congregation/color', [CongregationController::class, 'updateColor'])->name('congregation.update-color');
         });
 
         Route::middleware(EnsureCongregationMembership::class.':superadmin')->group(function () {
