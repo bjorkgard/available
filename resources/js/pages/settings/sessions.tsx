@@ -80,6 +80,7 @@ export default function Sessions({ sessions }: Props) {
                     {...SessionController.destroy.form()}
                     options={{ preserveScroll: true }}
                     resetOnError={['password']}
+                    resetOnSuccess
                     className="space-y-6"
                 >
                     {({ errors, processing }) => (
