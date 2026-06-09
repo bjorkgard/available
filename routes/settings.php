@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Settings\CongregationController;
+use App\Http\Controllers\Congregations\CongregationController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use App\Http\Controllers\Settings\SessionController;
@@ -33,6 +33,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('sessions.destroy');
 
     Route::get('settings/congregations', [CongregationController::class, 'index'])->name('congregations.index');
-    Route::get('settings/congregations/{congregation}', [CongregationController::class, 'edit'])->name('congregations.edit');
-    Route::patch('settings/congregations/{congregation}', [CongregationController::class, 'update'])->name('congregations.update');
 });

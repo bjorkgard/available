@@ -20,6 +20,18 @@ class CongregationController extends Controller
     use AuthorizesRequests;
 
     /**
+     * Display a listing of the user's congregations.
+     */
+    public function index(Request $request): Response
+    {
+        $user = $request->user();
+
+        return Inertia::render('congregations/index', [
+            'teams' => $user->toUserCongregations(includeCurrent: true),
+        ]);
+    }
+
+    /**
      * Show the congregation edit page.
      */
     public function edit(Request $request): Response
