@@ -154,17 +154,26 @@ export default function Calendar() {
         setDisplayedDay(currentDay);
     }
 
+    function clampDay(year: number, month: number, day: number): number {
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        return Math.min(day, daysInMonth);
+    }
+
     function onSelectMonth(month: number) {
         setDisplayedMonth(month);
+        setDisplayedDay((prev) => clampDay(displayedYear, month, prev));
     }
 
     function onSelectYear(year: number) {
         setDisplayedYear(year);
+        setDisplayedDay((prev) => clampDay(year, displayedMonth, prev));
     }
 
     function onFillerDateClick(year: number, month: number) {
         setDisplayedYear(year);
         setDisplayedMonth(month);
+        setDisplayedDay((prev) => clampDay(year, month, prev));
     }
 
     useKeyboardShortcuts(
