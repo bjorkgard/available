@@ -25,6 +25,7 @@
 - `input-otp` (OTP input for 2FA)
 - `tw-animate-css` (Tailwind animation utilities)
 - ESLint 9 + Prettier 3
+- Vitest (frontend unit/component testing)
 
 ## Common Commands
 
@@ -35,11 +36,17 @@ composer run dev
 # Build frontend assets
 npm run build
 
-# Run all tests
+# Run all backend tests
 php artisan test --compact
 
-# Run specific test
+# Run specific backend test
 php artisan test --compact --filter=TestName
+
+# Run all frontend tests
+npx vitest run
+
+# Run specific frontend test
+npx vitest run resources/js/path/to/test.ts
 
 # Lint PHP (auto-fix)
 vendor/bin/pint --dirty --format agent
@@ -75,9 +82,16 @@ php artisan make:model ModelName --help
   - `CongregationInvitation` binds by `code`
   - Other models bind by UUID `id`
 
+## Locale & SSR
+
+- Application locale is `sv-SE` — all date/time formatting uses the shared `APP_LOCALE` constant from `resources/js/lib/locale.ts`.
+- Never use `navigator.language` or `Intl.DateTimeFormat(undefined, ...)` directly — always import and use `APP_LOCALE` to ensure SSR and client produce identical output (avoids hydration mismatches).
+- Timezone is `Europe/Stockholm` (configured in `config/app.php`).
+
 ## Key Configuration
 
 - Vite config: `vite.config.ts` (includes `laravel-vite-plugin` with Bunny font loader, `@inertiajs/vite`, `@vitejs/plugin-react` with React Compiler, `@tailwindcss/vite`, `@laravel/vite-plugin-wayfinder` with `formVariants: true`)
+- Vitest config: `vitest.config.ts` (frontend test runner, jsdom environment)
 - TypeScript: `tsconfig.json` (path alias `@/*` → `resources/js/*`)
 - ESLint: `eslint.config.js` (enforces import ordering, consistent type imports, 1tbs brace style, padding around control statements)
 - Prettier: `.prettierrc` (with tailwindcss plugin)

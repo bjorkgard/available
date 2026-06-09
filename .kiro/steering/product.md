@@ -17,7 +17,14 @@ Congregation elders (superadmins), ministerial servants (admins), and publishers
 
 ## Current State
 
-The app has full authentication (login, register, passkeys, 2FA), congregation management (create via setup wizard, invite members, switch congregations, edit settings), Kingdom Hall management (address, rooms, multi-congregation sharing), user settings (profile, security, sessions, appearance), and session management (view active sessions, revoke other sessions). The room-booking/scheduling feature itself is not yet implemented — the dashboard is a placeholder.
+The app has full authentication (login, register, passkeys, 2FA), congregation management (create via setup wizard, invite members, switch congregations, edit settings), Kingdom Hall management (address, rooms, multi-congregation sharing), user settings (profile, security, sessions, appearance), and session management (view active sessions, revoke other sessions).
+
+The calendar is the default landing page with three zoom levels:
+- **Month view** — 7-column grid with date numbers top-left, space for booking indicators below. Locale-aware week start (Monday for sv-SE). Today highlighted with a blue border.
+- **Week view** — 7 day columns with 2-hour dashed time slot rows. Navigate week-by-week with arrows.
+- **Day view** — Full-height view with room columns (from the congregation's Kingdom Hall). 2-hour time slots. Navigate day-by-day with arrows.
+
+View switching: dropdown menu with keyboard shortcuts (⌘0 month, ⌘1 week, ⌘2 day). Responsive defaults: mobile → day, tablet → week, desktop → month. The actual room-booking/scheduling logic (creating, editing, deleting bookings) is not yet implemented.
 
 ## Design Principles
 
