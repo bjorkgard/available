@@ -1,15 +1,13 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
-    BookOpen,
     Building2,
-    FolderGit2,
-    LayoutGrid,
+    CalendarDays,
+    Church,
     Users,
 } from 'lucide-react';
 
 import AppLogo from '@/components/app-logo';
 import { CongregationSwitcher } from '@/components/congregation-switcher';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -26,37 +24,42 @@ import type { NavItem } from '@/types';
 export function AppSidebar() {
     const page = usePage();
     const currentCongregation = page.props.currentCongregation;
+    const congregations = (page.props.congregations ?? []) as Array<{ id: string }>;
+    const role = page.props.currentCongregationRole;
     const slug = currentCongregation?.slug;
+
+    const isAdmin = role === 'admin' || role === 'superadmin';
+    const isSuperadmin = role === 'superadmin';
 
     const mainNavItems: NavItem[] = [
         {
-            title: 'Dashboard',
+            title: 'Calendar',
             href: slug ? `/${slug}/dashboard` : '/',
-            icon: LayoutGrid,
+            icon: CalendarDays,
         },
-        {
-            title: 'Members',
-            href: slug ? `/${slug}/members` : '#',
-            icon: Users,
-        },
-        {
-            title: 'Kingdom Hall',
-            href: slug ? `/${slug}/kingdom-hall` : '#',
-            icon: Building2,
-        },
-    ];
-
-    const footerNavItems: NavItem[] = [
-        {
-            title: 'Repository',
-            href: 'https://github.com/laravel/react-starter-kit',
-            icon: FolderGit2,
-        },
-        {
-            title: 'Documentation',
-            href: 'https://laravel.com/docs/starter-kits#react',
-            icon: BookOpen,
-        },
+        ...(isAdmin
+            ? [
+                  {
+                      title: 'Members',
+                      href: slug ? `/${slug}/members` : '#',
+                      icon: Users,
+                  },
+                  {
+                      title: 'Congregation',
+                      href: slug ? `/${slug}/congregation` : '#',
+                      icon: Church,
+                  },
+              ]
+            : []),
+        ...(isSuperadmin
+            ? [
+                  {
+                      title: 'Kingdom Hall',
+                      href: slug ? `/${slug}/kingdom-hall` : '#',
+                      icon: Building2,
+                  },
+              ]
+            : []),
     ];
 
     const dashboardUrl = slug ? `/${slug}/dashboard` : '/';
@@ -73,11 +76,13 @@ export function AppSidebar() {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <CongregationSwitcher />
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                {congregations.length > 1 && (
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <CongregationSwitcher />
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                )}
             </SidebarHeader>
 
             <SidebarContent>
@@ -85,7 +90,6 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

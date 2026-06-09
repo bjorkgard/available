@@ -20,7 +20,7 @@ class CongregationController extends Controller
         $user = $request->user();
 
         return Inertia::render('congregations/index', [
-            'teams' => $user->toUserTeams(includeCurrent: true),
+            'teams' => $user->toUserCongregations(includeCurrent: true),
         ]);
     }
 

@@ -8,6 +8,7 @@ use App\Models\Membership;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 
 trait HasCongregations
@@ -141,5 +142,35 @@ trait HasCongregations
             ->when($excluding, fn ($query) => $query->where('congregations.id', '!=', $excluding->id))
             ->orderByRaw('LOWER(congregations.name)')
             ->first();
+    }
+
+    /**
+     * Get the user's congregations as an array of data suitable for the frontend.
+     *
+     * @return Collection<int, array{id: string, name: string, slug: string, congregation_number: string|null, role: string|null, roleLabel: string|null, isCurrent: bool}>
+     */
+    public function toUserCongregations(bool $includeCurrent = false): Collection
+    {
+        return $this->congregations()
+            ->get()
+            ->map(function (Congregation $congregation) use ($includeCurrent) {
+                if (! $includeCurrent && $this->isCurrentCongregation($congregation)) {
+                    return null;
+                }
+
+                $role = $this->congregationRole($congregation);
+
+                return [
+                    'id' => $congregation->id,
+                    'name' => $congregation->name,
+                    'slug' => $congregation->slug,
+                    'congregation_number' => $congregation->congregation_number,
+                    'role' => $role?->value,
+                    'roleLabel' => $role?->label(),
+                    'isCurrent' => $this->isCurrentCongregation($congregation),
+                ];
+            })
+            ->filter()
+            ->values();
     }
 }

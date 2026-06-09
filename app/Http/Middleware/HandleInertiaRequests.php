@@ -45,7 +45,32 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'currentCongregation' => fn () => $user?->currentCongregation,
-            'congregations' => fn () => $user?->congregations ?? [],
+            'currentCongregationRole' => function () use ($user) {
+                $congregation = $user?->currentCongregation;
+
+                if (! $congregation) {
+                    return null;
+                }
+
+                return $user->congregationRole($congregation)?->value;
+            },
+            'congregations' => function () use ($user) {
+                if (! $user) {
+                    return [];
+                }
+
+                $currentCongregation = $user->currentCongregation;
+
+                // Superadmins can see all congregations in the same kingdom hall
+                if ($currentCongregation && $user->isSuperadmin($currentCongregation)) {
+                    return $currentCongregation->kingdomHall
+                        ?->congregations()
+                        ->orderByRaw('LOWER(name)')
+                        ->get() ?? $user->congregations;
+                }
+
+                return $user->congregations;
+            },
         ];
     }
 }
