@@ -13,10 +13,11 @@ Congregation elders (superadmins), ministerial servants (admins), and publishers
 - **Congregation** — an organization tied to a Kingdom Hall; has members with roles
 - **Membership** — a user's role within a congregation (Superadmin, Admin, Member)
 - **Invitation** — a pending invite to join a congregation with a specific role
+- **Session** — an authenticated browser/device session that users can view and revoke
 
 ## Current State
 
-The app has full authentication (login, register, passkeys, 2FA), congregation management (create via setup wizard, invite members, switch congregations, edit settings), Kingdom Hall management (address, rooms, multi-congregation sharing), and user settings. The room-booking/scheduling feature itself is not yet implemented — the dashboard is a placeholder.
+The app has full authentication (login, register, passkeys, 2FA), congregation management (create via setup wizard, invite members, switch congregations, edit settings), Kingdom Hall management (address, rooms, multi-congregation sharing), user settings (profile, security, sessions, appearance), and session management (view active sessions, revoke other sessions). The room-booking/scheduling feature itself is not yet implemented — the dashboard is a placeholder.
 
 ## Design Principles
 

@@ -6,7 +6,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { edit, index, update } from '@/routes/congregations';
+import { edit, update } from '@/routes/congregations';
 import type { Congregation } from '@/types';
 
 type CongregationPermissions = {
@@ -144,10 +144,6 @@ CongregationEdit.layout = (props: {
     team: { name: string; slug: string };
 }) => ({
     breadcrumbs: [
-        {
-            title: 'Congregations',
-            href: index(),
-        },
         {
             title: props.team.name,
             href: edit(props.team.slug),

@@ -23,6 +23,7 @@
 - Sonner (toast notifications)
 - `@laravel/passkeys` (WebAuthn/passkey support)
 - `input-otp` (OTP input for 2FA)
+- `tw-animate-css` (Tailwind animation utilities)
 - ESLint 9 + Prettier 3
 
 ## Common Commands
