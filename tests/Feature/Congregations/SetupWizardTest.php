@@ -62,7 +62,7 @@ test('middleware redirects to setup wizard when user has no kingdom hall', funct
     $congregation->members()->attach($user, ['role' => CongregationRole::Admin->value]);
     $user->switchCongregation($congregation);
 
-    $response = $this->actingAs($user)->get(route('dashboard', ['current_congregation' => $congregation->slug]));
+    $response = $this->actingAs($user)->get(route('calendar', ['current_congregation' => $congregation->slug]));
 
     $response->assertRedirect(route('setup.show'));
 });
@@ -120,7 +120,7 @@ test('user can access dashboard after completing setup', function () {
     $congregation->members()->attach($user, ['role' => CongregationRole::Superadmin->value]);
     $user->switchCongregation($congregation);
 
-    $response = $this->actingAs($user)->get(route('dashboard', ['current_congregation' => $congregation->slug]));
+    $response = $this->actingAs($user)->get(route('calendar', ['current_congregation' => $congregation->slug]));
 
     $response->assertOk();
 });

@@ -62,14 +62,14 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
     const { auth, currentCongregation } = page.props;
     const getInitials = useInitials();
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
-    const dashboardUrl = currentCongregation
-        ? `/${currentCongregation.slug}/dashboard`
+    const calendarUrl = currentCongregation
+        ? `/${currentCongregation.slug}/calendar`
         : '/';
 
     const mainNavItems: NavItem[] = [
         {
-            title: 'Dashboard',
-            href: dashboardUrl,
+            title: 'Calendar',
+            href: calendarUrl,
             icon: LayoutGrid,
         },
     ];
@@ -140,7 +140,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                     </div>
 
                     <Link
-                        href={dashboardUrl}
+                        href={calendarUrl}
                         prefetch
                         className="flex items-center space-x-2"
                     >
