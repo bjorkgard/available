@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Congregations;
 
 use App\Actions\Congregations\CreateCongregation;
+use App\Actions\Congregations\DeleteCongregation;
 use App\Actions\Congregations\DeleteKingdomHall;
 use App\Actions\Congregations\UpdateKingdomHall;
 use App\Http\Controllers\Controller;
+use App\Models\Congregation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -23,7 +25,13 @@ class KingdomHallController extends Controller
 
         Gate::authorize('view', $kingdomHall);
 
-        $kingdomHall->load(['rooms', 'congregations']);
+        $kingdomHall->load([
+            'rooms' => fn ($query) => $query->orderBy('sort_order'),
+            'congregations',
+        ]);
+
+        // Append has_future_bookings flag (placeholder until bookings feature)
+        $kingdomHall->rooms->each(fn ($room) => $room->setAttribute('has_future_bookings', false));
 
         return Inertia::render('congregations/kingdom-hall/show', [
             'kingdomHall' => $kingdomHall,
@@ -76,5 +84,24 @@ class KingdomHallController extends Controller
         ]));
 
         return back()->with('success', 'Congregation added successfully.');
+    }
+
+    /**
+     * Delete a congregation from the Kingdom Hall.
+     */
+    public function destroyCongregation(Request $request, DeleteCongregation $deleteCongregation): RedirectResponse
+    {
+        $kingdomHall = $request->user()->currentCongregation->kingdomHall;
+
+        Gate::authorize('deleteCongregation', $kingdomHall);
+
+        $congregation = Congregation::where('slug', $request->route('congregation'))->firstOrFail();
+
+        // Validate that the congregation belongs to this Kingdom Hall
+        abort_unless($congregation->kingdom_hall_id === $kingdomHall->id, 403);
+
+        $deleteCongregation->handle($congregation);
+
+        return back()->with('success', 'Congregation deleted successfully.');
     }
 }
