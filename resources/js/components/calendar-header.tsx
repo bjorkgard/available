@@ -17,6 +17,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { APP_LOCALE } from '@/lib/locale';
 
 export type ViewMode = 'month' | 'week' | 'day';
@@ -63,6 +68,20 @@ function getNavigationLabel(viewMode: ViewMode): {
     }
 }
 
+function getNavigationShortcut(viewMode: ViewMode): {
+    previous: string;
+    next: string;
+} {
+    switch (viewMode) {
+        case 'month':
+            return { previous: '←', next: '→' };
+        case 'week':
+            return { previous: '←', next: '→' };
+        case 'day':
+            return { previous: '←', next: '→' };
+    }
+}
+
 function formatDayContext(year: number, month: number, day: number): string {
     const formatter = new Intl.DateTimeFormat(APP_LOCALE, {
         weekday: 'long',
@@ -105,17 +124,30 @@ export function CalendarHeader({
     const monthNames = getMonthNames();
     const years = getYearRange();
     const navLabels = getNavigationLabel(viewMode);
+    const navShortcuts = getNavigationShortcut(viewMode);
 
     return (
         <div className="flex items-center gap-2">
-            <Button
-                variant="outline"
-                size="icon"
-                onClick={onPrevious}
-                aria-label={navLabels.previous}
-            >
-                <ChevronLeft />
-            </Button>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={onPrevious}
+                        aria-label={navLabels.previous}
+                    >
+                        <ChevronLeft />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>
+                        {navLabels.previous}{' '}
+                        <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                            {navShortcuts.previous}
+                        </kbd>
+                    </p>
+                </TooltipContent>
+            </Tooltip>
 
             <Select
                 value={String(displayedMonth)}
@@ -149,54 +181,84 @@ export function CalendarHeader({
                 </SelectContent>
             </Select>
 
-            <Button
-                variant="outline"
-                size="icon"
-                onClick={onNext}
-                aria-label={navLabels.next}
-            >
-                <ChevronRight />
-            </Button>
-
-            <Button
-                variant="outline"
-                onClick={onGoToToday}
-                disabled={isToday}
-                aria-disabled={isToday}
-            >
-                Today
-            </Button>
-
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon" aria-label="View mode">
-                        <CalendarDays />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
-                    <DropdownMenuLabel>View</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuRadioGroup
-                        value={viewMode}
-                        onValueChange={(value) =>
-                            onViewModeChange(value as ViewMode)
-                        }
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={onNext}
+                        aria-label={navLabels.next}
                     >
-                        <DropdownMenuRadioItem value="month">
-                            Month
-                            <DropdownMenuShortcut>⌘0</DropdownMenuShortcut>
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="week">
-                            Week
-                            <DropdownMenuShortcut>⌘1</DropdownMenuShortcut>
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="day">
-                            Day
-                            <DropdownMenuShortcut>⌘2</DropdownMenuShortcut>
-                        </DropdownMenuRadioItem>
-                    </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-            </DropdownMenu>
+                        <ChevronRight />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>
+                        {navLabels.next}{' '}
+                        <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                            {navShortcuts.next}
+                        </kbd>
+                    </p>
+                </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant="outline"
+                        onClick={onGoToToday}
+                        disabled={isToday}
+                        aria-disabled={isToday}
+                    >
+                        Today
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Jump to today</p>
+                </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+                <DropdownMenu>
+                    <TooltipTrigger asChild>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                aria-label="View mode"
+                            >
+                                <CalendarDays />
+                            </Button>
+                        </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <DropdownMenuContent align="start">
+                        <DropdownMenuLabel>View</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuRadioGroup
+                            value={viewMode}
+                            onValueChange={(value) =>
+                                onViewModeChange(value as ViewMode)
+                            }
+                        >
+                            <DropdownMenuRadioItem value="month">
+                                Month
+                                <DropdownMenuShortcut>⌘0</DropdownMenuShortcut>
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="week">
+                                Week
+                                <DropdownMenuShortcut>⌘1</DropdownMenuShortcut>
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="day">
+                                Day
+                                <DropdownMenuShortcut>⌘2</DropdownMenuShortcut>
+                            </DropdownMenuRadioItem>
+                        </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                <TooltipContent>
+                    <p>Change view mode</p>
+                </TooltipContent>
+            </Tooltip>
 
             {viewMode === 'week' && (
                 <span className="ml-2 text-sm text-muted-foreground">

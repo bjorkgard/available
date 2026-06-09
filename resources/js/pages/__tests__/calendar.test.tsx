@@ -41,6 +41,15 @@ vi.mock('@/routes', () => ({
 }));
 
 import Calendar from '@/pages/calendar';
+import { TooltipProvider } from '@/components/ui/tooltip';
+
+function renderCalendar() {
+    return render(
+        <TooltipProvider>
+            <Calendar />
+        </TooltipProvider>,
+    );
+}
 
 beforeEach(() => {
     // Default to large screen so month view is shown (tests expect month nav)
@@ -55,7 +64,7 @@ afterEach(() => {
 describe('Calendar page state logic', () => {
     describe('initial state is current month/year', () => {
         it('displays the current month name in the month selector', () => {
-            render(<Calendar />);
+            renderCalendar();
 
             const now = new Date();
             const currentMonthName = new Intl.DateTimeFormat(APP_LOCALE, {
@@ -66,7 +75,7 @@ describe('Calendar page state logic', () => {
         });
 
         it('displays the current year in the year selector', () => {
-            render(<Calendar />);
+            renderCalendar();
 
             const currentYear = new Date().getFullYear();
 
@@ -74,7 +83,7 @@ describe('Calendar page state logic', () => {
         });
 
         it('renders the Today button as disabled on initial load', () => {
-            render(<Calendar />);
+            renderCalendar();
 
             const todayButton = screen.getByRole('button', { name: /today/i });
 
@@ -89,7 +98,7 @@ describe('Calendar page state logic', () => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date(2025, 1, 15)); // Feb 15, 2025
 
-            render(<Calendar />);
+            renderCalendar();
 
             const prevButton = screen.getByRole('button', {
                 name: /previous month/i,
@@ -125,7 +134,7 @@ describe('Calendar page state logic', () => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date(2025, 10, 15)); // Nov 15, 2025
 
-            render(<Calendar />);
+            renderCalendar();
 
             const nextButton = screen.getByRole('button', {
                 name: /next month/i,
@@ -156,7 +165,7 @@ describe('Calendar page state logic', () => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date(2025, 2, 15)); // Mar 15, 2025
 
-            render(<Calendar />);
+            renderCalendar();
 
             // Find filler date buttons (they are buttons with muted text)
             const fillerButtons = screen
@@ -186,7 +195,7 @@ describe('Calendar page state logic', () => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date(2025, 2, 15)); // Mar 15, 2025
 
-            render(<Calendar />);
+            renderCalendar();
 
             // Find all filler date buttons
             const fillerButtons = screen
@@ -211,7 +220,7 @@ describe('Calendar page state logic', () => {
 
     describe('"Today" resets to current month', () => {
         it('clicking Today returns to the current month after navigating forward', () => {
-            render(<Calendar />);
+            renderCalendar();
 
             const now = new Date();
             const currentMonthName = new Intl.DateTimeFormat(APP_LOCALE, {
@@ -245,7 +254,7 @@ describe('Calendar page state logic', () => {
         });
 
         it('clicking Today returns to current month after navigating backward', () => {
-            render(<Calendar />);
+            renderCalendar();
 
             const now = new Date();
             const currentMonthName = new Intl.DateTimeFormat(APP_LOCALE, {
