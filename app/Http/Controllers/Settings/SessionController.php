@@ -21,8 +21,11 @@ class SessionController extends Controller
     {
         $currentSessionId = $request->session()->getId();
 
+        $expiredBefore = now()->subMinutes(config('session.lifetime'))->getTimestamp();
+
         $sessions = DB::table('sessions')
             ->where('user_id', $request->user()->id)
+            ->where('last_activity', '>=', $expiredBefore)
             ->orderByDesc('last_activity')
             ->get()
             ->map(function ($session) use ($currentSessionId) {
