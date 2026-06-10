@@ -26,7 +26,12 @@ afterEach(() => {
 
 function dispatchKeydown(
     key: string,
-    options: { ctrlKey?: boolean; metaKey?: boolean; altKey?: boolean; shiftKey?: boolean } = {},
+    options: {
+        ctrlKey?: boolean;
+        metaKey?: boolean;
+        altKey?: boolean;
+        shiftKey?: boolean;
+    } = {},
 ): KeyboardEvent {
     const event = new KeyboardEvent('keydown', {
         key,
@@ -147,7 +152,8 @@ describe('useKeyboardShortcuts', () => {
 
         renderHook(() =>
             useKeyboardShortcuts({
-                d: () => updateAppearance(appearance === 'light' ? 'dark' : 'light'),
+                d: () =>
+                    updateAppearance(appearance === 'light' ? 'dark' : 'light'),
             }),
         );
 
@@ -165,7 +171,8 @@ describe('useKeyboardShortcuts', () => {
 
         renderHook(() =>
             useKeyboardShortcuts({
-                d: () => updateAppearance(appearance === 'light' ? 'dark' : 'light'),
+                d: () =>
+                    updateAppearance(appearance === 'light' ? 'dark' : 'light'),
             }),
         );
 
@@ -183,7 +190,8 @@ describe('useKeyboardShortcuts', () => {
 
         renderHook(() =>
             useKeyboardShortcuts({
-                d: () => updateAppearance(appearance === 'light' ? 'dark' : 'light'),
+                d: () =>
+                    updateAppearance(appearance === 'light' ? 'dark' : 'light'),
             }),
         );
 

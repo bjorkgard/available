@@ -38,6 +38,16 @@ vi.mock('@/routes', () => ({
     calendar: () => ({ url: '/test/calendar', method: 'get' as const }),
 }));
 
+// Mock BookingDialog since it requires currentCongregation to be non-null
+vi.mock('@/components/booking-dialog', () => ({
+    default: () => null,
+}));
+
+// Mock useBookingChannel since it requires window.Echo
+vi.mock('@/hooks/use-booking-channel', () => ({
+    useBookingChannel: () => 'disconnected',
+}));
+
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { APP_LOCALE } from '@/lib/locale';
 import Calendar from '@/pages/calendar';
