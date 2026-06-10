@@ -92,7 +92,7 @@ describe('useBookingChannel', () => {
         renderHook(() => useBookingChannel('hall-123', handlers));
 
         const channel = mockEcho.channels['kingdom-hall.hall-123'];
-        const event = { booking: { id: 'b1', name: 'Test' } };
+        const event = { bookings: [{ id: 'b1', name: 'Test' }] };
 
         act(() => {
             channel.emit('.booking.created', event);
@@ -110,7 +110,7 @@ describe('useBookingChannel', () => {
         renderHook(() => useBookingChannel('hall-123', handlers));
 
         const channel = mockEcho.channels['kingdom-hall.hall-123'];
-        const event = { booking: { id: 'b1', name: 'Updated' } };
+        const event = { bookings: [{ id: 'b1', name: 'Updated' }] };
 
         act(() => {
             channel.emit('.booking.updated', event);
@@ -128,7 +128,7 @@ describe('useBookingChannel', () => {
         renderHook(() => useBookingChannel('hall-123', handlers));
 
         const channel = mockEcho.channels['kingdom-hall.hall-123'];
-        const event = { booking_id: 'b1' };
+        const event = { booking_ids: ['b1'] };
 
         act(() => {
             channel.emit('.booking.deleted', event);

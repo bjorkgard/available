@@ -3,18 +3,15 @@ import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
 import type { BookingResource } from '@/types/bookings';
 
 export type BookingCreatedEvent = {
-    booking: BookingResource;
-    occurrences?: BookingResource[];
+    bookings: BookingResource[];
 };
 
 export type BookingUpdatedEvent = {
-    booking: BookingResource;
-    affected_occurrence_ids?: string[];
+    bookings: BookingResource[];
 };
 
 export type BookingDeletedEvent = {
-    booking_id: string;
-    occurrence_ids?: string[];
+    booking_ids: string[];
 };
 
 export type BookingEventHandlers = {
