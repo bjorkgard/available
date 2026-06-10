@@ -11,6 +11,25 @@ use App\Models\User;
 class BookingPolicy
 {
     /**
+     * Determine whether the user can view the booking.
+     *
+     * Any user who belongs to a congregation in the same Kingdom Hall can view it.
+     */
+    public function view(User $user, Booking $booking): bool
+    {
+        $kingdomHallId = $booking->congregation->kingdom_hall_id;
+
+        if (! $kingdomHallId) {
+            return false;
+        }
+
+        return $user->currentCongregation?->kingdom_hall_id === $kingdomHallId
+            || Membership::where('user_id', $user->id)
+                ->whereHas('congregation', fn ($q) => $q->where('kingdom_hall_id', $kingdomHallId))
+                ->exists();
+    }
+
+    /**
      * Determine whether the user can create bookings for the given congregation.
      *
      * Any member of the congregation can create bookings.

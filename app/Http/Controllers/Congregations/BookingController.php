@@ -88,6 +88,8 @@ class BookingController extends Controller
      */
     public function show(Request $request, string $currentCongregation, Booking $booking): JsonResponse
     {
+        $this->authorize('view', $booking);
+
         $booking->load(['congregation', 'user', 'rooms', 'recurrencePattern']);
 
         $data = $this->formatBooking($booking, $request->user());
