@@ -21,3 +21,32 @@ declare module '@inertiajs/core' {
         };
     }
 }
+
+interface EchoChannel {
+    listen(event: string, callback: (data: any) => void): EchoChannel;
+    stopListening(event: string): EchoChannel;
+}
+
+interface EchoConnector {
+    pusher?: {
+        connection: {
+            state: string;
+            bind(event: string, callback: () => void): void;
+            unbind(event: string, callback: () => void): void;
+        };
+        connect(): void;
+        disconnect(): void;
+    };
+}
+
+interface Echo {
+    private(channel: string): EchoChannel;
+    leave(channel: string): void;
+    connector: EchoConnector;
+}
+
+declare global {
+    interface Window {
+        Echo: Echo;
+    }
+}
