@@ -171,12 +171,18 @@ class UpdateBooking
                 $recurrencePattern->delete();
             }
 
-            // Create a new recurrence pattern from the edit point forward
+            // Create a new recurrence pattern from the edit point forward.
+            // For count-limited patterns, adjust end_count to only generate
+            // the remaining occurrences (not the full original count).
+            $newEndCount = $recurrencePattern->end_count
+                ? count($futureBookingIds)
+                : null;
+
             $newPattern = RecurrencePattern::create([
                 'congregation_id' => $booking->congregation_id,
                 'frequency' => $recurrencePattern->frequency->value,
                 'end_date' => $recurrencePattern->end_date,
-                'end_count' => $recurrencePattern->end_count,
+                'end_count' => $newEndCount,
             ]);
 
             // Generate new occurrence dates from the new start point
@@ -186,7 +192,7 @@ class UpdateBooking
                 $newEndsAt,
                 $newPattern->frequency,
                 $newPattern->end_date,
-                $newPattern->end_count
+                $newEndCount
             );
 
             // Conflict detection on all regenerated occurrences
