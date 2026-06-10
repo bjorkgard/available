@@ -48,5 +48,6 @@ interface Echo {
 declare global {
     interface Window {
         Echo: Echo;
+        Pusher: unknown;
     }
 }
