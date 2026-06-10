@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Congregations\BookingController;
 use App\Http\Controllers\Congregations\CongregationController;
 use App\Http\Controllers\Congregations\InvitationAcceptController;
 use App\Http\Controllers\Congregations\KingdomHallController;
@@ -21,6 +22,13 @@ Route::prefix('{current_congregation}')
     ->middleware(['auth', 'verified', EnsureCongregationMembership::class, EnsureHasKingdomHall::class])
     ->group(function () {
         Route::inertia('calendar', 'calendar')->name('calendar');
+
+        Route::post('bookings', [BookingController::class, 'store'])->name('bookings.store');
+        Route::get('bookings', [BookingController::class, 'index'])->name('bookings.index');
+        Route::get('bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+        Route::put('bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
+        Route::patch('bookings/{booking}/reschedule', [BookingController::class, 'reschedule'])->name('bookings.reschedule');
+        Route::delete('bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
 
         Route::middleware(EnsureCongregationMembership::class.':admin')->group(function () {
             Route::get('members', [MemberController::class, 'index'])->name('members.index');

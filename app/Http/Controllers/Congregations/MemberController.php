@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\Congregations;
 
+use App\Actions\Bookings\TransferBookings;
 use App\Actions\Congregations\SendInvitation;
 use App\Enums\CongregationRole;
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\Congregation;
 use App\Models\CongregationInvitation;
 use App\Models\Membership;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -100,10 +104,63 @@ class MemberController extends Controller
 
     /**
      * Remove a member from the congregation.
+     *
+     * If the member has future bookings, the request must include a `booking_action`
+     * (transfer or delete) and optionally a `transfer_to` user ID.
      */
     public function destroy(Request $request, string $currentCongregation, Membership $member): RedirectResponse
     {
         Gate::authorize('delete', $member);
+
+        $congregation = $member->congregation;
+        $userId = $member->user_id;
+
+        $hasFutureBookings = Booking::query()
+            ->where('congregation_id', $congregation->id)
+            ->where('user_id', $userId)
+            ->where('starts_at', '>=', now())
+            ->exists();
+
+        if ($hasFutureBookings) {
+            // Ensure at least one other active member exists in the congregation
+            $otherMemberExists = $congregation->memberships()
+                ->where('user_id', '!=', $userId)
+                ->exists();
+
+            if (! $otherMemberExists) {
+                throw ValidationException::withMessages([
+                    'member' => 'This member cannot be removed because no other active members exist to receive their bookings. Remove their future bookings first or add another member.',
+                ]);
+            }
+
+            $validated = $request->validate([
+                'booking_action' => ['required', Rule::in(['transfer', 'delete'])],
+                'transfer_to' => [
+                    'nullable',
+                    'required_if:booking_action,transfer',
+                    'uuid',
+                    Rule::exists('congregation_members', 'user_id')
+                        ->where('congregation_id', $congregation->id)
+                        ->whereNot('user_id', $userId),
+                ],
+            ]);
+
+            if ($validated['booking_action'] === 'transfer') {
+                $targetUser = User::findOrFail($validated['transfer_to']);
+
+                (new TransferBookings)->handle(
+                    source: $member->user,
+                    target: $targetUser,
+                    congregation: $congregation,
+                );
+            } else {
+                Booking::query()
+                    ->where('congregation_id', $congregation->id)
+                    ->where('user_id', $userId)
+                    ->where('starts_at', '>=', now())
+                    ->delete();
+            }
+        }
 
         $member->delete();
 
