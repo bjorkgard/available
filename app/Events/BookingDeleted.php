@@ -22,6 +22,7 @@ class BookingDeleted implements ShouldBroadcast
     public function __construct(
         public Collection $bookingIds,
         public string $kingdomHallId,
+        public string $userName = '',
     ) {
         $this->dontBroadcastToCurrentUser();
     }
@@ -47,6 +48,7 @@ class BookingDeleted implements ShouldBroadcast
     {
         return [
             'booking_ids' => $this->bookingIds->all(),
+            'user_name' => $this->userName,
         ];
     }
 

@@ -195,6 +195,14 @@ export default function Calendar() {
     function handleBookingCreated(event: BookingCreatedEvent) {
         const newBookings = event.bookings ?? [];
 
+        if (newBookings.length === 0) {
+            return;
+        }
+
+        const userName = newBookings[0]?.user_name ?? 'Someone';
+
+        toast.info(`${userName} created a booking`);
+
         // Filter to only include bookings within the current visible range
         const fromDate = new Date(dateRangeKey.from);
         const toDate = new Date(dateRangeKey.to + 'T23:59:59.999');
@@ -222,15 +230,19 @@ export default function Calendar() {
         });
     }
 
-    function handleBookingUpdated(_event: BookingUpdatedEvent) {
-        // The broadcast payload lacks computed fields (can_edit, can_delete, etc.)
-        // so we refetch to get the full resource shape
+    function handleBookingUpdated(event: BookingUpdatedEvent) {
+        const updatedBookings = event.bookings ?? [];
+        const userName = updatedBookings[0]?.user_name ?? 'Someone';
+
+        toast.info(`${userName} updated a booking`);
         refetchBookings();
     }
 
     function handleBookingDeleted(event: BookingDeletedEvent) {
         const idsToRemove = new Set<string>(event.booking_ids ?? []);
+        const userName = event.user_name || 'Someone';
 
+        toast.info(`${userName} deleted a booking`);
         setBookings((prev) => prev.filter((b) => !idsToRemove.has(b.id)));
     }
 

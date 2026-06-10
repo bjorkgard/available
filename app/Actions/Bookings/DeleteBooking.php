@@ -129,7 +129,7 @@ class DeleteBooking
      */
     private function dispatchEvents(User $deleter, string $bookerId, $deletedIds, string $kingdomHallId): void
     {
-        BookingDeleted::dispatch($deletedIds, $kingdomHallId);
+        BookingDeleted::dispatch($deletedIds, $kingdomHallId, $deleter->name);
     }
 
     /**

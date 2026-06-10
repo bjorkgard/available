@@ -12,6 +12,7 @@ export type BookingUpdatedEvent = {
 
 export type BookingDeletedEvent = {
     booking_ids: string[];
+    user_name: string;
 };
 
 export type BookingEventHandlers = {
