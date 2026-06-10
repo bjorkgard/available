@@ -42,11 +42,13 @@ VITE_REVERB_SCHEME="${REVERB_SCHEME}"
 
 ### Starting in Development
 
-Run all services with the dev command (includes Reverb automatically):
+Run all services with the dev command (includes Reverb, queue worker, and Vite):
 
 ```bash
 composer run dev
 ```
+
+This starts five processes concurrently: Laravel server, queue worker, Pail logs, Vite, and Reverb.
 
 Or start Reverb independently:
 
