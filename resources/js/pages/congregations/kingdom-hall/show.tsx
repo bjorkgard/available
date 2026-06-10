@@ -187,8 +187,7 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                                                         >
                                                             <PencilIcon className="size-3.5" />
                                                             <span className="sr-only">
-                                                                Edit{' '}
-                                                                {room.name}
+                                                                Edit {room.name}
                                                             </span>
                                                         </Button>
                                                     </TooltipTrigger>

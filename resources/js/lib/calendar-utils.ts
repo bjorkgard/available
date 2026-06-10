@@ -196,7 +196,6 @@ export function getWeekdayNames(locale?: string): string[] {
     }
 }
 
-
 /**
  * Information about a single day in a week view.
  */
