@@ -193,9 +193,7 @@ export default function Calendar() {
     // in a ref internally so they always see the latest dateRangeKey without
     // needing stable references.
     function handleBookingCreated(event: BookingCreatedEvent) {
-        const newBookings = event.occurrences
-            ? [event.booking, ...event.occurrences]
-            : [event.booking];
+        const newBookings = event.bookings ?? [];
 
         // Filter to only include bookings within the current visible range
         const fromDate = new Date(dateRangeKey.from);
@@ -224,20 +222,14 @@ export default function Calendar() {
         });
     }
 
-    function handleBookingUpdated(event: BookingUpdatedEvent) {
-        setBookings((prev) =>
-            prev.map((b) => (b.id === event.booking.id ? event.booking : b)),
-        );
+    function handleBookingUpdated(_event: BookingUpdatedEvent) {
+        // The broadcast payload lacks computed fields (can_edit, can_delete, etc.)
+        // so we refetch to get the full resource shape
+        refetchBookings();
     }
 
     function handleBookingDeleted(event: BookingDeletedEvent) {
-        const idsToRemove = new Set<string>([event.booking_id]);
-
-        if (event.occurrence_ids) {
-            for (const id of event.occurrence_ids) {
-                idsToRemove.add(id);
-            }
-        }
+        const idsToRemove = new Set<string>(event.booking_ids ?? []);
 
         setBookings((prev) => prev.filter((b) => !idsToRemove.has(b.id)));
     }
