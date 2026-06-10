@@ -12,6 +12,7 @@ import { CalendarHeader } from '@/components/calendar-header';
 import { DayGrid } from '@/components/day-grid';
 import DeleteConfirmDialog from '@/components/delete-confirm-dialog';
 import type { DeleteScope } from '@/components/delete-confirm-dialog';
+import { ErrorBoundary } from '@/components/error-boundary';
 import { MonthGrid } from '@/components/month-grid';
 import RecurrenceEditPrompt from '@/components/recurrence-edit-prompt';
 import type { RecurrenceEditScope } from '@/components/recurrence-edit-prompt';
@@ -157,6 +158,11 @@ export default function Calendar() {
         if (viewMode === 'month') {
             const firstDate = grid[0];
             const lastDate = grid[grid.length - 1];
+
+            if (!firstDate || !lastDate) {
+                return { from: '', to: '' };
+            }
+
             const from = `${firstDate.year}-${String(firstDate.month + 1).padStart(2, '0')}-${String(firstDate.day).padStart(2, '0')}`;
             const to = `${lastDate.year}-${String(lastDate.month + 1).padStart(2, '0')}-${String(lastDate.day).padStart(2, '0')}`;
 
@@ -166,6 +172,11 @@ export default function Calendar() {
         if (viewMode === 'week') {
             const firstDay = weekDays[0];
             const lastDay = weekDays[weekDays.length - 1];
+
+            if (!firstDay || !lastDay) {
+                return { from: '', to: '' };
+            }
+
             const from = `${firstDay.year}-${String(firstDay.month + 1).padStart(2, '0')}-${String(firstDay.day).padStart(2, '0')}`;
             const to = `${lastDay.year}-${String(lastDay.month + 1).padStart(2, '0')}-${String(lastDay.day).padStart(2, '0')}`;
 
@@ -499,7 +510,7 @@ export default function Calendar() {
     );
 
     return (
-        <>
+        <ErrorBoundary>
             <Head title="Calendar" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <CalendarHeader
@@ -602,7 +613,7 @@ export default function Calendar() {
                 onSelect={handleDragScopeSelect}
                 onCancel={handleDragScopeCancel}
             />
-        </>
+        </ErrorBoundary>
     );
 }
 
