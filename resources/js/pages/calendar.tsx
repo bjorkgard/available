@@ -17,12 +17,12 @@ import RecurrenceEditPrompt from '@/components/recurrence-edit-prompt';
 import type { RecurrenceEditScope } from '@/components/recurrence-edit-prompt';
 import { WeekGrid } from '@/components/week-grid';
 import { useBookingChannel } from '@/hooks/use-booking-channel';
-import { useDragBooking } from '@/hooks/use-drag-booking';
 import type {
     BookingCreatedEvent,
     BookingDeletedEvent,
     BookingUpdatedEvent,
 } from '@/hooks/use-booking-channel';
+import { useDragBooking } from '@/hooks/use-drag-booking';
 import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 import { useResponsiveViewMode } from '@/hooks/use-responsive-view-mode';
 import {
@@ -517,7 +517,7 @@ export default function Calendar() {
                     onCreateBooking={() => handleCreateBooking()}
                 />
                 {kingdomHallId && connectionStatus !== 'connected' && (
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <div className="fixed top-4 right-4 z-50 flex items-center gap-1.5 rounded-md bg-muted px-2.5 py-1 text-xs text-muted-foreground shadow-sm">
                         <WifiOff className="h-3.5 w-3.5" />
                         <span>
                             {connectionStatus === 'connecting'
