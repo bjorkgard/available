@@ -49,4 +49,12 @@ class BookingDeleted implements ShouldBroadcast
             'booking_ids' => $this->bookingIds->all(),
         ];
     }
+
+    /**
+     * The event's broadcast name.
+     */
+    public function broadcastAs(): string
+    {
+        return 'booking.deleted';
+    }
 }

@@ -66,4 +66,12 @@ class BookingUpdated implements ShouldBroadcast
             ])->all(),
         ];
     }
+
+    /**
+     * The event's broadcast name.
+     */
+    public function broadcastAs(): string
+    {
+        return 'booking.updated';
+    }
 }
