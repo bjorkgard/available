@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Booking;
 use App\Models\Membership;
+use App\Policies\BookingPolicy;
 use App\Policies\MemberPolicy;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
 
+        Gate::policy(Booking::class, BookingPolicy::class);
         Gate::policy(Membership::class, MemberPolicy::class);
     }
 
