@@ -394,7 +394,7 @@ export default function BookingDialog({
                                         selected={selectedDate}
                                         onSelect={setSelectedDate}
                                         locale={sv}
-                                        initialFocus
+                                        autoFocus
                                     />
                                 </PopoverContent>
                             </Popover>
