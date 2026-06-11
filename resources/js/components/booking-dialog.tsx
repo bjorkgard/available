@@ -167,6 +167,24 @@ export default function BookingDialog({
     const [endType, setEndType] = useState<RecurrenceEndType>('date');
     const [congregationId, setCongregationId] = useState(defaultCongregationId);
 
+    // Sync form state when dialog opens with a (different) booking
+    const prevBookingIdRef = useRef<string | null>(null);
+
+    if (open && !prevOpenRef.current) {
+        prevBookingIdRef.current = booking?.id ?? null;
+        setSelectedRooms(defaultRoomIds);
+        setCongregationId(defaultCongregationId);
+        setIsRecurring(!!booking?.recurrence_pattern_id);
+    } else if (
+        open &&
+        (booking?.id ?? null) !== prevBookingIdRef.current
+    ) {
+        prevBookingIdRef.current = booking?.id ?? null;
+        setSelectedRooms(defaultRoomIds);
+        setCongregationId(defaultCongregationId);
+        setIsRecurring(!!booking?.recurrence_pattern_id);
+    }
+
     const showCongregationSelector = useMemo(() => {
         return congregations && congregations.length > 1;
     }, [congregations]);
