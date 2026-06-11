@@ -3,11 +3,11 @@ import { flushSync } from 'react-dom';
 
 import { BookingBlock } from '@/components/booking-block';
 import { CalendarContextMenu } from '@/components/calendar-context-menu';
+import type { DropTarget } from '@/hooks/use-drag-booking';
 import { APP_LOCALE } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 import type { BookingResource, Room } from '@/types';
 
-import type { DropTarget } from '@/hooks/use-drag-booking';
 
 interface DayGridProps {
     date: { day: number; month: number; year: number };
