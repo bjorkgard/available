@@ -44,6 +44,8 @@ function isStandalone(): boolean {
 }
 
 const DISMISSED_KEY = 'pwa-install-dismissed';
+const REMIND_LATER_KEY = 'pwa-install-remind-later';
+const REMIND_DELAY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 export function PwaInstallPrompt() {
     const [open, setOpen] = useState(false);
@@ -65,10 +67,31 @@ export function PwaInstallPrompt() {
             return;
         }
 
+        const remindLater = localStorage.getItem(REMIND_LATER_KEY);
+
+        if (remindLater) {
+            const remindAt = Number(remindLater);
+
+            if (Date.now() < remindAt) {
+                return;
+            }
+
+            // Reminder period has passed, clear it
+            localStorage.removeItem(REMIND_LATER_KEY);
+        }
+
         const timer = setTimeout(() => setOpen(true), 1500);
 
         return () => clearTimeout(timer);
     }, [platform]);
+
+    function handleRemindLater() {
+        setOpen(false);
+        localStorage.setItem(
+            REMIND_LATER_KEY,
+            String(Date.now() + REMIND_DELAY_MS),
+        );
+    }
 
     function handleDismiss() {
         setOpen(false);
@@ -84,7 +107,7 @@ export function PwaInstallPrompt() {
             open={open}
             onOpenChange={(isOpen) => {
                 if (!isOpen) {
-                    handleDismiss();
+                    handleRemindLater();
                 }
             }}
         >
@@ -133,8 +156,11 @@ export function PwaInstallPrompt() {
                     </div>
                 )}
 
-                <DialogFooter>
-                    <Button variant="outline" onClick={handleDismiss}>
+                <DialogFooter className="gap-2 sm:flex-row">
+                    <Button variant="ghost" onClick={handleDismiss}>
+                        Visa inte igen
+                    </Button>
+                    <Button variant="outline" onClick={handleRemindLater}>
                         Jag förstår
                     </Button>
                 </DialogFooter>
