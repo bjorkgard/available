@@ -1,74 +1,31 @@
 # Available
 
-A Kingdom Hall room-scheduling app for congregations to coordinate shared spaces. Congregations that share a Kingdom Hall can see room availability at a glance and book slots without conflicts.
+![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![Inertia.js](https://img.shields.io/badge/Inertia.js-3-9553E9?logo=inertia&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![Pest](https://img.shields.io/badge/Pest-4-F28D1A?logo=pest&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-## Core Functions
+A Kingdom Hall room-scheduling application for congregations to coordinate shared spaces. Multiple congregations sharing a Kingdom Hall can view room availability at a glance and book time slots without conflicts — with real-time updates, drag-and-drop scheduling, and role-based access control.
 
-### Authentication
+## Documentation
 
-Full authentication system with email/password login, registration, email verification, password reset, two-factor authentication (TOTP with recovery codes), and passkey/WebAuthn support.
-
-### Congregation Management
-
-- **Setup wizard** — new users create or join a congregation on first login
-- **Member invitations** — admins invite users by email with a specific role (Superadmin, Admin, Member)
-- **Role-based access** — actions are scoped by membership role within each congregation
-- **Congregation switching** — users who belong to multiple congregations can switch between them
-- **Congregation settings** — admins can edit congregation details; members can leave or move to another congregation
-
-### Kingdom Hall Management
-
-- **Address & rooms** — superadmins manage the physical building's address and define bookable rooms
-- **Multi-congregation sharing** — multiple congregations can be linked to the same Kingdom Hall
-- **Room generation** — rooms are automatically created when a Kingdom Hall is set up
-
-### User Settings
-
-- **Profile** — update name, email, and delete account
-- **Security** — change password, manage passkeys, configure two-factor authentication
-- **Sessions** — view active browser sessions (device, browser, IP, last activity) and revoke others
-- **Appearance** — light/dark/system theme preference
-- **Congregations** — view and manage congregation memberships
-
-### Room Scheduling (Planned)
-
-The dashboard currently serves as a placeholder. The scheduling feature — viewing room availability, booking time slots, and resolving conflicts — is the next major milestone.
-
-## Tech Stack
-
-- **Backend:** PHP 8.5, Laravel 13, SQLite
-- **Frontend:** React 19, TypeScript, Inertia.js v3, Tailwind CSS v4, shadcn/ui
-- **Auth:** Laravel Fortify, passkeys (`@laravel/passkeys`), TOTP 2FA
-- **Tooling:** Vite 8, Pest v4, Laravel Pint, ESLint, Prettier
-
-## Getting Started
-
-```bash
-# Install dependencies and set up the database
-composer run setup
-
-# Start the development server (Laravel, queue, logs, and Vite)
-composer run dev
-```
-
-The app will be available at `https://available.test` (via Laravel Herd) or `http://localhost:8000`.
-
-## Development
-
-```bash
-# Run tests
-php artisan test --compact
-
-# Lint PHP
-vendor/bin/pint --dirty --format agent
-
-# Lint & format JS/TS
-npm run lint
-npm run format
-
-# Type check frontend
-npm run types:check
-```
+- [Getting Started](docs/getting-started.md) — Installation, setup, and common commands
+- [Architecture](docs/architecture.md) — High-level design, request lifecycle, and key decisions
+- [Domain Model](docs/domain-model.md) — Core concepts, models, relationships, and business rules
+- [Database Schema](docs/database.md) — Tables, columns, relationships, and conventions
+- [Authentication & Authorization](docs/authentication.md) — Auth flows, roles, policies, and security
+- [Routes & API](docs/api-routes.md) — Complete route reference with methods and controllers
+- [Calendar & Booking System](docs/calendar.md) — Views, CRUD, recurrence, drag-and-drop, and permissions
+- [Real-Time Features](docs/real-time.md) — WebSocket broadcasting, events, and Echo integration
+- [Frontend Architecture](docs/frontend.md) — React, components, hooks, types, and styling
+- [Testing](docs/testing.md) — Pest, Vitest, property tests, and CI pipeline
+- [Deployment](docs/deployment.md) — Production checklist, environment, and services
+- [Contributing](docs/contributing.md) — Code style, conventions, and workflow
 
 ## License
 
