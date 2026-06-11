@@ -1,6 +1,13 @@
 import type { CSSProperties } from 'react';
+
 import { APP_LOCALE } from '@/lib/locale';
 import { cn } from '@/lib/utils';
+
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export type ViewMode = 'month' | 'week' | 'day';
 
@@ -51,6 +58,7 @@ export function BookingBlock({ booking, viewMode, style }: BookingBlockProps) {
 
     const startTime = timeFormatter.format(new Date(starts_at));
     const endTime = timeFormatter.format(new Date(ends_at));
+    const tooltipText = `${name} ${startTime}–${endTime}`;
 
     const colorStyles: CSSProperties = congregation_color
         ? {
@@ -61,19 +69,24 @@ export function BookingBlock({ booking, viewMode, style }: BookingBlockProps) {
 
     if (viewMode === 'month') {
         return (
-            <div
-                draggable={can_edit}
-                className={cn(
-                    'truncate rounded border-l-2 px-1.5 py-0.5 text-xs leading-tight',
-                    !congregation_color && 'border-l-primary/60 bg-primary/10',
-                    can_edit && 'cursor-grab',
-                )}
-                style={{ ...colorStyles, ...style }}
-                title={`${name} ${startTime}–${endTime}`}
-            >
-                <span className="font-medium">{startTime}</span>{' '}
-                <span className="text-muted-foreground">{name}</span>
-            </div>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div
+                        draggable={can_edit}
+                        className={cn(
+                            'truncate rounded border-l-2 px-1.5 py-0.5 text-xs leading-tight',
+                            !congregation_color &&
+                                'border-l-primary/60 bg-primary/10',
+                            can_edit && 'cursor-grab',
+                        )}
+                        style={{ ...colorStyles, ...style }}
+                    >
+                        <span className="font-medium">{startTime}</span>{' '}
+                        <span className="text-muted-foreground">{name}</span>
+                    </div>
+                </TooltipTrigger>
+                <TooltipContent>{tooltipText}</TooltipContent>
+            </Tooltip>
         );
     }
 
@@ -94,20 +107,25 @@ export function BookingBlock({ booking, viewMode, style }: BookingBlockProps) {
     };
 
     return (
-        <div
-            draggable={can_edit}
-            className={cn(
-                'overflow-hidden rounded border-l-2 px-1.5 py-0.5 text-xs leading-tight',
-                !congregation_color && 'border-l-primary/60 bg-primary/10',
-                can_edit && 'cursor-grab',
-            )}
-            style={positionStyles}
-            title={`${name} ${startTime}–${endTime}`}
-        >
-            <span className="font-medium">
-                {startTime}–{endTime}
-            </span>
-            <div className="truncate">{name}</div>
-        </div>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <div
+                    draggable={can_edit}
+                    className={cn(
+                        'overflow-hidden rounded border-l-2 px-1.5 py-0.5 text-xs leading-tight',
+                        !congregation_color &&
+                            'border-l-primary/60 bg-primary/10',
+                        can_edit && 'cursor-grab',
+                    )}
+                    style={positionStyles}
+                >
+                    <span className="font-medium">
+                        {startTime}–{endTime}
+                    </span>
+                    <div className="truncate">{name}</div>
+                </div>
+            </TooltipTrigger>
+            <TooltipContent>{tooltipText}</TooltipContent>
+        </Tooltip>
     );
 }
