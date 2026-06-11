@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "name": "Update Documentation",
+  "description": "When application source files (models, controllers, routes, migrations, React pages, or types) are edited, prompts the agent to review and update the relevant documentation in the docs/ folder to keep it accurate and in sync with the codebase.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "app/Models/*.php",
+      "app/Http/Controllers/**/*.php",
+      "routes/*.php",
+      "database/migrations/*.php",
+      "resources/js/pages/**/*.tsx",
+      "resources/js/types/*.ts",
+      "app/Enums/*.php",
+      "app/Policies/*.php",
+      "app/Events/*.php",
+      "app/Actions/**/*.php",
+      "composer.json",
+      "package.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A source file that affects documentation has been modified. Review the change and determine if any documentation in the docs/ folder needs to be updated to stay accurate. Check if the change affects: domain model (docs/domain-model.md), database schema (docs/database.md), routes (docs/api-routes.md), authentication (docs/authentication.md), architecture (docs/architecture.md), frontend (docs/frontend.md), calendar system (docs/calendar.md), real-time features (docs/real-time.md), or getting started (docs/getting-started.md). If a doc is outdated, update only the affected sections. Also check if README.md table of contents needs updating. Always ensure back links remain intact."
+  }
+}
