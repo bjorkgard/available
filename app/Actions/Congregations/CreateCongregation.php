@@ -8,8 +8,10 @@ use App\Models\Congregation;
 use App\Models\CongregationInvitation;
 use App\Models\KingdomHall;
 use App\Models\User;
+use App\Notifications\Congregations\InvitationNotification;
 use App\Services\ColorService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -52,7 +54,7 @@ class CreateCongregation
                 'color' => $color,
             ]);
 
-            CongregationInvitation::create([
+            $invitation = CongregationInvitation::create([
                 'congregation_id' => $congregation->id,
                 'name' => $data['initial_user_name'],
                 'email' => $data['initial_user_email'],
@@ -60,6 +62,10 @@ class CreateCongregation
                 'invited_by' => $creator->id,
                 'expires_at' => now()->addHours(72),
             ]);
+
+            // Send the invitation email to the responsible user
+            Notification::route('mail', $data['initial_user_email'])
+                ->notify(new InvitationNotification($invitation));
 
             return $congregation;
         });
