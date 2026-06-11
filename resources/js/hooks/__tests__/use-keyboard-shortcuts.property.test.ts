@@ -26,7 +26,16 @@ const TEXT_INPUT_TYPES = [
     'time',
 ] as const;
 
-const NON_TEXT_ELEMENTS = ['div', 'span', 'body', 'button', 'section', 'article', 'main', 'nav'] as const;
+const NON_TEXT_ELEMENTS = [
+    'div',
+    'span',
+    'body',
+    'button',
+    'section',
+    'article',
+    'main',
+    'nav',
+] as const;
 
 /** Arbitrary that generates a random printable key string */
 const arbKey = fc.oneof(
@@ -60,7 +69,9 @@ const arbTextInputElement = fc.oneof(
 
 /** Arbitrary that creates a non-text-input element */
 const arbNonTextElement = fc.oneof(
-    fc.constantFrom(...NON_TEXT_ELEMENTS).map((tag) => document.createElement(tag)),
+    fc
+        .constantFrom(...NON_TEXT_ELEMENTS)
+        .map((tag) => document.createElement(tag)),
     fc.constant(null as Element | null),
 );
 
@@ -72,13 +83,20 @@ const arbAtLeastOneModifier = fc
         altKey: fc.boolean(),
         shiftKey: fc.boolean(),
     })
-    .filter((mods) => mods.ctrlKey || mods.metaKey || mods.altKey || mods.shiftKey);
+    .filter(
+        (mods) => mods.ctrlKey || mods.metaKey || mods.altKey || mods.shiftKey,
+    );
 
 // --- Helpers ---
 
 function createKeyboardEvent(
     key: string,
-    modifiers: { ctrlKey?: boolean; metaKey?: boolean; altKey?: boolean; shiftKey?: boolean } = {},
+    modifiers: {
+        ctrlKey?: boolean;
+        metaKey?: boolean;
+        altKey?: boolean;
+        shiftKey?: boolean;
+    } = {},
 ): KeyboardEvent {
     return new KeyboardEvent('keydown', {
         key,

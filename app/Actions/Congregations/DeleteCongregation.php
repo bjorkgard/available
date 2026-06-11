@@ -2,8 +2,10 @@
 
 namespace App\Actions\Congregations;
 
+use App\Models\Booking;
 use App\Models\Congregation;
 use App\Models\Membership;
+use App\Models\RecurrencePattern;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -40,6 +42,12 @@ class DeleteCongregation
                     }
                 }
             }
+
+            // Delete all bookings for this congregation (before recurrence patterns due to FK)
+            Booking::where('congregation_id', $congregation->id)->delete();
+
+            // Delete all recurrence patterns for this congregation
+            RecurrencePattern::where('congregation_id', $congregation->id)->delete();
 
             // Cancel pending invitations
             $congregation->invitations()->delete();

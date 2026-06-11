@@ -50,25 +50,19 @@ export default function RoomModal({
                     className="space-y-6"
                     onSuccess={() => {
                         toast.success(
-                            isEditing
-                                ? 'Room updated.'
-                                : 'Room created.',
+                            isEditing ? 'Room updated.' : 'Room created.',
                         );
                         onOpenChange(false);
                     }}
                     onError={() => {
-                        toast.error(
-                            'Something went wrong. Please try again.',
-                        );
+                        toast.error('Something went wrong. Please try again.');
                     }}
                 >
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
                                 <DialogTitle>
-                                    {isEditing
-                                        ? 'Edit room'
-                                        : 'Add room'}
+                                    {isEditing ? 'Edit room' : 'Add room'}
                                 </DialogTitle>
                                 <DialogDescription>
                                     {isEditing
@@ -93,15 +87,10 @@ export default function RoomModal({
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">
-                                        Cancel
-                                    </Button>
+                                    <Button variant="secondary">Cancel</Button>
                                 </DialogClose>
 
-                                <Button
-                                    type="submit"
-                                    disabled={processing}
-                                >
+                                <Button type="submit" disabled={processing}>
                                     {isEditing ? 'Save' : 'Add room'}
                                 </Button>
                             </DialogFooter>

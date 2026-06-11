@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarDays, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -38,6 +38,7 @@ interface CalendarHeaderProps {
     onGoToToday: () => void;
     onViewModeChange: (mode: ViewMode) => void;
     isToday: boolean;
+    onCreateBooking?: () => void;
 }
 
 function getMonthNames(): string[] {
@@ -120,6 +121,7 @@ export function CalendarHeader({
     onGoToToday,
     onViewModeChange,
     isToday,
+    onCreateBooking,
 }: CalendarHeaderProps) {
     const monthNames = getMonthNames();
     const years = getYearRange();
@@ -278,6 +280,15 @@ export function CalendarHeader({
                         displayedDay,
                     )}
                 </span>
+            )}
+
+            {onCreateBooking && (
+                <div className="ml-auto">
+                    <Button onClick={onCreateBooking}>
+                        <Plus />
+                        Create Booking
+                    </Button>
+                </div>
             )}
         </div>
     );

@@ -45,9 +45,7 @@ export default function AddressEditModal({
                         onOpenChange(false);
                     }}
                     onError={() => {
-                        toast.error(
-                            'Something went wrong. Please try again.',
-                        );
+                        toast.error('Something went wrong. Please try again.');
                     }}
                 >
                     {({ errors, processing }) => (
@@ -113,10 +111,7 @@ export default function AddressEditModal({
                                     <Button variant="secondary">Cancel</Button>
                                 </DialogClose>
 
-                                <Button
-                                    type="submit"
-                                    disabled={processing}
-                                >
+                                <Button type="submit" disabled={processing}>
                                     Save changes
                                 </Button>
                             </DialogFooter>
