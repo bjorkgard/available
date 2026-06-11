@@ -5,6 +5,7 @@
 - PHP 8.5, Laravel 13
 - Inertia.js v3 (server-side adapter: `inertiajs/inertia-laravel`)
 - Laravel Fortify (authentication with passkeys and 2FA)
+- Laravel Reverb (WebSocket server for real-time broadcasting)
 - Laravel Wayfinder (typed route generation)
 - Laravel Chisel (AI tooling)
 - SQLite (default database)
@@ -21,6 +22,8 @@
 - React Compiler (`babel-plugin-react-compiler`)
 - Class Variance Authority + clsx + tailwind-merge for styling utilities
 - Sonner (toast notifications)
+- Laravel Echo + Pusher.js (WebSocket client for real-time updates)
+- `date-fns` (date formatting with sv locale for shadcn Calendar)
 - `@laravel/passkeys` (WebAuthn/passkey support)
 - `input-otp` (OTP input for 2FA)
 - `tw-animate-css` (Tailwind animation utilities)
@@ -30,7 +33,7 @@
 ## Common Commands
 
 ```bash
-# Development server (runs Laravel, queue, pail logs, and Vite concurrently)
+# Development server (runs Laravel, queue, pail logs, Vite, and Reverb concurrently)
 composer run dev
 
 # Build frontend assets
