@@ -71,7 +71,9 @@ export default function Calendar() {
 
     // Booking state
     const [bookings, setBookings] = useState<BookingResource[]>([]);
-    const [bookingsLoading, setBookingsLoading] = useState(true);
+    const [bookingsLoading, setBookingsLoading] = useState(
+        !!currentCongregation?.slug,
+    );
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogInitialDate, setDialogInitialDate] = useState<
         string | undefined
