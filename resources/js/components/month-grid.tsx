@@ -77,7 +77,9 @@ export function MonthGrid({
     const contextDateRef = useRef<string>('');
 
     // Track which cell is being hovered during drag
-    const [dropHighlightIndex, setDropHighlightIndex] = useState<number | null>(null);
+    const [dropHighlightIndex, setDropHighlightIndex] = useState<number | null>(
+        null,
+    );
 
     return (
         <div className="grid h-full grid-cols-7 grid-rows-[auto_repeat(6,1fr)]">
@@ -144,8 +146,14 @@ export function MonthGrid({
                                 }
 
                                 e.preventDefault();
-                                const fillerDateStr = formatDateString(date.year, date.month, date.day);
-                                const origStart = new Date(draggedBooking.starts_at);
+                                const fillerDateStr = formatDateString(
+                                    date.year,
+                                    date.month,
+                                    date.day,
+                                );
+                                const origStart = new Date(
+                                    draggedBooking.starts_at,
+                                );
                                 const target: DropTarget = {
                                     date: fillerDateStr,
                                     hour: origStart.getHours(),
@@ -157,7 +165,7 @@ export function MonthGrid({
                             className={cn(
                                 'flex flex-col items-start border p-2 text-muted-foreground hover:bg-accent',
                                 dropHighlightIndex === gridIndex &&
-                                    'bg-primary/5 ring-2 ring-inset ring-primary/30',
+                                    'bg-primary/5 ring-2 ring-primary/30 ring-inset',
                             )}
                         >
                             <span className="text-sm leading-none">
@@ -168,7 +176,9 @@ export function MonthGrid({
                                     <div
                                         key={booking.id}
                                         data-booking-id={booking.id}
-                                        {...(getDragProps ? getDragProps(booking) : {})}
+                                        {...(getDragProps
+                                            ? getDragProps(booking)
+                                            : {})}
                                         className={
                                             draggedBookingId === booking.id
                                                 ? 'opacity-40'
@@ -233,7 +243,7 @@ export function MonthGrid({
                                 isToday &&
                                     'rounded-md border-2 border-blue-500 font-semibold',
                                 dropHighlightIndex === gridIndex &&
-                                    'bg-primary/5 ring-2 ring-inset ring-primary/30',
+                                    'bg-primary/5 ring-2 ring-primary/30 ring-inset',
                             )}
                             onDragOver={(e) => {
                                 if (getDropZoneProps) {
@@ -254,7 +264,9 @@ export function MonthGrid({
 
                                 e.preventDefault();
                                 // Keep the original time, just change the date
-                                const origStart = new Date(draggedBooking.starts_at);
+                                const origStart = new Date(
+                                    draggedBooking.starts_at,
+                                );
                                 const target: DropTarget = {
                                     date: dateStr,
                                     hour: origStart.getHours(),
@@ -267,9 +279,8 @@ export function MonthGrid({
                                 contextDateRef.current = dateStr;
                                 // Check if the right-click originated from a booking
                                 const target = e.target as HTMLElement;
-                                const bookingEl = target.closest(
-                                    '[data-booking-id]',
-                                );
+                                const bookingEl =
+                                    target.closest('[data-booking-id]');
 
                                 flushSync(() => {
                                     if (bookingEl) {
@@ -295,7 +306,9 @@ export function MonthGrid({
                                     <div
                                         key={booking.id}
                                         data-booking-id={booking.id}
-                                        {...(getDragProps ? getDragProps(booking) : {})}
+                                        {...(getDragProps
+                                            ? getDragProps(booking)
+                                            : {})}
                                         className={
                                             draggedBookingId === booking.id
                                                 ? 'opacity-40'

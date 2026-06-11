@@ -126,7 +126,17 @@ function computeOverlapLayout(
     return layout;
 }
 
-export function WeekGrid({ days, bookings, onCreateBooking, onEditBooking, onDeleteBooking, getDragProps, getDropZoneProps, draggedBookingId, draggedBooking }: WeekGridProps) {
+export function WeekGrid({
+    days,
+    bookings,
+    onCreateBooking,
+    onEditBooking,
+    onDeleteBooking,
+    getDragProps,
+    getDropZoneProps,
+    draggedBookingId,
+    draggedBooking,
+}: WeekGridProps) {
     const [contextBooking, setContextBooking] =
         useState<BookingResource | null>(null);
     const contextDateRef = useRef<string>('');
@@ -222,25 +232,45 @@ export function WeekGrid({ days, bookings, onCreateBooking, onEditBooking, onDel
                                             'bg-blue-50/30 dark:bg-blue-950/10',
                                     )}
                                     onDragOver={(e) => {
-                                        if (getDropZoneProps && draggedBooking) {
+                                        if (
+                                            getDropZoneProps &&
+                                            draggedBooking
+                                        ) {
                                             e.preventDefault();
                                             e.dataTransfer.dropEffect = 'move';
 
                                             // Compute ghost position
-                                            const rect = e.currentTarget.getBoundingClientRect();
-                                            const relativeY = e.clientY - rect.top;
+                                            const rect =
+                                                e.currentTarget.getBoundingClientRect();
+                                            const relativeY =
+                                                e.clientY - rect.top;
                                             const totalHeight = rect.height;
                                             const totalMinutes = Math.round(
-                                                (relativeY / totalHeight) * 24 * 60,
+                                                (relativeY / totalHeight) *
+                                                    24 *
+                                                    60,
                                             );
-                                            const snappedMinutes = Math.round(totalMinutes / 15) * 15;
-                                            const topPercent = (snappedMinutes / (24 * 60)) * 100;
+                                            const snappedMinutes =
+                                                Math.round(totalMinutes / 15) *
+                                                15;
+                                            const topPercent =
+                                                (snappedMinutes / (24 * 60)) *
+                                                100;
 
                                             // Compute duration of dragged booking
-                                            const origStart = new Date(draggedBooking.starts_at);
-                                            const origEnd = new Date(draggedBooking.ends_at);
-                                            const durationMinutes = (origEnd.getTime() - origStart.getTime()) / 60000;
-                                            const heightPercent = (durationMinutes / (24 * 60)) * 100;
+                                            const origStart = new Date(
+                                                draggedBooking.starts_at,
+                                            );
+                                            const origEnd = new Date(
+                                                draggedBooking.ends_at,
+                                            );
+                                            const durationMinutes =
+                                                (origEnd.getTime() -
+                                                    origStart.getTime()) /
+                                                60000;
+                                            const heightPercent =
+                                                (durationMinutes / (24 * 60)) *
+                                                100;
 
                                             const dayIdx = days.indexOf(day);
                                             setGhostPosition({
@@ -261,14 +291,18 @@ export function WeekGrid({ days, bookings, onCreateBooking, onEditBooking, onDel
                                         }
 
                                         e.preventDefault();
-                                        const rect = e.currentTarget.getBoundingClientRect();
+                                        const rect =
+                                            e.currentTarget.getBoundingClientRect();
                                         const relativeY = e.clientY - rect.top;
                                         const totalHeight = rect.height;
                                         const totalMinutes = Math.round(
                                             (relativeY / totalHeight) * 24 * 60,
                                         );
-                                        const snappedMinutes = Math.round(totalMinutes / 15) * 15;
-                                        const hour = Math.floor(snappedMinutes / 60);
+                                        const snappedMinutes =
+                                            Math.round(totalMinutes / 15) * 15;
+                                        const hour = Math.floor(
+                                            snappedMinutes / 60,
+                                        );
                                         const minute = snappedMinutes % 60;
 
                                         const target: DropTarget = {
@@ -284,13 +318,10 @@ export function WeekGrid({ days, bookings, onCreateBooking, onEditBooking, onDel
                                         // Compute time from click position
                                         const rect =
                                             e.currentTarget.getBoundingClientRect();
-                                        const relativeY =
-                                            e.clientY - rect.top;
+                                        const relativeY = e.clientY - rect.top;
                                         const totalHeight = rect.height;
                                         const totalMinutes = Math.round(
-                                            (relativeY / totalHeight) *
-                                                24 *
-                                                60,
+                                            (relativeY / totalHeight) * 24 * 60,
                                         );
                                         const snappedMinutes =
                                             Math.round(totalMinutes / 15) * 15;
@@ -303,9 +334,8 @@ export function WeekGrid({ days, bookings, onCreateBooking, onEditBooking, onDel
                                             );
                                         // Check if right-click originated from a booking
                                         const target = e.target as HTMLElement;
-                                        const bookingEl = target.closest(
-                                            '[data-booking-id]',
-                                        );
+                                        const bookingEl =
+                                            target.closest('[data-booking-id]');
 
                                         flushSync(() => {
                                             if (bookingEl) {
@@ -316,7 +346,9 @@ export function WeekGrid({ days, bookings, onCreateBooking, onEditBooking, onDel
                                                 const found = dayBookings.find(
                                                     (b) => b.id === id,
                                                 );
-                                                setContextBooking(found ?? null);
+                                                setContextBooking(
+                                                    found ?? null,
+                                                );
                                             } else {
                                                 setContextBooking(null);
                                             }
@@ -333,14 +365,13 @@ export function WeekGrid({ days, bookings, onCreateBooking, onEditBooking, onDel
 
                                     {/* Booking blocks */}
                                     {dayBookings.map((booking) => {
-                                        const layoutInfo =
-                                            overlapLayout.get(booking.id);
-                                        const column =
-                                            layoutInfo?.column ?? 0;
+                                        const layoutInfo = overlapLayout.get(
+                                            booking.id,
+                                        );
+                                        const column = layoutInfo?.column ?? 0;
                                         const totalColumns =
                                             layoutInfo?.totalColumns ?? 1;
-                                        const widthPercent =
-                                            100 / totalColumns;
+                                        const widthPercent = 100 / totalColumns;
                                         const leftPercent =
                                             column * widthPercent;
 
@@ -348,9 +379,12 @@ export function WeekGrid({ days, bookings, onCreateBooking, onEditBooking, onDel
                                             <div
                                                 key={booking.id}
                                                 data-booking-id={booking.id}
-                                                {...(getDragProps ? getDragProps(booking) : {})}
+                                                {...(getDragProps
+                                                    ? getDragProps(booking)
+                                                    : {})}
                                                 className={
-                                                    draggedBookingId === booking.id
+                                                    draggedBookingId ===
+                                                    booking.id
                                                         ? 'opacity-40'
                                                         : ''
                                                 }
@@ -370,9 +404,10 @@ export function WeekGrid({ days, bookings, onCreateBooking, onEditBooking, onDel
 
                                     {/* Ghost preview during drag */}
                                     {ghostPosition &&
-                                        ghostPosition.dayIndex === days.indexOf(day) && (
+                                        ghostPosition.dayIndex ===
+                                            days.indexOf(day) && (
                                             <div
-                                                className="pointer-events-none absolute left-1 right-1 rounded border-2 border-dashed border-primary/50 bg-primary/10"
+                                                className="pointer-events-none absolute right-1 left-1 rounded border-2 border-dashed border-primary/50 bg-primary/10"
                                                 style={{
                                                     top: `${ghostPosition.topPercent}%`,
                                                     height: `${ghostPosition.heightPercent}%`,
