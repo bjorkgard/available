@@ -199,7 +199,7 @@ export function useDragBooking({
                     );
 
                     // Check if it's a recurring booking and prompt for scope
-                    let scope: 'this_only' | 'this_and_future' | '' = '';
+                    let scope: 'this_only' | 'this_and_future' = 'this_only';
 
                     if (booking.recurrence_pattern_id) {
                         const result = await onRecurrencePrompt(booking.id);
