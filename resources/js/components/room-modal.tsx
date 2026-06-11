@@ -50,35 +50,37 @@ export default function RoomModal({
                     className="space-y-6"
                     onSuccess={() => {
                         toast.success(
-                            isEditing ? 'Room updated.' : 'Room created.',
+                            isEditing ? 'Rum uppdaterat.' : 'Rum skapat.',
                         );
                         onOpenChange(false);
                     }}
                     onError={() => {
-                        toast.error('Something went wrong. Please try again.');
+                        toast.error('Något gick fel. Försök igen.');
                     }}
                 >
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
                                 <DialogTitle>
-                                    {isEditing ? 'Edit room' : 'Add room'}
+                                    {isEditing
+                                        ? 'Redigera rum'
+                                        : 'Lägg till rum'}
                                 </DialogTitle>
                                 <DialogDescription>
                                     {isEditing
-                                        ? `Rename the room in ${kingdomHall.street_address}.`
-                                        : `Add a new room to ${kingdomHall.street_address}.`}
+                                        ? `Byt namn på rummet i ${kingdomHall.street_address}.`
+                                        : `Lägg till ett nytt rum i ${kingdomHall.street_address}.`}
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="room-name">Name</Label>
+                                <Label htmlFor="room-name">Namn</Label>
                                 <Input
                                     id="room-name"
                                     name="name"
                                     type="text"
                                     defaultValue={room?.name ?? ''}
-                                    placeholder="e.g. Main hall"
+                                    placeholder="t.ex. Stora salen"
                                     required
                                     maxLength={255}
                                 />
@@ -87,11 +89,11 @@ export default function RoomModal({
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">Cancel</Button>
+                                    <Button variant="secondary">Avbryt</Button>
                                 </DialogClose>
 
                                 <Button type="submit" disabled={processing}>
-                                    {isEditing ? 'Save' : 'Add room'}
+                                    {isEditing ? 'Spara' : 'Lägg till rum'}
                                 </Button>
                             </DialogFooter>
                         </>

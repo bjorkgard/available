@@ -31,7 +31,7 @@ type Props = {
 };
 
 const allRoleOptions: RoleOption[] = [
-    { value: 'member', label: 'Member' },
+    { value: 'member', label: 'Medlem' },
     { value: 'admin', label: 'Admin' },
     { value: 'superadmin', label: 'Superadmin' },
 ];
@@ -77,22 +77,22 @@ export default function InviteMemberDialog({
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
-                                <DialogTitle>Invite a member</DialogTitle>
+                                <DialogTitle>Bjud in en medlem</DialogTitle>
                                 <DialogDescription>
-                                    Send an invitation to join this
-                                    congregation.
+                                    Skicka en inbjudan att gå med i denna
+                                    församling.
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="invite-name">Name</Label>
+                                    <Label htmlFor="invite-name">Namn</Label>
                                     <Input
                                         id="invite-name"
                                         name="name"
                                         type="text"
                                         data-test="invite-name"
-                                        placeholder="John Doe"
+                                        placeholder="Förnamn Efternamn"
                                         required
                                     />
                                     <InputError message={errors.name} />
@@ -100,21 +100,21 @@ export default function InviteMemberDialog({
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="invite-email">
-                                        Email address
+                                        E-postadress
                                     </Label>
                                     <Input
                                         id="invite-email"
                                         name="email"
                                         type="email"
                                         data-test="invite-email"
-                                        placeholder="colleague@example.com"
+                                        placeholder="kollega@example.com"
                                         required
                                     />
                                     <InputError message={errors.email} />
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="invite-role">Role</Label>
+                                    <Label htmlFor="invite-role">Roll</Label>
                                     <Select
                                         name="role"
                                         value={selectedRole}
@@ -129,7 +129,7 @@ export default function InviteMemberDialog({
                                             data-test="invite-role"
                                             className="w-full"
                                         >
-                                            <SelectValue placeholder="Select a role" />
+                                            <SelectValue placeholder="Välj en roll" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {availableRoles.map((role) => (
@@ -148,7 +148,7 @@ export default function InviteMemberDialog({
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">Cancel</Button>
+                                    <Button variant="secondary">Avbryt</Button>
                                 </DialogClose>
 
                                 <Button
@@ -156,7 +156,7 @@ export default function InviteMemberDialog({
                                     data-test="invite-submit"
                                     disabled={processing}
                                 >
-                                    Send invitation
+                                    Skicka inbjudan
                                 </Button>
                             </DialogFooter>
                         </>

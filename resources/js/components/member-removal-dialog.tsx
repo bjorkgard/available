@@ -65,10 +65,10 @@ export default function MemberRemovalDialog({
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Remove {memberName}</DialogTitle>
+                    <DialogTitle>Ta bort {memberName}</DialogTitle>
                     <DialogDescription>
-                        This member has future bookings. Choose what to do with
-                        them before removing the member.
+                        Den här medlemmen har framtida bokningar. Välj vad som
+                        ska hända med dem innan medlemmen tas bort.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -86,20 +86,22 @@ export default function MemberRemovalDialog({
                                 id="action-transfer"
                             />
                             <Label htmlFor="action-transfer">
-                                Transfer bookings to another member
+                                Överför bokningar till en annan medlem
                             </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="delete" id="action-delete" />
                             <Label htmlFor="action-delete">
-                                Delete future bookings
+                                Ta bort framtida bokningar
                             </Label>
                         </div>
                     </RadioGroup>
 
                     {action === 'transfer' && (
                         <div className="grid gap-2">
-                            <Label htmlFor="transfer-target">Transfer to</Label>
+                            <Label htmlFor="transfer-target">
+                                Överför till
+                            </Label>
                             <Select
                                 value={transferTo}
                                 onValueChange={setTransferTo}
@@ -108,7 +110,7 @@ export default function MemberRemovalDialog({
                                     id="transfer-target"
                                     className="w-full"
                                 >
-                                    <SelectValue placeholder="Select a member" />
+                                    <SelectValue placeholder="Välj en medlem" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {targetMembers.map((member) => (
@@ -127,7 +129,7 @@ export default function MemberRemovalDialog({
 
                 <DialogFooter className="gap-2">
                     <DialogClose asChild>
-                        <Button variant="secondary">Cancel</Button>
+                        <Button variant="secondary">Avbryt</Button>
                     </DialogClose>
 
                     <Button
@@ -135,7 +137,7 @@ export default function MemberRemovalDialog({
                         disabled={isConfirmDisabled}
                         onClick={handleConfirm}
                     >
-                        Remove member
+                        Ta bort medlem
                     </Button>
                 </DialogFooter>
             </DialogContent>

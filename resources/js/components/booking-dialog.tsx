@@ -207,9 +207,7 @@ export default function BookingDialog({
         const formData = new FormData(event.currentTarget);
 
         // Build the JSON body from form data
-        const dateStr = selectedDate
-            ? format(selectedDate, 'yyyy-MM-dd')
-            : '';
+        const dateStr = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
         const body: Record<string, unknown> = {
             name: formData.get('name') as string,
             starts_at: `${dateStr} ${formData.get('start_time')}:00`,
@@ -277,7 +275,7 @@ export default function BookingDialog({
 
             if (response.ok) {
                 toast.success(
-                    isEditing ? 'Booking updated.' : 'Booking created.',
+                    isEditing ? 'Bokning uppdaterad.' : 'Bokning skapad.',
                 );
                 onOpenChange(false);
             } else if (response.status === 422) {
@@ -293,16 +291,14 @@ export default function BookingDialog({
                 }
 
                 setErrors(fieldErrors);
-                toast.error('Please fix the errors below and try again.');
+                toast.error('Åtgärda felen nedan och försök igen.');
             } else if (response.status === 403) {
-                toast.error(
-                    'You do not have permission to perform this action.',
-                );
+                toast.error('Du har inte behörighet att utföra denna åtgärd.');
             } else {
-                toast.error('Something went wrong. Please try again.');
+                toast.error('Något gick fel. Försök igen.');
             }
         } catch {
-            toast.error('Network error. Please check your connection.');
+            toast.error('Nätverksfel. Kontrollera din anslutning.');
         } finally {
             setProcessing(false);
         }
@@ -343,351 +339,357 @@ export default function BookingDialog({
 
     return (
         <>
-        <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
-                <form
-                    ref={formRef}
-                    className="space-y-6"
-                    onSubmit={handleSubmit}
-                >
-                    <DialogHeader>
-                        <DialogTitle>
-                            {isEditing ? 'Edit booking' : 'Create booking'}
-                        </DialogTitle>
-                        <DialogDescription>
-                            {isEditing
-                                ? 'Update the booking details below.'
-                                : 'Fill in the details to reserve a room.'}
-                        </DialogDescription>
-                    </DialogHeader>
+            <Dialog open={open} onOpenChange={handleOpenChange}>
+                <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+                    <form
+                        ref={formRef}
+                        className="space-y-6"
+                        onSubmit={handleSubmit}
+                    >
+                        <DialogHeader>
+                            <DialogTitle>
+                                {isEditing ? 'Redigera bokning' : 'Ny bokning'}
+                            </DialogTitle>
+                            <DialogDescription>
+                                {isEditing
+                                    ? 'Uppdatera bokningsuppgifterna nedan.'
+                                    : 'Fyll i detaljerna för att reservera ett rum.'}
+                            </DialogDescription>
+                        </DialogHeader>
 
-                    <div className="grid gap-4">
-                        {/* Booking name */}
-                        <div className="grid gap-2">
-                            <Label htmlFor="booking-name">Name</Label>
-                            <Input
-                                id="booking-name"
-                                name="name"
-                                type="text"
-                                defaultValue={booking?.name ?? ''}
-                                placeholder="e.g. Service group meeting"
-                                required
-                                maxLength={255}
-                            />
-                            <InputError message={errors.name} />
-                        </div>
-
-                        {/* Date */}
-                        <div className="grid gap-2">
-                            <Label>Date</Label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className={cn(
-                                            'w-full justify-start text-left font-normal',
-                                            !selectedDate &&
-                                                'text-muted-foreground',
-                                        )}
-                                    >
-                                        <CalendarIcon className="size-4" />
-                                        {selectedDate
-                                            ? format(selectedDate, 'PPP', {
-                                                  locale: sv,
-                                              })
-                                            : 'Pick a date'}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                    className="w-auto p-0"
-                                    align="start"
-                                >
-                                    <Calendar
-                                        mode="single"
-                                        selected={selectedDate}
-                                        onSelect={setSelectedDate}
-                                        locale={sv}
-                                        autoFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                            <input
-                                type="hidden"
-                                name="start_date"
-                                value={
-                                    selectedDate
-                                        ? format(selectedDate, 'yyyy-MM-dd')
-                                        : ''
-                                }
-                            />
-                            <InputError message={errors.starts_at} />
-                        </div>
-
-                        {/* Time range */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid gap-4">
+                            {/* Booking name */}
                             <div className="grid gap-2">
-                                <Label htmlFor="booking-start-time">
-                                    From
-                                </Label>
+                                <Label htmlFor="booking-name">Namn</Label>
                                 <Input
-                                    id="booking-start-time"
-                                    name="start_time"
-                                    type="time"
-                                    step={900}
-                                    defaultValue={defaultStartTime}
+                                    id="booking-name"
+                                    name="name"
+                                    type="text"
+                                    defaultValue={booking?.name ?? ''}
+                                    placeholder="t.ex. Tjänstegrupp"
                                     required
+                                    maxLength={255}
                                 />
-                                <InputError message={errors.start_time} />
+                                <InputError message={errors.name} />
                             </div>
 
+                            {/* Date */}
                             <div className="grid gap-2">
-                                <Label htmlFor="booking-end-time">To</Label>
-                                <Input
-                                    id="booking-end-time"
-                                    name="end_time"
-                                    type="time"
-                                    step={900}
-                                    defaultValue={defaultEndTime}
-                                    required
-                                />
-                                <InputError message={errors.end_time} />
-                            </div>
-                        </div>
-
-                        {/* Room selection */}
-                        <div className="grid gap-2">
-                            <Label>Rooms</Label>
-                            <div className="grid gap-2 rounded-md border p-3">
-                                {rooms.length === 0 && (
-                                    <p className="text-sm text-muted-foreground">
-                                        No rooms available.
-                                    </p>
-                                )}
-                                {rooms.map((room) => (
-                                    <label
-                                        key={room.id}
-                                        className="flex items-center gap-2"
-                                    >
-                                        <Checkbox
-                                            name="room_ids[]"
-                                            value={room.id}
-                                            checked={selectedRooms.includes(
-                                                room.id,
+                                <Label>Datum</Label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className={cn(
+                                                'w-full justify-start text-left font-normal',
+                                                !selectedDate &&
+                                                    'text-muted-foreground',
                                             )}
-                                            onCheckedChange={(checked) =>
-                                                handleRoomToggle(
-                                                    room.id,
-                                                    checked === true,
-                                                )
-                                            }
+                                        >
+                                            <CalendarIcon className="size-4" />
+                                            {selectedDate
+                                                ? format(selectedDate, 'PPP', {
+                                                      locale: sv,
+                                                  })
+                                                : 'Välj ett datum'}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                        className="w-auto p-0"
+                                        align="start"
+                                    >
+                                        <Calendar
+                                            mode="single"
+                                            selected={selectedDate}
+                                            onSelect={setSelectedDate}
+                                            locale={sv}
+                                            autoFocus
                                         />
-                                        <span className="text-sm">
-                                            {room.name}
-                                        </span>
-                                    </label>
-                                ))}
-                            </div>
-                            <InputError message={errors.room_ids} />
-                            <InputError message={errors['room_ids.0']} />
-                        </div>
-
-                        {/* Recurrence toggle — only shown when creating, not editing */}
-                        {!isEditing && (
-                        <div className="grid gap-3">
-                            <label className="flex items-center gap-2">
-                                <Checkbox
-                                    name="is_recurring"
-                                    value="1"
-                                    checked={isRecurring}
-                                    onCheckedChange={(checked) =>
-                                        setIsRecurring(checked === true)
+                                    </PopoverContent>
+                                </Popover>
+                                <input
+                                    type="hidden"
+                                    name="start_date"
+                                    value={
+                                        selectedDate
+                                            ? format(selectedDate, 'yyyy-MM-dd')
+                                            : ''
                                     }
                                 />
-                                <span className="text-sm font-medium">
-                                    Repeat this booking
-                                </span>
-                            </label>
+                                <InputError message={errors.starts_at} />
+                            </div>
 
-                            {isRecurring && (
-                                <div className="grid gap-3 rounded-md border p-3">
-                                    {/* Frequency */}
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="booking-frequency">
-                                            Frequency
-                                        </Label>
-                                        <Select
-                                            name="recurrence_frequency"
-                                            value={frequency}
-                                            onValueChange={(v) =>
-                                                setFrequency(
-                                                    v as RecurrenceFrequency,
-                                                )
-                                            }
+                            {/* Time range */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="booking-start-time">
+                                        Från
+                                    </Label>
+                                    <Input
+                                        id="booking-start-time"
+                                        name="start_time"
+                                        type="time"
+                                        step={900}
+                                        defaultValue={defaultStartTime}
+                                        required
+                                    />
+                                    <InputError message={errors.start_time} />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="booking-end-time">
+                                        Till
+                                    </Label>
+                                    <Input
+                                        id="booking-end-time"
+                                        name="end_time"
+                                        type="time"
+                                        step={900}
+                                        defaultValue={defaultEndTime}
+                                        required
+                                    />
+                                    <InputError message={errors.end_time} />
+                                </div>
+                            </div>
+
+                            {/* Room selection */}
+                            <div className="grid gap-2">
+                                <Label>Rum</Label>
+                                <div className="grid gap-2 rounded-md border p-3">
+                                    {rooms.length === 0 && (
+                                        <p className="text-sm text-muted-foreground">
+                                            Inga rum tillgängliga.
+                                        </p>
+                                    )}
+                                    {rooms.map((room) => (
+                                        <label
+                                            key={room.id}
+                                            className="flex items-center gap-2"
                                         >
-                                            <SelectTrigger
-                                                id="booking-frequency"
-                                                className="w-full"
-                                            >
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="daily">
-                                                    Daily
-                                                </SelectItem>
-                                                <SelectItem value="weekly">
-                                                    Weekly
-                                                </SelectItem>
-                                                <SelectItem value="monthly">
-                                                    Monthly
-                                                </SelectItem>
-                                                <SelectItem value="yearly">
-                                                    Yearly
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <InputError
-                                            message={
-                                                errors.recurrence_frequency
+                                            <Checkbox
+                                                name="room_ids[]"
+                                                value={room.id}
+                                                checked={selectedRooms.includes(
+                                                    room.id,
+                                                )}
+                                                onCheckedChange={(checked) =>
+                                                    handleRoomToggle(
+                                                        room.id,
+                                                        checked === true,
+                                                    )
+                                                }
+                                            />
+                                            <span className="text-sm">
+                                                {room.name}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                                <InputError message={errors.room_ids} />
+                                <InputError message={errors['room_ids.0']} />
+                            </div>
+
+                            {/* Recurrence toggle — only shown when creating, not editing */}
+                            {!isEditing && (
+                                <div className="grid gap-3">
+                                    <label className="flex items-center gap-2">
+                                        <Checkbox
+                                            name="is_recurring"
+                                            value="1"
+                                            checked={isRecurring}
+                                            onCheckedChange={(checked) =>
+                                                setIsRecurring(checked === true)
                                             }
                                         />
-                                    </div>
+                                        <span className="text-sm font-medium">
+                                            Upprepa bokningen
+                                        </span>
+                                    </label>
 
-                                    {/* End condition */}
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="booking-end-type">
-                                            Ends
-                                        </Label>
-                                        <Select
-                                            name="recurrence_end_type"
-                                            value={endType}
-                                            onValueChange={(v) =>
-                                                setEndType(
-                                                    v as RecurrenceEndType,
-                                                )
-                                            }
-                                        >
-                                            <SelectTrigger
-                                                id="booking-end-type"
-                                                className="w-full"
-                                            >
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="date">
-                                                    On a date
-                                                </SelectItem>
-                                                <SelectItem value="count">
-                                                    After N occurrences
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                    {isRecurring && (
+                                        <div className="grid gap-3 rounded-md border p-3">
+                                            {/* Frequency */}
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="booking-frequency">
+                                                    Frekvens
+                                                </Label>
+                                                <Select
+                                                    name="recurrence_frequency"
+                                                    value={frequency}
+                                                    onValueChange={(v) =>
+                                                        setFrequency(
+                                                            v as RecurrenceFrequency,
+                                                        )
+                                                    }
+                                                >
+                                                    <SelectTrigger
+                                                        id="booking-frequency"
+                                                        className="w-full"
+                                                    >
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="daily">
+                                                            Dagligen
+                                                        </SelectItem>
+                                                        <SelectItem value="weekly">
+                                                            Veckovis
+                                                        </SelectItem>
+                                                        <SelectItem value="monthly">
+                                                            Månadsvis
+                                                        </SelectItem>
+                                                        <SelectItem value="yearly">
+                                                            Årligen
+                                                        </SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <InputError
+                                                    message={
+                                                        errors.recurrence_frequency
+                                                    }
+                                                />
+                                            </div>
 
-                                    {endType === 'date' && (
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="booking-recurrence-end-date">
-                                                End date
-                                            </Label>
-                                            <Input
-                                                id="booking-recurrence-end-date"
-                                                name="recurrence_end_date"
-                                                type="date"
-                                                required
-                                            />
-                                            <InputError
-                                                message={
-                                                    errors.recurrence_end_date
-                                                }
-                                            />
-                                        </div>
-                                    )}
+                                            {/* End condition */}
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="booking-end-type">
+                                                    Slutar
+                                                </Label>
+                                                <Select
+                                                    name="recurrence_end_type"
+                                                    value={endType}
+                                                    onValueChange={(v) =>
+                                                        setEndType(
+                                                            v as RecurrenceEndType,
+                                                        )
+                                                    }
+                                                >
+                                                    <SelectTrigger
+                                                        id="booking-end-type"
+                                                        className="w-full"
+                                                    >
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="date">
+                                                            På ett datum
+                                                        </SelectItem>
+                                                        <SelectItem value="count">
+                                                            Efter N tillfällen
+                                                        </SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
 
-                                    {endType === 'count' && (
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="booking-recurrence-end-count">
-                                                Number of occurrences
-                                            </Label>
-                                            <Input
-                                                id="booking-recurrence-end-count"
-                                                name="recurrence_end_count"
-                                                type="number"
-                                                min={1}
-                                                max={365}
-                                                placeholder="e.g. 10"
-                                                required
-                                            />
-                                            <InputError
-                                                message={
-                                                    errors.recurrence_end_count
-                                                }
-                                            />
+                                            {endType === 'date' && (
+                                                <div className="grid gap-2">
+                                                    <Label htmlFor="booking-recurrence-end-date">
+                                                        Slutdatum
+                                                    </Label>
+                                                    <Input
+                                                        id="booking-recurrence-end-date"
+                                                        name="recurrence_end_date"
+                                                        type="date"
+                                                        required
+                                                    />
+                                                    <InputError
+                                                        message={
+                                                            errors.recurrence_end_date
+                                                        }
+                                                    />
+                                                </div>
+                                            )}
+
+                                            {endType === 'count' && (
+                                                <div className="grid gap-2">
+                                                    <Label htmlFor="booking-recurrence-end-count">
+                                                        Antal tillfällen
+                                                    </Label>
+                                                    <Input
+                                                        id="booking-recurrence-end-count"
+                                                        name="recurrence_end_count"
+                                                        type="number"
+                                                        min={1}
+                                                        max={365}
+                                                        placeholder="t.ex. 10"
+                                                        required
+                                                    />
+                                                    <InputError
+                                                        message={
+                                                            errors.recurrence_end_count
+                                                        }
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
                             )}
-                        </div>
-                        )}
 
-                        {/* Congregation selector (superadmin only) */}
-                        {showCongregationSelector && (
-                            <div className="grid gap-2">
-                                <Label htmlFor="booking-congregation">
-                                    Congregation
-                                </Label>
-                                <Select
+                            {/* Congregation selector (superadmin only) */}
+                            {showCongregationSelector && (
+                                <div className="grid gap-2">
+                                    <Label htmlFor="booking-congregation">
+                                        Församling
+                                    </Label>
+                                    <Select
+                                        name="congregation_id"
+                                        value={congregationId}
+                                        onValueChange={setCongregationId}
+                                    >
+                                        <SelectTrigger
+                                            id="booking-congregation"
+                                            className="w-full"
+                                        >
+                                            <SelectValue placeholder="Välj församling" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {congregations!.map((cong) => (
+                                                <SelectItem
+                                                    key={cong.id}
+                                                    value={cong.id}
+                                                >
+                                                    {cong.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError
+                                        message={errors.congregation_id}
+                                    />
+                                </div>
+                            )}
+
+                            {/* Hidden congregation_id when selector is not shown */}
+                            {!showCongregationSelector && (
+                                <input
+                                    type="hidden"
                                     name="congregation_id"
                                     value={congregationId}
-                                    onValueChange={setCongregationId}
-                                >
-                                    <SelectTrigger
-                                        id="booking-congregation"
-                                        className="w-full"
-                                    >
-                                        <SelectValue placeholder="Select congregation" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {congregations!.map((cong) => (
-                                            <SelectItem
-                                                key={cong.id}
-                                                value={cong.id}
-                                            >
-                                                {cong.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.congregation_id} />
-                            </div>
-                        )}
+                                />
+                            )}
+                        </div>
 
-                        {/* Hidden congregation_id when selector is not shown */}
-                        {!showCongregationSelector && (
-                            <input
-                                type="hidden"
-                                name="congregation_id"
-                                value={congregationId}
-                            />
-                        )}
-                    </div>
+                        <DialogFooter className="gap-2">
+                            <DialogClose asChild>
+                                <Button variant="secondary">Avbryt</Button>
+                            </DialogClose>
 
-                    <DialogFooter className="gap-2">
-                        <DialogClose asChild>
-                            <Button variant="secondary">Cancel</Button>
-                        </DialogClose>
+                            <Button type="submit" disabled={processing}>
+                                {isEditing
+                                    ? 'Spara ändringar'
+                                    : 'Skapa bokning'}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
 
-                        <Button type="submit" disabled={processing}>
-                            {isEditing ? 'Save changes' : 'Create booking'}
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-
-        <RecurrenceEditPrompt
-            open={scopePromptOpen}
-            onSelect={handleScopeSelect}
-            onCancel={handleScopeCancel}
-        />
+            <RecurrenceEditPrompt
+                open={scopePromptOpen}
+                onSelect={handleScopeSelect}
+                onCancel={handleScopeCancel}
+            />
         </>
     );
 }

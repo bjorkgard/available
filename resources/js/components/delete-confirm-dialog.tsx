@@ -38,19 +38,19 @@ export default function DeleteConfirmDialog({
                 <AlertDialogHeader>
                     <AlertDialogTitle>
                         {isRecurring
-                            ? 'Delete recurring booking'
-                            : 'Delete booking'}
+                            ? 'Ta bort återkommande bokning'
+                            : 'Ta bort bokning'}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                         {isRecurring
-                            ? `"${bookingName}" is part of a recurring series. How would you like to delete it?`
-                            : `Are you sure you want to delete "${bookingName}"? This action cannot be undone.`}
+                            ? `"${bookingName}" är del av en återkommande serie. Hur vill du ta bort den?`
+                            : `Är du säker på att du vill ta bort "${bookingName}"? Denna åtgärd kan inte ångras.`}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
 
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={onCancel}>
-                        Cancel
+                        Avbryt
                     </AlertDialogCancel>
 
                     {isRecurring ? (
@@ -59,13 +59,13 @@ export default function DeleteConfirmDialog({
                                 variant="outline"
                                 onClick={() => onConfirm('this_only')}
                             >
-                                Delete this only
+                                Bara denna
                             </AlertDialogAction>
                             <AlertDialogAction
                                 variant="destructive"
                                 onClick={() => onConfirm('all_future')}
                             >
-                                Delete all future
+                                Alla framtida
                             </AlertDialogAction>
                         </>
                     ) : (
@@ -73,7 +73,7 @@ export default function DeleteConfirmDialog({
                             variant="destructive"
                             onClick={() => onConfirm('all')}
                         >
-                            Delete
+                            Ta bort
                         </AlertDialogAction>
                     )}
                 </AlertDialogFooter>

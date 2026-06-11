@@ -94,7 +94,7 @@ export function CongregationSwitcher({
                                     : 'truncate font-semibold'
                             }
                         >
-                            {currentCongregation?.name ?? 'Select congregation'}
+                            {currentCongregation?.name ?? 'Välj församling'}
                         </span>
                     </div>
                     <ChevronsUpDown
@@ -117,7 +117,7 @@ export function CongregationSwitcher({
                 sideOffset={inHeader ? undefined : 4}
             >
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
-                    Congregations
+                    Församlingar
                 </DropdownMenuLabel>
                 {congregations.map((congregation) => (
                     <DropdownMenuItem
@@ -154,7 +154,7 @@ export function CongregationSwitcher({
                         disabled
                         className="text-muted-foreground"
                     >
-                        No congregations
+                        Inga församlingar
                     </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />

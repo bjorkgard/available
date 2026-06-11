@@ -41,26 +41,26 @@ export default function AddressEditModal({
                     method="put"
                     className="space-y-6"
                     onSuccess={() => {
-                        toast.success('Address updated successfully.');
+                        toast.success('Adress uppdaterad.');
                         onOpenChange(false);
                     }}
                     onError={() => {
-                        toast.error('Something went wrong. Please try again.');
+                        toast.error('Något gick fel. Försök igen.');
                     }}
                 >
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
-                                <DialogTitle>Edit address</DialogTitle>
+                                <DialogTitle>Redigera adress</DialogTitle>
                                 <DialogDescription>
-                                    Update the Kingdom Hall address details.
+                                    Uppdatera Rikets sals adressuppgifter.
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="address-street_address">
-                                        Street address
+                                        Gatuadress
                                     </Label>
                                     <Input
                                         id="address-street_address"
@@ -79,7 +79,7 @@ export default function AddressEditModal({
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="address-zip_code">
-                                        Zip code
+                                        Postnummer
                                     </Label>
                                     <Input
                                         id="address-zip_code"
@@ -93,7 +93,7 @@ export default function AddressEditModal({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="address-city">City</Label>
+                                    <Label htmlFor="address-city">Ort</Label>
                                     <Input
                                         id="address-city"
                                         name="city"
@@ -108,11 +108,11 @@ export default function AddressEditModal({
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">Cancel</Button>
+                                    <Button variant="secondary">Avbryt</Button>
                                 </DialogClose>
 
                                 <Button type="submit" disabled={processing}>
-                                    Save changes
+                                    Spara ändringar
                                 </Button>
                             </DialogFooter>
                         </>

@@ -61,11 +61,11 @@ function getNavigationLabel(viewMode: ViewMode): {
 } {
     switch (viewMode) {
         case 'month':
-            return { previous: 'Previous month', next: 'Next month' };
+            return { previous: 'Föregående månad', next: 'Nästa månad' };
         case 'week':
-            return { previous: 'Previous week', next: 'Next week' };
+            return { previous: 'Föregående vecka', next: 'Nästa vecka' };
         case 'day':
-            return { previous: 'Previous day', next: 'Next day' };
+            return { previous: 'Föregående dag', next: 'Nästa dag' };
     }
 }
 
@@ -155,7 +155,7 @@ export function CalendarHeader({
                 value={String(displayedMonth)}
                 onValueChange={(value) => onSelectMonth(Number(value))}
             >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Välj månad">
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -171,7 +171,7 @@ export function CalendarHeader({
                 value={String(displayedYear)}
                 onValueChange={(value) => onSelectYear(Number(value))}
             >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Välj år">
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -212,11 +212,11 @@ export function CalendarHeader({
                         disabled={isToday}
                         aria-disabled={isToday}
                     >
-                        Today
+                        Idag
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Jump to today</p>
+                    <p>Gå till idag</p>
                 </TooltipContent>
             </Tooltip>
 
@@ -227,14 +227,14 @@ export function CalendarHeader({
                             <Button
                                 variant="outline"
                                 size="icon"
-                                aria-label="View mode"
+                                aria-label="Byt vy"
                             >
                                 <CalendarDays />
                             </Button>
                         </DropdownMenuTrigger>
                     </TooltipTrigger>
                     <DropdownMenuContent align="start">
-                        <DropdownMenuLabel>View</DropdownMenuLabel>
+                        <DropdownMenuLabel>Vy</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuRadioGroup
                             value={viewMode}
@@ -243,22 +243,22 @@ export function CalendarHeader({
                             }
                         >
                             <DropdownMenuRadioItem value="month">
-                                Month
+                                Månad
                                 <DropdownMenuShortcut>⌘0</DropdownMenuShortcut>
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem value="week">
-                                Week
+                                Vecka
                                 <DropdownMenuShortcut>⌘1</DropdownMenuShortcut>
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem value="day">
-                                Day
+                                Dag
                                 <DropdownMenuShortcut>⌘2</DropdownMenuShortcut>
                             </DropdownMenuRadioItem>
                         </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
                 <TooltipContent>
-                    <p>Change view mode</p>
+                    <p>Byt vy</p>
                 </TooltipContent>
             </Tooltip>
 
@@ -286,7 +286,7 @@ export function CalendarHeader({
                 <div className="ml-auto">
                     <Button onClick={onCreateBooking}>
                         <Plus />
-                        Create Booking
+                        Ny bokning
                     </Button>
                 </div>
             )}

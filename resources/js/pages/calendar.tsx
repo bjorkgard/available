@@ -1,5 +1,5 @@
 import { Head, usePage } from '@inertiajs/react';
-import { WifiOff } from 'lucide-react';
+import { WifiOff, Loader2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -41,15 +41,16 @@ import { calendar } from '@/routes';
 import type { BookingResource, Congregation, KingdomHall, Room } from '@/types';
 
 export default function Calendar() {
-    const { currentCongregation, congregations: sharedCongregations } = usePage<{
-        currentCongregation?: {
-            slug: string;
-            id: string;
-            kingdom_hall_id: string | null;
-            kingdom_hall?: KingdomHall;
-        };
-        congregations: Congregation[];
-    }>().props;
+    const { currentCongregation, congregations: sharedCongregations } =
+        usePage<{
+            currentCongregation?: {
+                slug: string;
+                id: string;
+                kingdom_hall_id: string | null;
+                kingdom_hall?: KingdomHall;
+            };
+            congregations: Congregation[];
+        }>().props;
 
     const rooms: Room[] = currentCongregation?.kingdom_hall?.rooms ?? [];
     const congregations: Congregation[] = sharedCongregations ?? [];
@@ -70,6 +71,7 @@ export default function Calendar() {
 
     // Booking state
     const [bookings, setBookings] = useState<BookingResource[]>([]);
+    const [bookingsLoading, setBookingsLoading] = useState(true);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogInitialDate, setDialogInitialDate] = useState<
         string | undefined
@@ -80,9 +82,8 @@ export default function Calendar() {
     const [editingBooking, setEditingBooking] = useState<
         BookingResource | undefined
     >();
-    const [deletingBooking, setDeletingBooking] = useState<
-        BookingResource | null
-    >(null);
+    const [deletingBooking, setDeletingBooking] =
+        useState<BookingResource | null>(null);
 
     // Drag-and-drop recurrence scope prompt state
     const [dragScopePromptOpen, setDragScopePromptOpen] = useState(false);
@@ -90,7 +91,11 @@ export default function Calendar() {
         ((scope: RecurrenceEditScope | null) => void) | null
     >(null);
 
-    const { getDragProps, getDropZoneProps, state: dragState } = useDragBooking({
+    const {
+        getDragProps,
+        getDropZoneProps,
+        state: dragState,
+    } = useDragBooking({
         congregationSlug: currentCongregation?.slug ?? '',
         onRecurrencePrompt: () => {
             return new Promise<RecurrenceEditScope | null>((resolve) => {
@@ -199,9 +204,9 @@ export default function Calendar() {
             return;
         }
 
-        const userName = newBookings[0]?.user_name ?? 'Someone';
+        const userName = newBookings[0]?.user_name ?? 'Någon';
 
-        toast.info(`${userName} created a booking`);
+        toast.info(`${userName} skapade en bokning`);
 
         // Filter to only include bookings within the current visible range
         const fromDate = new Date(dateRangeKey.from);
@@ -232,17 +237,17 @@ export default function Calendar() {
 
     function handleBookingUpdated(event: BookingUpdatedEvent) {
         const updatedBookings = event.bookings ?? [];
-        const userName = updatedBookings[0]?.user_name ?? 'Someone';
+        const userName = updatedBookings[0]?.user_name ?? 'Någon';
 
-        toast.info(`${userName} updated a booking`);
+        toast.info(`${userName} uppdaterade en bokning`);
         refetchBookings();
     }
 
     function handleBookingDeleted(event: BookingDeletedEvent) {
         const idsToRemove = new Set<string>(event.booking_ids ?? []);
-        const userName = event.user_name || 'Someone';
+        const userName = event.user_name || 'Någon';
 
-        toast.info(`${userName} deleted a booking`);
+        toast.info(`${userName} tog bort en bokning`);
         setBookings((prev) => prev.filter((b) => !idsToRemove.has(b.id)));
     }
 
@@ -266,6 +271,10 @@ export default function Calendar() {
         let cancelled = false;
 
         async function load() {
+            if (!cancelled) {
+                setBookingsLoading(true);
+            }
+
             try {
                 const response = await fetch(url, {
                     headers: {
@@ -282,6 +291,10 @@ export default function Calendar() {
                 }
             } catch {
                 // Silently fail — bookings will appear empty
+            } finally {
+                if (!cancelled) {
+                    setBookingsLoading(false);
+                }
             }
         }
 
@@ -479,16 +492,18 @@ export default function Calendar() {
             });
 
             if (response.ok || response.status === 204) {
-                toast.success('Booking deleted.');
+                toast.success('Bokning borttagen.');
                 setDeletingBooking(null);
                 refetchBookings();
             } else if (response.status === 403) {
-                toast.error('You do not have permission to delete this booking.');
+                toast.error(
+                    'Du har inte behörighet att ta bort denna bokning.',
+                );
             } else {
-                toast.error('Failed to delete booking.');
+                toast.error('Kunde inte ta bort bokningen.');
             }
         } catch {
-            toast.error('Network error. Please try again.');
+            toast.error('Nätverksfel. Försök igen.');
         }
     }
 
@@ -536,58 +551,77 @@ export default function Calendar() {
                         <WifiOff className="h-3.5 w-3.5" />
                         <span>
                             {connectionStatus === 'connecting'
-                                ? 'Reconnecting…'
+                                ? 'Återansluter…'
                                 : 'Offline'}
                         </span>
                     </div>
                 )}
                 <div className="min-h-0 flex-1">
-                    {viewMode === 'month' && (
-                        <MonthGrid
-                            grid={grid}
-                            today={today}
-                            bookings={bookings}
-                            onFillerDateClick={onFillerDateClick}
-                            onCreateBooking={handleCreateBooking}
-                            onEditBooking={handleEditBooking}
-                            onDeleteBooking={handleDeleteBooking}
-                            getDragProps={getDragProps}
-                            getDropZoneProps={getDropZoneProps}
-                            draggedBookingId={dragState.draggedBookingId}
-                            draggedBooking={dragState.draggedBooking}
-                        />
-                    )}
-                    {viewMode === 'week' && (
-                        <WeekGrid
-                            days={weekDays}
-                            bookings={bookings}
-                            onCreateBooking={handleCreateBooking}
-                            onEditBooking={handleEditBooking}
-                            onDeleteBooking={handleDeleteBooking}
-                            getDragProps={getDragProps}
-                            getDropZoneProps={getDropZoneProps}
-                            draggedBookingId={dragState.draggedBookingId}
-                            draggedBooking={dragState.draggedBooking}
-                        />
-                    )}
-                    {viewMode === 'day' && (
-                        <DayGrid
-                            date={{
-                                day: displayedDay,
-                                month: displayedMonth,
-                                year: displayedYear,
-                            }}
-                            rooms={rooms}
-                            isToday={isDayToday}
-                            bookings={bookings}
-                            onCreateBooking={handleCreateBooking}
-                            onEditBooking={handleEditBooking}
-                            onDeleteBooking={handleDeleteBooking}
-                            getDragProps={getDragProps}
-                            getDropZoneProps={getDropZoneProps}
-                            draggedBookingId={dragState.draggedBookingId}
-                            draggedBooking={dragState.draggedBooking}
-                        />
+                    {bookingsLoading ? (
+                        <div className="flex h-full items-center justify-center">
+                            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                                <span className="text-sm">
+                                    Laddar bokningar…
+                                </span>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            {viewMode === 'month' && (
+                                <MonthGrid
+                                    grid={grid}
+                                    today={today}
+                                    bookings={bookings}
+                                    onFillerDateClick={onFillerDateClick}
+                                    onCreateBooking={handleCreateBooking}
+                                    onEditBooking={handleEditBooking}
+                                    onDeleteBooking={handleDeleteBooking}
+                                    getDragProps={getDragProps}
+                                    getDropZoneProps={getDropZoneProps}
+                                    draggedBookingId={
+                                        dragState.draggedBookingId
+                                    }
+                                    draggedBooking={dragState.draggedBooking}
+                                />
+                            )}
+                            {viewMode === 'week' && (
+                                <WeekGrid
+                                    days={weekDays}
+                                    bookings={bookings}
+                                    onCreateBooking={handleCreateBooking}
+                                    onEditBooking={handleEditBooking}
+                                    onDeleteBooking={handleDeleteBooking}
+                                    getDragProps={getDragProps}
+                                    getDropZoneProps={getDropZoneProps}
+                                    draggedBookingId={
+                                        dragState.draggedBookingId
+                                    }
+                                    draggedBooking={dragState.draggedBooking}
+                                />
+                            )}
+                            {viewMode === 'day' && (
+                                <DayGrid
+                                    date={{
+                                        day: displayedDay,
+                                        month: displayedMonth,
+                                        year: displayedYear,
+                                    }}
+                                    rooms={rooms}
+                                    isToday={isDayToday}
+                                    bookings={bookings}
+                                    onCreateBooking={handleCreateBooking}
+                                    onEditBooking={handleEditBooking}
+                                    onDeleteBooking={handleDeleteBooking}
+                                    getDragProps={getDragProps}
+                                    getDropZoneProps={getDropZoneProps}
+                                    draggedBookingId={
+                                        dragState.draggedBookingId
+                                    }
+                                    draggedBooking={dragState.draggedBooking}
+                                />
+                            )}
+                        </>
                     )}
                 </div>
             </div>
