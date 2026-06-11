@@ -20,7 +20,7 @@ class EnsureCongregationMembership
     {
         [$user, $congregation] = [$request->user(), $this->congregation($request)];
 
-        abort_if(! $user || ! $congregation || ! $user->belongsToCongregation($congregation), 403);
+        abort_if(! $user || ! $congregation || ! $this->canAccessCongregation($user, $congregation), 403);
 
         $this->ensureMemberHasRequiredRole($user, $congregation, $minimumRole);
 
@@ -29,6 +29,17 @@ class EnsureCongregationMembership
         }
 
         return $next($request);
+    }
+
+    /**
+     * Determine if the user can access the given congregation.
+     *
+     * Access is granted to direct members OR superadmins in the same Kingdom Hall.
+     */
+    protected function canAccessCongregation(User $user, Congregation $congregation): bool
+    {
+        return $user->belongsToCongregation($congregation)
+            || $user->isSuperadminInSameKingdomHall($congregation);
     }
 
     /**

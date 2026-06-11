@@ -50,7 +50,7 @@ trait HasCongregations
      */
     public function switchCongregation(Congregation $congregation): bool
     {
-        if (! $this->belongsToCongregation($congregation)) {
+        if (! $this->belongsToCongregation($congregation) && ! $this->isSuperadminInSameKingdomHall($congregation)) {
             return false;
         }
 
@@ -80,13 +80,27 @@ trait HasCongregations
 
     /**
      * Get the user's role in the given congregation.
+     *
+     * Returns the direct membership role, or Superadmin if the user is a
+     * superadmin in another congregation that shares the same Kingdom Hall.
      */
     public function congregationRole(Congregation $congregation): ?CongregationRole
     {
-        return $this->congregationMemberships()
+        $directRole = $this->congregationMemberships()
             ->where('congregation_id', $congregation->id)
             ->first()
             ?->role;
+
+        if ($directRole !== null) {
+            return $directRole;
+        }
+
+        // Superadmins in the same Kingdom Hall get superadmin access
+        if ($this->isSuperadminInSameKingdomHall($congregation)) {
+            return CongregationRole::Superadmin;
+        }
+
+        return null;
     }
 
     /**
@@ -131,6 +145,22 @@ trait HasCongregations
         }
 
         return $this->congregationRole($congregation) !== null;
+    }
+
+    /**
+     * Determine if the user is a superadmin in any congregation that shares
+     * the same Kingdom Hall as the given congregation.
+     */
+    public function isSuperadminInSameKingdomHall(Congregation $congregation): bool
+    {
+        if (! $congregation->kingdom_hall_id) {
+            return false;
+        }
+
+        return Membership::where('user_id', $this->id)
+            ->where('role', CongregationRole::Superadmin)
+            ->whereHas('congregation', fn ($query) => $query->where('kingdom_hall_id', $congregation->kingdom_hall_id))
+            ->exists();
     }
 
     /**

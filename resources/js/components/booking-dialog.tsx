@@ -140,19 +140,6 @@ export default function BookingDialog({
     // Reset selectedDate when the dialog opens with new props
     const prevOpenRef = useRef(false);
 
-    if (open && !prevOpenRef.current) {
-        // Dialog just opened — sync the date from props
-        const newDate = defaultStartDate
-            ? new Date(defaultStartDate + 'T00:00:00')
-            : undefined;
-
-        if (newDate?.getTime() !== selectedDate?.getTime()) {
-            setSelectedDate(newDate);
-        }
-    }
-
-    prevOpenRef.current = open;
-
     const defaultRoomIds = booking ? booking.rooms.map((r) => r.id) : [];
     const defaultCongregationId = booking
         ? booking.congregation_id
@@ -166,6 +153,31 @@ export default function BookingDialog({
     const [frequency, setFrequency] = useState<RecurrenceFrequency>('weekly');
     const [endType, setEndType] = useState<RecurrenceEndType>('date');
     const [congregationId, setCongregationId] = useState(defaultCongregationId);
+
+    // Sync form state when dialog opens (same or different booking)
+    const prevBookingIdRef = useRef<string | null>(null);
+    const justOpened = open && !prevOpenRef.current;
+    const bookingChanged =
+        open && (booking?.id ?? null) !== prevBookingIdRef.current;
+
+    if (justOpened || bookingChanged) {
+        // Sync date
+        const newDate = defaultStartDate
+            ? new Date(defaultStartDate + 'T00:00:00')
+            : undefined;
+
+        if (newDate?.getTime() !== selectedDate?.getTime()) {
+            setSelectedDate(newDate);
+        }
+
+        // Sync rooms, congregation, and recurrence
+        prevBookingIdRef.current = booking?.id ?? null;
+        setSelectedRooms(defaultRoomIds);
+        setCongregationId(defaultCongregationId);
+        setIsRecurring(!!booking?.recurrence_pattern_id);
+    }
+
+    prevOpenRef.current = open;
 
     const showCongregationSelector = useMemo(() => {
         return congregations && congregations.length > 1;
