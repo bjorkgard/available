@@ -203,6 +203,7 @@ export default function BookingDialog({
             starts_at: `${dateStr} ${formData.get('start_time')}:00`,
             ends_at: `${dateStr} ${formData.get('end_time')}:00`,
             room_ids: selectedRooms,
+            congregation_id: congregationId,
         };
 
         if (isRecurring) {
