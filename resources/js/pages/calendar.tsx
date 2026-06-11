@@ -41,18 +41,18 @@ import { calendar } from '@/routes';
 import type { BookingResource, Congregation, KingdomHall, Room } from '@/types';
 
 export default function Calendar() {
-    const { currentCongregation } = usePage<{
+    const { currentCongregation, congregations: sharedCongregations } = usePage<{
         currentCongregation?: {
             slug: string;
             id: string;
             kingdom_hall_id: string | null;
             kingdom_hall?: KingdomHall;
         };
+        congregations: Congregation[];
     }>().props;
 
     const rooms: Room[] = currentCongregation?.kingdom_hall?.rooms ?? [];
-    const congregations: Congregation[] =
-        currentCongregation?.kingdom_hall?.congregations ?? [];
+    const congregations: Congregation[] = sharedCongregations ?? [];
     const kingdomHallId: string | undefined =
         currentCongregation?.kingdom_hall?.id ??
         currentCongregation?.kingdom_hall_id ??

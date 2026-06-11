@@ -9,6 +9,7 @@ use App\Actions\Bookings\UpdateBooking;
 use App\Enums\DeleteScope;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Congregation;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -60,7 +61,17 @@ class BookingController extends Controller
      */
     public function store(Request $request, string $currentCongregation, CreateBooking $createBooking): JsonResponse
     {
-        $congregation = $request->user()->currentCongregation;
+        $user = $request->user();
+        $congregation = $user->currentCongregation;
+
+        // Superadmins can book for other congregations in the same Kingdom Hall
+        if ($request->has('congregation_id') && $request->input('congregation_id') !== $congregation->id) {
+            $targetCongregation = Congregation::find($request->input('congregation_id'));
+
+            if ($targetCongregation && $targetCongregation->kingdom_hall_id === $congregation->kingdom_hall_id) {
+                $congregation = $targetCongregation;
+            }
+        }
 
         $this->authorize('create', [Booking::class, $congregation]);
 

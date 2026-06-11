@@ -33,10 +33,25 @@ class BookingPolicy
      * Determine whether the user can create bookings for the given congregation.
      *
      * Any member of the congregation can create bookings.
+     * Superadmins can create for any congregation in the same Kingdom Hall.
      */
     public function create(User $user, Congregation $congregation): bool
     {
-        return $user->belongsToCongregation($congregation);
+        if ($user->belongsToCongregation($congregation)) {
+            return true;
+        }
+
+        // Allow superadmins in any congregation sharing the same Kingdom Hall
+        $kingdomHallId = $congregation->kingdom_hall_id;
+
+        if (! $kingdomHallId) {
+            return false;
+        }
+
+        return Membership::where('user_id', $user->id)
+            ->where('role', CongregationRole::Superadmin)
+            ->whereHas('congregation', fn ($q) => $q->where('kingdom_hall_id', $kingdomHallId))
+            ->exists();
     }
 
     /**
