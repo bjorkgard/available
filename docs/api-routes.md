@@ -4,7 +4,9 @@
 
 ## Route Structure
 
-All routes are server-rendered via Inertia — there is no separate REST API. Routes are defined in:
+Most routes are server-rendered via Inertia (returning full page components). However, some routes are **JSON endpoints** consumed by the frontend via XHR — notably the booking CRUD routes, which return `JsonResponse` and are called by the calendar's JavaScript code rather than visited as page navigations. These are marked in the tables below.
+
+Routes are defined in:
 
 - `routes/web.php` — main application routes
 - `routes/settings.php` — user settings routes
@@ -55,19 +57,21 @@ All routes below are prefixed with `/{current_congregation}` and require:
 - Congregation membership
 - Kingdom Hall configured
 
-### Bookings
+### Bookings (JSON endpoints)
 
-| Method | URI | Name | Controller |
-|--------|-----|------|-----------|
-| GET | `/calendar` | `calendar` | Inertia (calendar) |
-| GET | `/bookings` | `bookings.index` | BookingController@index |
-| POST | `/bookings` | `bookings.store` | BookingController@store |
-| GET | `/bookings/{booking}` | `bookings.show` | BookingController@show |
-| PUT | `/bookings/{booking}` | `bookings.update` | BookingController@update |
-| PATCH | `/bookings/{booking}/reschedule` | `bookings.reschedule` | BookingController@reschedule |
-| DELETE | `/bookings/{booking}` | `bookings.destroy` | BookingController@destroy |
+These routes return `JsonResponse` and are consumed via XHR by the calendar frontend — they are **not** Inertia page visits.
 
-### Members (admin+ required)
+| Method | URI | Name | Controller | Notes |
+|--------|-----|------|-----------|-------|
+| GET | `/calendar` | `calendar` | Inertia page | Renders the calendar page component |
+| GET | `/bookings` | `bookings.index` | BookingController@index | JSON. Query params: `from` (date, required), `to` (date, required) |
+| POST | `/bookings` | `bookings.store` | BookingController@store | JSON 201. Body: `name`, `start_date`/`start_time` or `starts_at`, `end_date`/`end_time` or `ends_at`, `room_ids[]`, optional `congregation_id`, optional recurrence fields |
+| GET | `/bookings/{booking}` | `bookings.show` | BookingController@show | JSON. Returns single booking resource |
+| PUT | `/bookings/{booking}` | `bookings.update` | BookingController@update | JSON. Body: `name`, `starts_at`, `ends_at`, `room_ids[]`, `scope` |
+| PATCH | `/bookings/{booking}/reschedule` | `bookings.reschedule` | BookingController@reschedule | JSON. Body: `starts_at` (date, required), `scope` (`this_only` or `this_and_future`) |
+| DELETE | `/bookings/{booking}` | `bookings.destroy` | BookingController@destroy | JSON 204. Body: `scope` (`this_only`, `all_future`, or `all`) |
+
+### Members (Inertia pages, admin+ required)
 
 | Method | URI | Name | Controller |
 |--------|-----|------|-----------|
@@ -77,7 +81,7 @@ All routes below are prefixed with `/{current_congregation}` and require:
 | PUT | `/members/{member}` | `members.update` | MemberController@update |
 | DELETE | `/members/{member}` | `members.destroy` | MemberController@destroy |
 
-### Congregation Settings (admin+ required)
+### Congregation Settings (Inertia pages, admin+ required)
 
 | Method | URI | Name | Controller |
 |--------|-----|------|-----------|
