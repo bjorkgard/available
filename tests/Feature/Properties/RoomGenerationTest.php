@@ -36,9 +36,9 @@ test('room auto-generation produces correctly named rooms for random room counts
     // Verify exactly N rooms exist
     expect($rooms)->toHaveCount($roomCount);
 
-    // Verify rooms are named "Room 1" through "Room N" in order
+    // Verify rooms are named "Rum 1" through "Rum N" in order (Swedish is the default locale)
     for ($i = 1; $i <= $roomCount; $i++) {
-        expect($rooms[$i - 1]->name)->toBe("Room {$i}")
+        expect($rooms[$i - 1]->name)->toBe(__('Room :number', ['number' => $i]))
             ->and($rooms[$i - 1]->sort_order)->toBe($i);
     }
 })->repeat(30);
