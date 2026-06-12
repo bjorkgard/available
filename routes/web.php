@@ -7,11 +7,16 @@ use App\Http\Controllers\Congregations\KingdomHallController;
 use App\Http\Controllers\Congregations\MemberController;
 use App\Http\Controllers\Congregations\RoomController;
 use App\Http\Controllers\Congregations\SetupWizardController;
+use App\Http\Controllers\Settings\LocaleController;
+use App\Http\Controllers\TranslationController;
 use App\Http\Middleware\EnsureCongregationMembership;
 use App\Http\Middleware\EnsureHasKingdomHall;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
+
+Route::get('api/translations/{locale}', [TranslationController::class, 'show'])->name('translations.show');
+Route::post('locale', [LocaleController::class, 'store'])->name('locale.store');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('setup', [SetupWizardController::class, 'show'])->name('setup.show');
