@@ -30,19 +30,19 @@ export function AppSidebar() {
 
     const mainNavItems: NavItem[] = [
         {
-            title: 'Calendar',
+            title: 'Kalender',
             href: slug ? `/${slug}/calendar` : '/',
             icon: CalendarDays,
         },
         ...(isAdmin
             ? [
                   {
-                      title: 'Members',
+                      title: 'Medlemmar',
                       href: slug ? `/${slug}/members` : '#',
                       icon: Users,
                   },
                   {
-                      title: 'Congregation',
+                      title: 'Församling',
                       href: slug ? `/${slug}/congregation` : '#',
                       icon: Church,
                   },
@@ -51,7 +51,7 @@ export function AppSidebar() {
         ...(isSuperadmin
             ? [
                   {
-                      title: 'Kingdom Hall',
+                      title: 'Rikets sal',
                       href: slug ? `/${slug}/kingdom-hall` : '#',
                       icon: Building2,
                   },

@@ -33,36 +33,34 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
                     method="post"
                     className="space-y-6"
                     onSuccess={() => {
-                        toast.success('Congregation added successfully.');
+                        toast.success('Församling tillagd.');
                         onOpenChange(false);
                     }}
                     onError={() => {
-                        toast.error(
-                            'Please fix the errors below and try again.',
-                        );
+                        toast.error('Åtgärda felen nedan och försök igen.');
                     }}
                 >
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
-                                <DialogTitle>Add congregation</DialogTitle>
+                                <DialogTitle>Lägg till församling</DialogTitle>
                                 <DialogDescription>
-                                    Add a new congregation to this Kingdom Hall.
-                                    An invitation will be sent to the
-                                    responsible person.
+                                    Lägg till en ny församling i Rikets sal. En
+                                    inbjudan skickas till den ansvariga
+                                    personen.
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="congregation-name">
-                                        Congregation name
+                                        Församlingsnamn
                                     </Label>
                                     <Input
                                         id="congregation-name"
                                         name="name"
                                         type="text"
-                                        placeholder="Congregation name"
+                                        placeholder="Församlingsnamn"
                                         maxLength={255}
                                         required
                                     />
@@ -71,7 +69,7 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="congregation-number">
-                                        Congregation number
+                                        Församlingsnummer
                                     </Label>
                                     <Input
                                         id="congregation-number"
@@ -88,13 +86,13 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="initial-user-name">
-                                        Responsible person name
+                                        Ansvarig persons namn
                                     </Label>
                                     <Input
                                         id="initial-user-name"
                                         name="initial_user_name"
                                         type="text"
-                                        placeholder="John Doe"
+                                        placeholder="Förnamn Efternamn"
                                         maxLength={255}
                                         required
                                     />
@@ -105,7 +103,7 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="initial-user-email">
-                                        Responsible person email
+                                        Ansvarig persons e-post
                                     </Label>
                                     <Input
                                         id="initial-user-email"
@@ -123,11 +121,11 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">Cancel</Button>
+                                    <Button variant="secondary">Avbryt</Button>
                                 </DialogClose>
 
                                 <Button type="submit" disabled={processing}>
-                                    Add congregation
+                                    Lägg till församling
                                 </Button>
                             </DialogFooter>
                         </>

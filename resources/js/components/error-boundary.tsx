@@ -49,19 +49,19 @@ export class ErrorBoundary extends Component<Props, State> {
                             </div>
 
                             <h2 className="text-xl font-semibold tracking-tight">
-                                Something went wrong
+                                Något gick fel
                             </h2>
 
                             <p className="text-sm text-muted-foreground">
-                                An unexpected error occurred while rendering this
-                                page. This is usually temporary — try refreshing.
+                                Ett oväntat fel inträffade. Det är oftast
+                                tillfälligt, försök att ladda om sidan.
                             </p>
                         </div>
 
                         {this.state.error && (
                             <div className="rounded-lg border bg-muted/50 p-4 text-left">
-                                <p className="mb-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                                    Error details
+                                <p className="mb-1 text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                                    Feldetaljer
                                 </p>
                                 <p className="font-mono text-xs text-red-600 dark:text-red-400">
                                     {this.state.error.message}
@@ -79,11 +79,11 @@ export class ErrorBoundary extends Component<Props, State> {
                                     })
                                 }
                             >
-                                Try again
+                                Försök igen
                             </Button>
 
                             <Button onClick={() => window.location.reload()}>
-                                Refresh page
+                                Ladda om sidan
                             </Button>
                         </div>
                     </div>

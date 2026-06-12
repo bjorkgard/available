@@ -8,7 +8,6 @@ import { APP_LOCALE } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 import type { BookingResource, Room } from '@/types';
 
-
 interface DayGridProps {
     date: { day: number; month: number; year: number };
     rooms: Room[];
@@ -191,7 +190,7 @@ export function DayGrid({
                 ))}
                 {rooms.length === 0 && (
                     <div className="flex items-center justify-center p-2 text-sm text-muted-foreground">
-                        No rooms configured
+                        Inga rum konfigurerade
                     </div>
                 )}
             </div>
@@ -252,23 +251,43 @@ export function DayGrid({
                                 <div
                                     className="relative border-l"
                                     onDragOver={(e) => {
-                                        if (getDropZoneProps && draggedBooking) {
+                                        if (
+                                            getDropZoneProps &&
+                                            draggedBooking
+                                        ) {
                                             e.preventDefault();
                                             e.dataTransfer.dropEffect = 'move';
 
-                                            const rect = e.currentTarget.getBoundingClientRect();
-                                            const relativeY = e.clientY - rect.top;
+                                            const rect =
+                                                e.currentTarget.getBoundingClientRect();
+                                            const relativeY =
+                                                e.clientY - rect.top;
                                             const totalHeight = rect.height;
                                             const totalMinutes = Math.round(
-                                                (relativeY / totalHeight) * 24 * 60,
+                                                (relativeY / totalHeight) *
+                                                    24 *
+                                                    60,
                                             );
-                                            const snappedMinutes = Math.round(totalMinutes / 15) * 15;
-                                            const topPercent = (snappedMinutes / (24 * 60)) * 100;
+                                            const snappedMinutes =
+                                                Math.round(totalMinutes / 15) *
+                                                15;
+                                            const topPercent =
+                                                (snappedMinutes / (24 * 60)) *
+                                                100;
 
-                                            const origStart = new Date(draggedBooking.starts_at);
-                                            const origEnd = new Date(draggedBooking.ends_at);
-                                            const durationMinutes = (origEnd.getTime() - origStart.getTime()) / 60000;
-                                            const heightPercent = (durationMinutes / (24 * 60)) * 100;
+                                            const origStart = new Date(
+                                                draggedBooking.starts_at,
+                                            );
+                                            const origEnd = new Date(
+                                                draggedBooking.ends_at,
+                                            );
+                                            const durationMinutes =
+                                                (origEnd.getTime() -
+                                                    origStart.getTime()) /
+                                                60000;
+                                            const heightPercent =
+                                                (durationMinutes / (24 * 60)) *
+                                                100;
 
                                             const roomIdx = rooms.indexOf(room);
                                             setGhostPosition({
@@ -289,14 +308,18 @@ export function DayGrid({
                                         }
 
                                         e.preventDefault();
-                                        const rect = e.currentTarget.getBoundingClientRect();
+                                        const rect =
+                                            e.currentTarget.getBoundingClientRect();
                                         const relativeY = e.clientY - rect.top;
                                         const totalHeight = rect.height;
                                         const totalMinutes = Math.round(
                                             (relativeY / totalHeight) * 24 * 60,
                                         );
-                                        const snappedMinutes = Math.round(totalMinutes / 15) * 15;
-                                        const hour = Math.floor(snappedMinutes / 60);
+                                        const snappedMinutes =
+                                            Math.round(totalMinutes / 15) * 15;
+                                        const hour = Math.floor(
+                                            snappedMinutes / 60,
+                                        );
                                         const minute = snappedMinutes % 60;
 
                                         const target: DropTarget = {
@@ -310,13 +333,10 @@ export function DayGrid({
                                     onContextMenu={(e) => {
                                         const rect =
                                             e.currentTarget.getBoundingClientRect();
-                                        const relativeY =
-                                            e.clientY - rect.top;
+                                        const relativeY = e.clientY - rect.top;
                                         const totalHeight = rect.height;
                                         const totalMinutes = Math.round(
-                                            (relativeY / totalHeight) *
-                                                24 *
-                                                60,
+                                            (relativeY / totalHeight) * 24 * 60,
                                         );
                                         const snappedMinutes =
                                             Math.round(totalMinutes / 15) * 15;
@@ -329,9 +349,8 @@ export function DayGrid({
                                             );
                                         // Check if right-click originated from a booking
                                         const target = e.target as HTMLElement;
-                                        const bookingEl = target.closest(
-                                            '[data-booking-id]',
-                                        );
+                                        const bookingEl =
+                                            target.closest('[data-booking-id]');
 
                                         flushSync(() => {
                                             if (bookingEl) {
@@ -342,7 +361,9 @@ export function DayGrid({
                                                 const found = roomBookings.find(
                                                     (b) => b.id === id,
                                                 );
-                                                setContextBooking(found ?? null);
+                                                setContextBooking(
+                                                    found ?? null,
+                                                );
                                             } else {
                                                 setContextBooking(null);
                                             }
@@ -359,14 +380,13 @@ export function DayGrid({
 
                                     {/* Booking blocks */}
                                     {roomBookings.map((booking) => {
-                                        const layoutInfo =
-                                            overlapLayout.get(booking.id);
-                                        const column =
-                                            layoutInfo?.column ?? 0;
+                                        const layoutInfo = overlapLayout.get(
+                                            booking.id,
+                                        );
+                                        const column = layoutInfo?.column ?? 0;
                                         const totalColumns =
                                             layoutInfo?.totalColumns ?? 1;
-                                        const widthPercent =
-                                            100 / totalColumns;
+                                        const widthPercent = 100 / totalColumns;
                                         const leftPercent =
                                             column * widthPercent;
 
@@ -374,9 +394,12 @@ export function DayGrid({
                                             <div
                                                 key={booking.id}
                                                 data-booking-id={booking.id}
-                                                {...(getDragProps ? getDragProps(booking) : {})}
+                                                {...(getDragProps
+                                                    ? getDragProps(booking)
+                                                    : {})}
                                                 className={
-                                                    draggedBookingId === booking.id
+                                                    draggedBookingId ===
+                                                    booking.id
                                                         ? 'opacity-40'
                                                         : ''
                                                 }
@@ -396,9 +419,10 @@ export function DayGrid({
 
                                     {/* Ghost preview during drag */}
                                     {ghostPosition &&
-                                        ghostPosition.roomIndex === rooms.indexOf(room) && (
+                                        ghostPosition.roomIndex ===
+                                            rooms.indexOf(room) && (
                                             <div
-                                                className="pointer-events-none absolute left-1 right-1 rounded border-2 border-dashed border-primary/50 bg-primary/10"
+                                                className="pointer-events-none absolute right-1 left-1 rounded border-2 border-dashed border-primary/50 bg-primary/10"
                                                 style={{
                                                     top: `${ghostPosition.topPercent}%`,
                                                     height: `${ghostPosition.heightPercent}%`,

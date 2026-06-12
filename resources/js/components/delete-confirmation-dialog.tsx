@@ -60,11 +60,11 @@ export default function DeleteConfirmationDialog({
 
         router.delete(action, {
             onSuccess: () => {
-                toast.success('Deleted successfully.');
+                toast.success('Borttaget.');
                 onOpenChange(false);
             },
             onError: () => {
-                toast.error('Something went wrong. Please try again.');
+                toast.error('Något gick fel. Försök igen.');
             },
             onFinish: () => {
                 setProcessing(false);
@@ -104,7 +104,7 @@ export default function DeleteConfirmationDialog({
 
                 <DialogFooter className="gap-2">
                     <DialogClose asChild>
-                        <Button variant="secondary">Cancel</Button>
+                        <Button variant="secondary">Avbryt</Button>
                     </DialogClose>
 
                     <Button
@@ -112,7 +112,7 @@ export default function DeleteConfirmationDialog({
                         disabled={isConfirmDisabled}
                         onClick={handleConfirm}
                     >
-                        Confirm
+                        Bekräfta
                     </Button>
                 </DialogFooter>
             </DialogContent>

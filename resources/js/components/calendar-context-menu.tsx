@@ -123,7 +123,7 @@ export function CalendarContextMenu({
                     disabled={!!booking}
                 >
                     <Plus className="size-4" />
-                    Create Booking
+                    Ny bokning
                 </ContextMenuItem>
 
                 {/* Edit — disabled when no booking or user lacks permission */}
@@ -132,7 +132,7 @@ export function CalendarContextMenu({
                     disabled={!booking?.can_edit}
                 >
                     <PencilIcon className="size-4" />
-                    Edit
+                    Redigera
                 </ContextMenuItem>
 
                 {/* Delete — disabled when no booking or user lacks permission */}
@@ -142,7 +142,7 @@ export function CalendarContextMenu({
                     className="text-red-600 focus:text-red-600 dark:text-red-400 dark:focus:text-red-400"
                 >
                     <TrashIcon className="size-4" />
-                    Delete
+                    Ta bort
                 </ContextMenuItem>
             </ContextMenuContent>
         </ContextMenu>

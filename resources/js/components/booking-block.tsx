@@ -8,7 +8,6 @@ import {
 import { APP_LOCALE } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 
-
 export type ViewMode = 'month' | 'week' | 'day';
 
 export interface BookingBlockData {

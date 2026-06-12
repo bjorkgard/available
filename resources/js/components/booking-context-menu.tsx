@@ -84,65 +84,66 @@ export function BookingContextMenu({
                         {booking.name}
                     </ContextMenuLabel>
 
-                <ContextMenuSeparator />
+                    <ContextMenuSeparator />
 
-                <div className="space-y-1 px-2 py-1.5">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="size-3.5 shrink-0" />
-                        <span>
-                            {formatTimeRange(
-                                booking.starts_at,
-                                booking.ends_at,
-                            )}
-                        </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <DoorOpen className="size-3.5 shrink-0" />
-                        <span>
-                            {booking.rooms.map((r) => r.name).join(', ')}
-                        </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <User className="size-3.5 shrink-0" />
-                        <span>
-                            {booking.user_name} · {booking.congregation_name}
-                        </span>
-                    </div>
-
-                    {booking.recurrence_summary && (
+                    <div className="space-y-1 px-2 py-1.5">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Repeat className="size-3.5 shrink-0" />
-                            <span>{booking.recurrence_summary}</span>
+                            <Clock className="size-3.5 shrink-0" />
+                            <span>
+                                {formatTimeRange(
+                                    booking.starts_at,
+                                    booking.ends_at,
+                                )}
+                            </span>
                         </div>
+
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <DoorOpen className="size-3.5 shrink-0" />
+                            <span>
+                                {booking.rooms.map((r) => r.name).join(', ')}
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <User className="size-3.5 shrink-0" />
+                            <span>
+                                {booking.user_name} ·{' '}
+                                {booking.congregation_name}
+                            </span>
+                        </div>
+
+                        {booking.recurrence_summary && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Repeat className="size-3.5 shrink-0" />
+                                <span>{booking.recurrence_summary}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {hasActions && (
+                        <>
+                            <ContextMenuSeparator />
+
+                            {booking.can_edit && onEdit && (
+                                <ContextMenuItem onSelect={onEdit}>
+                                    <PencilIcon />
+                                    Redigera
+                                </ContextMenuItem>
+                            )}
+
+                            {booking.can_delete && onDelete && (
+                                <ContextMenuItem
+                                    variant="destructive"
+                                    onSelect={onDelete}
+                                >
+                                    <TrashIcon />
+                                    Ta bort
+                                </ContextMenuItem>
+                            )}
+                        </>
                     )}
-                </div>
-
-                {hasActions && (
-                    <>
-                        <ContextMenuSeparator />
-
-                        {booking.can_edit && onEdit && (
-                            <ContextMenuItem onSelect={onEdit}>
-                                <PencilIcon />
-                                Edit
-                            </ContextMenuItem>
-                        )}
-
-                        {booking.can_delete && onDelete && (
-                            <ContextMenuItem
-                                variant="destructive"
-                                onSelect={onDelete}
-                            >
-                                <TrashIcon />
-                                Delete
-                            </ContextMenuItem>
-                        )}
-                    </>
-                )}
-            </ContextMenuContent>
-        </ContextMenu>
+                </ContextMenuContent>
+            </ContextMenu>
         </div>
     );
 }

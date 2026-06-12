@@ -32,27 +32,27 @@ export default function RecurrenceEditPrompt({
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Edit recurring booking</DialogTitle>
+                    <DialogTitle>Redigera återkommande bokning</DialogTitle>
                     <DialogDescription>
-                        This booking is part of a recurring series. How would
-                        you like to apply your changes?
+                        Den här bokningen är del av en återkommande serie. Hur
+                        vill du tillämpa dina ändringar?
                     </DialogDescription>
                 </DialogHeader>
 
                 <DialogFooter className="gap-2 sm:gap-0">
                     <DialogClose asChild>
-                        <Button variant="secondary">Cancel</Button>
+                        <Button variant="secondary">Avbryt</Button>
                     </DialogClose>
 
                     <Button
                         variant="outline"
                         onClick={() => onSelect('this_only')}
                     >
-                        This occurrence only
+                        Bara denna
                     </Button>
 
                     <Button onClick={() => onSelect('this_and_future')}>
-                        This and all future
+                        Denna och alla framtida
                     </Button>
                 </DialogFooter>
             </DialogContent>
