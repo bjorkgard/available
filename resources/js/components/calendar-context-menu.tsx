@@ -17,7 +17,7 @@ import {
     ContextMenuSeparator,
     ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { APP_LOCALE } from '@/lib/locale';
+import { getAppLocale } from '@/lib/locale';
 import type { BookingResource } from '@/types';
 
 type CalendarContextMenuProps = {
@@ -33,13 +33,13 @@ function formatTimeRange(startsAt: string, endsAt: string): string {
     const start = new Date(startsAt);
     const end = new Date(endsAt);
 
-    const dateFormatter = new Intl.DateTimeFormat(APP_LOCALE, {
+    const dateFormatter = new Intl.DateTimeFormat(getAppLocale(), {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
     });
 
-    const timeFormatter = new Intl.DateTimeFormat(APP_LOCALE, {
+    const timeFormatter = new Intl.DateTimeFormat(getAppLocale(), {
         hour: '2-digit',
         minute: '2-digit',
     });

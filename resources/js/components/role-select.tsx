@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import {
     Select,
     SelectContent,
@@ -17,7 +19,7 @@ type RoleSelectProps = {
 const roleLabels: Record<CongregationRole, string> = {
     superadmin: 'Superadmin',
     admin: 'Admin',
-    member: 'Member',
+    member: 'Medlem',
 };
 
 function getAssignableRoles(viewerRole: CongregationRole): CongregationRole[] {
@@ -37,6 +39,7 @@ export default function RoleSelect({
     viewerRole,
     disabled,
 }: RoleSelectProps) {
+    const { t } = useTranslation();
     const assignableRoles = getAssignableRoles(viewerRole);
 
     if (assignableRoles.length === 0) {
@@ -50,12 +53,12 @@ export default function RoleSelect({
             disabled={disabled}
         >
             <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a role" />
+                <SelectValue placeholder={t('Välj en roll')} />
             </SelectTrigger>
             <SelectContent>
                 {assignableRoles.map((role) => (
                     <SelectItem key={role} value={role}>
-                        {roleLabels[role]}
+                        {t(roleLabels[role])}
                     </SelectItem>
                 ))}
             </SelectContent>

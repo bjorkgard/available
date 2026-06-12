@@ -4,6 +4,7 @@ import { sv } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import {
@@ -121,6 +122,7 @@ export default function BookingDialog({
         currentCongregation: { slug: string; id: string };
     }>().props;
 
+    const { t } = useTranslation();
     const isEditing = !!booking;
 
     const defaultStartDate = booking
@@ -275,7 +277,7 @@ export default function BookingDialog({
 
             if (response.ok) {
                 toast.success(
-                    isEditing ? 'Bokning uppdaterad.' : 'Bokning skapad.',
+                    isEditing ? t('Bokning uppdaterad.') : t('Bokning skapad.'),
                 );
                 onOpenChange(false);
             } else if (response.status === 422) {
@@ -291,14 +293,16 @@ export default function BookingDialog({
                 }
 
                 setErrors(fieldErrors);
-                toast.error('Åtgärda felen nedan och försök igen.');
+                toast.error(t('Åtgärda felen nedan och försök igen.'));
             } else if (response.status === 403) {
-                toast.error('Du har inte behörighet att utföra denna åtgärd.');
+                toast.error(
+                    t('Du har inte behörighet att utföra denna åtgärd.'),
+                );
             } else {
-                toast.error('Något gick fel. Försök igen.');
+                toast.error(t('Något gick fel. Försök igen.'));
             }
         } catch {
-            toast.error('Nätverksfel. Kontrollera din anslutning.');
+            toast.error(t('Nätverksfel. Kontrollera din anslutning.'));
         } finally {
             setProcessing(false);
         }
@@ -348,19 +352,25 @@ export default function BookingDialog({
                     >
                         <DialogHeader>
                             <DialogTitle>
-                                {isEditing ? 'Redigera bokning' : 'Ny bokning'}
+                                {isEditing
+                                    ? t('Redigera bokning')
+                                    : t('Ny bokning')}
                             </DialogTitle>
                             <DialogDescription>
                                 {isEditing
-                                    ? 'Uppdatera bokningsuppgifterna nedan.'
-                                    : 'Fyll i detaljerna för att reservera ett rum.'}
+                                    ? t('Uppdatera bokningsuppgifterna nedan.')
+                                    : t(
+                                          'Fyll i detaljerna för att reservera ett rum.',
+                                      )}
                             </DialogDescription>
                         </DialogHeader>
 
                         <div className="grid gap-4">
                             {/* Booking name */}
                             <div className="grid gap-2">
-                                <Label htmlFor="booking-name">Namn</Label>
+                                <Label htmlFor="booking-name">
+                                    {t('Namn')}
+                                </Label>
                                 <Input
                                     id="booking-name"
                                     name="name"
@@ -375,7 +385,7 @@ export default function BookingDialog({
 
                             {/* Date */}
                             <div className="grid gap-2">
-                                <Label>Datum</Label>
+                                <Label>{t('Datum')}</Label>
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <Button
@@ -391,7 +401,7 @@ export default function BookingDialog({
                                                 ? format(selectedDate, 'PPP', {
                                                       locale: sv,
                                                   })
-                                                : 'Välj ett datum'}
+                                                : t('Välj ett datum')}
                                         </Button>
                                     </PopoverTrigger>
                                     <PopoverContent
@@ -423,7 +433,7 @@ export default function BookingDialog({
                             <div className="grid grid-cols-2 gap-3">
                                 <div className="grid gap-2">
                                     <Label htmlFor="booking-start-time">
-                                        Från
+                                        {t('Från')}
                                     </Label>
                                     <Input
                                         id="booking-start-time"
@@ -438,7 +448,7 @@ export default function BookingDialog({
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="booking-end-time">
-                                        Till
+                                        {t('Till')}
                                     </Label>
                                     <Input
                                         id="booking-end-time"
@@ -454,11 +464,11 @@ export default function BookingDialog({
 
                             {/* Room selection */}
                             <div className="grid gap-2">
-                                <Label>Rum</Label>
+                                <Label>{t('Rum')}</Label>
                                 <div className="grid gap-2 rounded-md border p-3">
                                     {rooms.length === 0 && (
                                         <p className="text-sm text-muted-foreground">
-                                            Inga rum tillgängliga.
+                                            {t('Inga rum tillgängliga.')}
                                         </p>
                                     )}
                                     {rooms.map((room) => (
@@ -502,7 +512,7 @@ export default function BookingDialog({
                                             }
                                         />
                                         <span className="text-sm font-medium">
-                                            Upprepa bokningen
+                                            {t('Upprepa bokningen')}
                                         </span>
                                     </label>
 
@@ -511,7 +521,7 @@ export default function BookingDialog({
                                             {/* Frequency */}
                                             <div className="grid gap-2">
                                                 <Label htmlFor="booking-frequency">
-                                                    Frekvens
+                                                    {t('Frekvens')}
                                                 </Label>
                                                 <Select
                                                     name="recurrence_frequency"
@@ -530,16 +540,16 @@ export default function BookingDialog({
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectItem value="daily">
-                                                            Dagligen
+                                                            {t('Dagligen')}
                                                         </SelectItem>
                                                         <SelectItem value="weekly">
-                                                            Veckovis
+                                                            {t('Veckovis')}
                                                         </SelectItem>
                                                         <SelectItem value="monthly">
-                                                            Månadsvis
+                                                            {t('Månadsvis')}
                                                         </SelectItem>
                                                         <SelectItem value="yearly">
-                                                            Årligen
+                                                            {t('Årligen')}
                                                         </SelectItem>
                                                     </SelectContent>
                                                 </Select>
@@ -553,7 +563,7 @@ export default function BookingDialog({
                                             {/* End condition */}
                                             <div className="grid gap-2">
                                                 <Label htmlFor="booking-end-type">
-                                                    Slutar
+                                                    {t('Slutar')}
                                                 </Label>
                                                 <Select
                                                     name="recurrence_end_type"
@@ -572,10 +582,12 @@ export default function BookingDialog({
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectItem value="date">
-                                                            På ett datum
+                                                            {t('På ett datum')}
                                                         </SelectItem>
                                                         <SelectItem value="count">
-                                                            Efter N tillfällen
+                                                            {t(
+                                                                'Efter N tillfällen',
+                                                            )}
                                                         </SelectItem>
                                                     </SelectContent>
                                                 </Select>
@@ -584,7 +596,7 @@ export default function BookingDialog({
                                             {endType === 'date' && (
                                                 <div className="grid gap-2">
                                                     <Label htmlFor="booking-recurrence-end-date">
-                                                        Slutdatum
+                                                        {t('Slutdatum')}
                                                     </Label>
                                                     <Input
                                                         id="booking-recurrence-end-date"
@@ -603,7 +615,7 @@ export default function BookingDialog({
                                             {endType === 'count' && (
                                                 <div className="grid gap-2">
                                                     <Label htmlFor="booking-recurrence-end-count">
-                                                        Antal tillfällen
+                                                        {t('Antal tillfällen')}
                                                     </Label>
                                                     <Input
                                                         id="booking-recurrence-end-count"
@@ -630,7 +642,7 @@ export default function BookingDialog({
                             {showCongregationSelector && (
                                 <div className="grid gap-2">
                                     <Label htmlFor="booking-congregation">
-                                        Församling
+                                        {t('Församling')}
                                     </Label>
                                     <Select
                                         name="congregation_id"
@@ -641,7 +653,11 @@ export default function BookingDialog({
                                             id="booking-congregation"
                                             className="w-full"
                                         >
-                                            <SelectValue placeholder="Välj församling" />
+                                            <SelectValue
+                                                placeholder={t(
+                                                    'Välj församling',
+                                                )}
+                                            />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {congregations!.map((cong) => (
@@ -672,13 +688,13 @@ export default function BookingDialog({
 
                         <DialogFooter className="gap-2">
                             <DialogClose asChild>
-                                <Button variant="secondary">Avbryt</Button>
+                                <Button variant="secondary">
+                                    {t('Avbryt')}
+                                </Button>
                             </DialogClose>
 
                             <Button type="submit" disabled={processing}>
-                                {isEditing
-                                    ? 'Spara ändringar'
-                                    : 'Skapa bokning'}
+                                {isEditing ? t('Spara') : t('Skapa')}
                             </Button>
                         </DialogFooter>
                     </form>

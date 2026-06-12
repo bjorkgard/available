@@ -1,5 +1,6 @@
-import { Form } from '@inertiajs/react';
+import { Form, usePage } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -23,6 +24,11 @@ import {
 } from '@/components/ui/select';
 import type { CongregationRole, RoleOption } from '@/types';
 
+const LOCALE_LABELS: Record<string, string> = {
+    sv: 'Svenska',
+    en: 'English',
+};
+
 type Props = {
     congregationSlug: string;
     viewerRole: CongregationRole;
@@ -42,8 +48,14 @@ export default function InviteMemberDialog({
     open,
     onOpenChange,
 }: Props) {
+    const { t } = useTranslation();
+    const { currentCongregation, supportedLocales } = usePage().props;
+
+    const congregationLocale = currentCongregation?.locale ?? 'sv';
+
     const [selectedRole, setSelectedRole] =
         useState<CongregationRole>('member');
+    const [selectedLocale, setSelectedLocale] = useState(congregationLocale);
 
     const availableRoles = useMemo<RoleOption[]>(() => {
         if (viewerRole === 'superadmin') {
@@ -61,6 +73,7 @@ export default function InviteMemberDialog({
 
         if (!nextOpen) {
             setSelectedRole('member');
+            setSelectedLocale(congregationLocale);
         }
     };
 
@@ -77,22 +90,27 @@ export default function InviteMemberDialog({
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
-                                <DialogTitle>Bjud in en medlem</DialogTitle>
+                                <DialogTitle>
+                                    {t('Bjud in en medlem')}
+                                </DialogTitle>
                                 <DialogDescription>
-                                    Skicka en inbjudan att gå med i denna
-                                    församling.
+                                    {t(
+                                        'Skicka en inbjudan att gå med i denna församling.',
+                                    )}
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="invite-name">Namn</Label>
+                                    <Label htmlFor="invite-name">
+                                        {t('Namn')}
+                                    </Label>
                                     <Input
                                         id="invite-name"
                                         name="name"
                                         type="text"
                                         data-test="invite-name"
-                                        placeholder="Förnamn Efternamn"
+                                        placeholder={t('Förnamn Efternamn')}
                                         required
                                     />
                                     <InputError message={errors.name} />
@@ -100,7 +118,7 @@ export default function InviteMemberDialog({
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="invite-email">
-                                        E-postadress
+                                        {t('E-postadress')}
                                     </Label>
                                     <Input
                                         id="invite-email"
@@ -114,7 +132,9 @@ export default function InviteMemberDialog({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="invite-role">Roll</Label>
+                                    <Label htmlFor="invite-role">
+                                        {t('Roll')}
+                                    </Label>
                                     <Select
                                         name="role"
                                         value={selectedRole}
@@ -129,7 +149,9 @@ export default function InviteMemberDialog({
                                             data-test="invite-role"
                                             className="w-full"
                                         >
-                                            <SelectValue placeholder="Välj en roll" />
+                                            <SelectValue
+                                                placeholder={t('Välj en roll')}
+                                            />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {availableRoles.map((role) => (
@@ -144,11 +166,45 @@ export default function InviteMemberDialog({
                                     </Select>
                                     <InputError message={errors.role} />
                                 </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="invite-locale">
+                                        {t('Språk för inbjudan')}
+                                    </Label>
+                                    <Select
+                                        name="locale"
+                                        value={selectedLocale}
+                                        onValueChange={setSelectedLocale}
+                                    >
+                                        <SelectTrigger
+                                            id="invite-locale"
+                                            data-test="invite-locale"
+                                            className="w-full"
+                                        >
+                                            <SelectValue
+                                                placeholder={t('Välj språk')}
+                                            />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {supportedLocales.map((loc) => (
+                                                <SelectItem
+                                                    key={loc}
+                                                    value={loc}
+                                                >
+                                                    {LOCALE_LABELS[loc] ?? loc}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError message={errors.locale} />
+                                </div>
                             </div>
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">Avbryt</Button>
+                                    <Button variant="secondary">
+                                        {t('Avbryt')}
+                                    </Button>
                                 </DialogClose>
 
                                 <Button
@@ -156,7 +212,7 @@ export default function InviteMemberDialog({
                                     data-test="invite-submit"
                                     disabled={processing}
                                 >
-                                    Skicka inbjudan
+                                    {t('Skicka inbjudan')}
                                 </Button>
                             </DialogFooter>
                         </>

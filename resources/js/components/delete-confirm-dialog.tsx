@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -26,6 +27,8 @@ export default function DeleteConfirmDialog({
     onConfirm,
     onCancel,
 }: Props) {
+    const { t } = useTranslation();
+
     const handleOpenChange = (nextOpen: boolean) => {
         if (!nextOpen) {
             onCancel();
@@ -38,19 +41,25 @@ export default function DeleteConfirmDialog({
                 <AlertDialogHeader>
                     <AlertDialogTitle>
                         {isRecurring
-                            ? 'Ta bort återkommande bokning'
-                            : 'Ta bort bokning'}
+                            ? t('Ta bort återkommande bokning')
+                            : t('Ta bort bokning')}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                         {isRecurring
-                            ? `"${bookingName}" är del av en återkommande serie. Hur vill du ta bort den?`
-                            : `Är du säker på att du vill ta bort "${bookingName}"? Denna åtgärd kan inte ångras.`}
+                            ? t(
+                                  '":name" är del av en återkommande serie. Hur vill du ta bort den?',
+                                  { name: bookingName },
+                              )
+                            : t(
+                                  'Är du säker på att du vill ta bort ":name"? Denna åtgärd kan inte ångras.',
+                                  { name: bookingName },
+                              )}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
 
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={onCancel}>
-                        Avbryt
+                        {t('Avbryt')}
                     </AlertDialogCancel>
 
                     {isRecurring ? (
@@ -59,13 +68,13 @@ export default function DeleteConfirmDialog({
                                 variant="outline"
                                 onClick={() => onConfirm('this_only')}
                             >
-                                Bara denna
+                                {t('Bara denna')}
                             </AlertDialogAction>
                             <AlertDialogAction
                                 variant="destructive"
                                 onClick={() => onConfirm('all_future')}
                             >
-                                Alla framtida
+                                {t('Alla framtida')}
                             </AlertDialogAction>
                         </>
                     ) : (
@@ -73,7 +82,7 @@ export default function DeleteConfirmDialog({
                             variant="destructive"
                             onClick={() => onConfirm('all')}
                         >
-                            Ta bort
+                            {t('Ta bort')}
                         </AlertDialogAction>
                     )}
                 </AlertDialogFooter>

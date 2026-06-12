@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -22,6 +23,8 @@ export default function RecurrenceEditPrompt({
     onSelect,
     onCancel,
 }: Props) {
+    const { t } = useTranslation();
+
     const handleOpenChange = (nextOpen: boolean) => {
         if (!nextOpen) {
             onCancel();
@@ -32,27 +35,30 @@ export default function RecurrenceEditPrompt({
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Redigera återkommande bokning</DialogTitle>
+                    <DialogTitle>
+                        {t('Redigera återkommande bokning')}
+                    </DialogTitle>
                     <DialogDescription>
-                        Den här bokningen är del av en återkommande serie. Hur
-                        vill du tillämpa dina ändringar?
+                        {t(
+                            'Den här bokningen är del av en återkommande serie. Hur vill du tillämpa dina ändringar?',
+                        )}
                     </DialogDescription>
                 </DialogHeader>
 
                 <DialogFooter className="gap-2 sm:gap-0">
                     <DialogClose asChild>
-                        <Button variant="secondary">Avbryt</Button>
+                        <Button variant="secondary">{t('Avbryt')}</Button>
                     </DialogClose>
 
                     <Button
                         variant="outline"
                         onClick={() => onSelect('this_only')}
                     >
-                        Bara denna
+                        {t('Bara denna')}
                     </Button>
 
                     <Button onClick={() => onSelect('this_and_future')}>
-                        Denna och alla framtida
+                        {t('Denna och alla framtida')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

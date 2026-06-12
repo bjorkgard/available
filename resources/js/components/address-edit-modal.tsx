@@ -1,4 +1,5 @@
 import { Form, usePage } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import InputError from '@/components/input-error';
@@ -27,6 +28,7 @@ export default function AddressEditModal({
     open,
     onOpenChange,
 }: Props) {
+    const { t } = useTranslation();
     const { currentCongregation } = usePage<{
         currentCongregation: { slug: string };
     }>().props;
@@ -41,26 +43,30 @@ export default function AddressEditModal({
                     method="put"
                     className="space-y-6"
                     onSuccess={() => {
-                        toast.success('Adress uppdaterad.');
+                        toast.success(t('Adress uppdaterad.'));
                         onOpenChange(false);
                     }}
                     onError={() => {
-                        toast.error('Något gick fel. Försök igen.');
+                        toast.error(t('Något gick fel. Försök igen.'));
                     }}
                 >
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
-                                <DialogTitle>Redigera adress</DialogTitle>
+                                <DialogTitle>
+                                    {t('Redigera adress')}
+                                </DialogTitle>
                                 <DialogDescription>
-                                    Uppdatera Rikets sals adressuppgifter.
+                                    {t(
+                                        'Uppdatera Rikets sals adressuppgifter.',
+                                    )}
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="address-street_address">
-                                        Gatuadress
+                                        {t('Gatuadress')}
                                     </Label>
                                     <Input
                                         id="address-street_address"
@@ -79,7 +85,7 @@ export default function AddressEditModal({
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="address-zip_code">
-                                        Postnummer
+                                        {t('Postnummer')}
                                     </Label>
                                     <Input
                                         id="address-zip_code"
@@ -93,7 +99,9 @@ export default function AddressEditModal({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="address-city">Ort</Label>
+                                    <Label htmlFor="address-city">
+                                        {t('Ort')}
+                                    </Label>
                                     <Input
                                         id="address-city"
                                         name="city"
@@ -108,11 +116,13 @@ export default function AddressEditModal({
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">Avbryt</Button>
+                                    <Button variant="secondary">
+                                        {t('Avbryt')}
+                                    </Button>
                                 </DialogClose>
 
                                 <Button type="submit" disabled={processing}>
-                                    Spara ändringar
+                                    {t('Spara ändringar')}
                                 </Button>
                             </DialogFooter>
                         </>
