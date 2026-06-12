@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { sv } from 'date-fns/locale';
+import { enGB, sv } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useMemo, useRef, useState } from 'react';
@@ -122,7 +122,8 @@ export default function BookingDialog({
         currentCongregation: { slug: string; id: string };
     }>().props;
 
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const dateFnsLocale = i18n.language === 'en' ? enGB : sv;
     const isEditing = !!booking;
 
     const defaultStartDate = booking
@@ -399,7 +400,7 @@ export default function BookingDialog({
                                             <CalendarIcon className="size-4" />
                                             {selectedDate
                                                 ? format(selectedDate, 'PPP', {
-                                                      locale: sv,
+                                                      locale: dateFnsLocale,
                                                   })
                                                 : t('Välj ett datum')}
                                         </Button>
@@ -412,7 +413,7 @@ export default function BookingDialog({
                                             mode="single"
                                             selected={selectedDate}
                                             onSelect={setSelectedDate}
-                                            locale={sv}
+                                            locale={dateFnsLocale}
                                             autoFocus
                                         />
                                     </PopoverContent>
