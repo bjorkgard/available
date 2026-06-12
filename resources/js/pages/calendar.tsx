@@ -1,6 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
 import { WifiOff, Loader2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import {
@@ -41,6 +42,7 @@ import { calendar } from '@/routes';
 import type { BookingResource, Congregation, KingdomHall, Room } from '@/types';
 
 export default function Calendar() {
+    const { t } = useTranslation();
     const { currentCongregation, congregations: sharedCongregations } =
         usePage<{
             currentCongregation?: {
@@ -208,7 +210,7 @@ export default function Calendar() {
 
         const userName = newBookings[0]?.user_name ?? 'Någon';
 
-        toast.info(`${userName} skapade en bokning`);
+        toast.info(`${userName} ${t('skapade en bokning')}`);
 
         // Filter to only include bookings within the current visible range
         const fromDate = new Date(dateRangeKey.from);
@@ -241,7 +243,7 @@ export default function Calendar() {
         const updatedBookings = event.bookings ?? [];
         const userName = updatedBookings[0]?.user_name ?? 'Någon';
 
-        toast.info(`${userName} uppdaterade en bokning`);
+        toast.info(`${userName} ${t('uppdaterade en bokning')}`);
         refetchBookings();
     }
 
@@ -249,7 +251,7 @@ export default function Calendar() {
         const idsToRemove = new Set<string>(event.booking_ids ?? []);
         const userName = event.user_name || 'Någon';
 
-        toast.info(`${userName} tog bort en bokning`);
+        toast.info(`${userName} ${t('tog bort en bokning')}`);
         setBookings((prev) => prev.filter((b) => !idsToRemove.has(b.id)));
     }
 
@@ -494,18 +496,18 @@ export default function Calendar() {
             });
 
             if (response.ok || response.status === 204) {
-                toast.success('Bokning borttagen.');
+                toast.success(t('Bokning borttagen.'));
                 setDeletingBooking(null);
                 refetchBookings();
             } else if (response.status === 403) {
                 toast.error(
-                    'Du har inte behörighet att ta bort denna bokning.',
+                    t('Du har inte behörighet att ta bort denna bokning.'),
                 );
             } else {
-                toast.error('Kunde inte ta bort bokningen.');
+                toast.error(t('Kunde inte ta bort bokningen.'));
             }
         } catch {
-            toast.error('Nätverksfel. Försök igen.');
+            toast.error(t('Nätverksfel. Försök igen.'));
         }
     }
 
@@ -532,7 +534,7 @@ export default function Calendar() {
 
     return (
         <ErrorBoundary>
-            <Head title="Calendar" />
+            <Head title={t('Kalender')} />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <CalendarHeader
                     viewMode={viewMode}
@@ -553,8 +555,8 @@ export default function Calendar() {
                         <WifiOff className="h-3.5 w-3.5" />
                         <span>
                             {connectionStatus === 'connecting'
-                                ? 'Återansluter…'
-                                : 'Offline'}
+                                ? t('Återansluter…')
+                                : t('Offline')}
                         </span>
                     </div>
                 )}
@@ -564,7 +566,7 @@ export default function Calendar() {
                             <div className="flex flex-col items-center gap-2 text-muted-foreground">
                                 <Loader2 className="h-6 w-6 animate-spin" />
                                 <span className="text-sm">
-                                    Laddar bokningar…
+                                    {t('Laddar bokningar…')}
                                 </span>
                             </div>
                         </div>
@@ -660,7 +662,7 @@ export default function Calendar() {
 Calendar.layout = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
-            title: 'Calendar',
+            title: 'Kalender',
             href: props.currentTeam ? calendar(props.currentTeam.slug) : '/',
         },
     ],

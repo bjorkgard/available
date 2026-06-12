@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { Eye, Pencil } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
@@ -29,18 +30,22 @@ type Props = {
 };
 
 export default function CongregationsIndex({ teams }: Props) {
+    const { t } = useTranslation();
+
     return (
         <>
-            <Head title="Congregations" />
+            <Head title={t('Församlingar')} />
 
-            <h1 className="sr-only">Congregations</h1>
+            <h1 className="sr-only">{t('Församlingar')}</h1>
 
             <div className="flex flex-col space-y-6">
                 <div className="flex items-center justify-between">
                     <Heading
                         variant="small"
-                        title="Congregations"
-                        description="Manage your congregations and memberships"
+                        title={t('Församlingar')}
+                        description={t(
+                            'Hantera dina församlingar och medlemskap',
+                        )}
                     />
                 </div>
 
@@ -93,7 +98,7 @@ export default function CongregationsIndex({ teams }: Props) {
                                                 </Button>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p>View congregation</p>
+                                                <p>{t('Visa församling')}</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     ) : (
@@ -115,7 +120,9 @@ export default function CongregationsIndex({ teams }: Props) {
                                                 </Button>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p>Edit congregation</p>
+                                                <p>
+                                                    {t('Redigera församling')}
+                                                </p>
                                             </TooltipContent>
                                         </Tooltip>
                                     )}
@@ -126,7 +133,7 @@ export default function CongregationsIndex({ teams }: Props) {
 
                     {teams.length === 0 ? (
                         <p className="py-8 text-center text-muted-foreground">
-                            You don&apos;t belong to any congregations yet.
+                            {t('Du tillhör inga församlingar ännu.')}
                         </p>
                     ) : null}
                 </div>
@@ -138,7 +145,7 @@ export default function CongregationsIndex({ teams }: Props) {
 CongregationsIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Congregations',
+            title: 'Församlingar',
             href: index(),
         },
     ],

@@ -1,5 +1,6 @@
 import { Form, Head } from '@inertiajs/react';
 import { Monitor, Smartphone } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import SessionController from '@/actions/App/Http/Controllers/Settings/SessionController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -24,19 +25,22 @@ type Props = {
 };
 
 export default function Sessions({ sessions }: Props) {
+    const { t } = useTranslation();
     useFlashToast();
 
     return (
         <>
-            <Head title="Sessions" />
+            <Head title={t('Sessioner')} />
 
-            <h1 className="sr-only">Sessions</h1>
+            <h1 className="sr-only">{t('Sessioner')}</h1>
 
             <div className="space-y-6">
                 <Heading
                     variant="small"
-                    title="Active sessions"
-                    description="Manage and monitor your active sessions on other browsers and devices"
+                    title={t('Aktiva sessioner')}
+                    description={t(
+                        'Hantera och övervaka dina aktiva sessioner på andra enheter',
+                    )}
                 />
 
                 <ul className="space-y-4">
@@ -52,10 +56,10 @@ export default function Sessions({ sessions }: Props) {
 
                             <div className="flex-1 space-y-0.5">
                                 <p className="text-sm leading-none font-medium">
-                                    {session.browser} on {session.os}
+                                    {session.browser} {t('på')} {session.os}
                                     {session.is_current_device && (
                                         <span className="ml-2 inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20">
-                                            This device
+                                            {t('Denna enhet')}
                                         </span>
                                     )}
                                 </p>
@@ -72,8 +76,10 @@ export default function Sessions({ sessions }: Props) {
             <div className="space-y-6">
                 <Heading
                     variant="small"
-                    title="Terminate other sessions"
-                    description="If needed, you can log out all your other sessions"
+                    title={t('Avsluta andra sessioner')}
+                    description={t(
+                        'Vid behov kan du logga ut alla andra sessioner',
+                    )}
                 />
 
                 <Form
@@ -86,14 +92,16 @@ export default function Sessions({ sessions }: Props) {
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">
+                                    {t('Lösenord')}
+                                </Label>
 
                                 <PasswordInput
                                     id="password"
                                     name="password"
                                     className="mt-1 block w-full"
                                     autoComplete="current-password"
-                                    placeholder="Password"
+                                    placeholder={t('Lösenord')}
                                 />
 
                                 <InputError message={errors.password} />
@@ -102,7 +110,7 @@ export default function Sessions({ sessions }: Props) {
                             <Button
                                 disabled={processing || sessions.length <= 1}
                             >
-                                Terminate other sessions
+                                {t('Avsluta andra sessioner')}
                             </Button>
                         </>
                     )}
@@ -115,7 +123,7 @@ export default function Sessions({ sessions }: Props) {
 Sessions.layout = {
     breadcrumbs: [
         {
-            title: 'Sessions',
+            title: 'Sessioner',
             href: editSessions(),
         },
     ],
