@@ -6,6 +6,7 @@ use App\Enums\CongregationRole;
 use App\Enums\RecurrenceFrequency;
 use App\Events\BookingUpdated;
 use App\Models\Booking;
+use App\Models\Congregation;
 use App\Models\Membership;
 use App\Models\RecurrencePattern;
 use App\Models\User;
@@ -108,18 +109,24 @@ class UpdateBooking
                 $owner = User::find($booking->user_id);
                 $modifierRole = $this->resolveModifierRole($modifier, $booking);
 
-                $owner->notify(new BookingModifiedNotification(
-                    bookingName: $booking->name,
-                    oldStartsAt: Carbon::instance($oldStartsAt),
-                    oldEndsAt: Carbon::instance($oldEndsAt),
-                    newStartsAt: Carbon::instance($booking->starts_at),
-                    newEndsAt: Carbon::instance($booking->ends_at),
-                    oldRooms: $oldRooms,
-                    newRooms: $booking->rooms->pluck('name')->all(),
-                    modifier: $modifier,
-                    modifierRole: $modifierRole,
-                    actionTimestamp: Carbon::now(),
-                ));
+                $locale = $owner->locale
+                    ?? Congregation::find($booking->congregation_id)?->locale
+                    ?? 'sv';
+
+                $owner->notify(
+                    (new BookingModifiedNotification(
+                        bookingName: $booking->name,
+                        oldStartsAt: Carbon::instance($oldStartsAt),
+                        oldEndsAt: Carbon::instance($oldEndsAt),
+                        newStartsAt: Carbon::instance($booking->starts_at),
+                        newEndsAt: Carbon::instance($booking->ends_at),
+                        oldRooms: $oldRooms,
+                        newRooms: $booking->rooms->pluck('name')->all(),
+                        modifier: $modifier,
+                        modifierRole: $modifierRole,
+                        actionTimestamp: Carbon::now(),
+                    ))->locale($locale)
+                );
             }
 
             return $bookings;
@@ -280,18 +287,24 @@ class UpdateBooking
             $owner = User::find($booking->user_id);
             $modifierRole = $this->resolveModifierRole($modifier, $booking);
 
-            $owner->notify(new BookingModifiedNotification(
-                bookingName: $booking->name,
-                oldStartsAt: Carbon::instance($oldStartsAt),
-                oldEndsAt: Carbon::instance($oldEndsAt),
-                newStartsAt: Carbon::instance($booking->starts_at),
-                newEndsAt: Carbon::instance($booking->ends_at),
-                oldRooms: $oldRooms,
-                newRooms: $booking->rooms->pluck('name')->all(),
-                modifier: $modifier,
-                modifierRole: $modifierRole,
-                actionTimestamp: Carbon::now(),
-            ));
+            $locale = $owner->locale
+                ?? Congregation::find($booking->congregation_id)?->locale
+                ?? 'sv';
+
+            $owner->notify(
+                (new BookingModifiedNotification(
+                    bookingName: $booking->name,
+                    oldStartsAt: Carbon::instance($oldStartsAt),
+                    oldEndsAt: Carbon::instance($oldEndsAt),
+                    newStartsAt: Carbon::instance($booking->starts_at),
+                    newEndsAt: Carbon::instance($booking->ends_at),
+                    oldRooms: $oldRooms,
+                    newRooms: $booking->rooms->pluck('name')->all(),
+                    modifier: $modifier,
+                    modifierRole: $modifierRole,
+                    actionTimestamp: Carbon::now(),
+                ))->locale($locale)
+            );
         }
 
         return $bookings;

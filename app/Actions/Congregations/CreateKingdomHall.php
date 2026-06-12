@@ -43,7 +43,7 @@ class CreateKingdomHall
 
             for ($i = 1; $i <= $validated['number_of_rooms']; $i++) {
                 $kingdomHall->rooms()->create([
-                    'name' => "Room {$i}",
+                    'name' => __('Room :number', ['number' => $i]),
                     'sort_order' => $i,
                 ]);
             }
@@ -63,7 +63,7 @@ class CreateKingdomHall
                     $congregation->update(['color' => $color]);
                 } catch (ColorGenerationException $e) {
                     throw ValidationException::withMessages([
-                        'color' => ['Unable to generate a sufficiently distinct color. The Kingdom Hall may have too many congregations with similar colors.'],
+                        'color' => [__('Unable to generate a distinct color. The Kingdom Hall may have too many congregations with similar colors.')],
                     ]);
                 }
             }

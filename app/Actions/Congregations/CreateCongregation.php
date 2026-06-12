@@ -43,7 +43,7 @@ class CreateCongregation
                 $color = $this->colorService->generateDistinctColor($siblingColors);
             } catch (ColorGenerationException $e) {
                 throw ValidationException::withMessages([
-                    'color' => ['Unable to generate a sufficiently distinct color. The Kingdom Hall may have too many congregations with similar colors.'],
+                    'color' => [__('Unable to generate a distinct color. The Kingdom Hall may have too many congregations with similar colors.')],
                 ]);
             }
 

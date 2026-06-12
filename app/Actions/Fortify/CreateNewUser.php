@@ -36,9 +36,9 @@ class CreateNewUser implements CreatesNewUsers
                 Rule::unique(Congregation::class, 'congregation_number'),
             ],
         ], [
-            'congregation_number.regex' => 'The congregation number must contain only digits and uppercase letters (A–Z).',
-            'congregation_number.unique' => 'This congregation number is already in use.',
-            'email.unique' => 'This email address is already in use.',
+            'congregation_number.regex' => __('The congregation number must contain only digits and uppercase letters (A–Z).'),
+            'congregation_number.unique' => __('This congregation number is already in use.'),
+            'email.unique' => __('This email address is already in use.'),
         ])->validate();
 
         return DB::transaction(function () use ($input) {

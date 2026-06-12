@@ -30,6 +30,10 @@ class SetupWizardController extends Controller
 
         $action->handle($user, $congregation, $request->validated());
 
+        $congregation->update([
+            'locale' => $request->validated('locale', 'sv'),
+        ]);
+
         return to_route('calendar', ['current_congregation' => $congregation->slug]);
     }
 }

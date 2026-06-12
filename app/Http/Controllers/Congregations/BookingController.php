@@ -208,7 +208,7 @@ class BookingController extends Controller
             'congregation_color' => $booking->congregation->color ?? null,
             'congregation_name' => $booking->congregation->name,
             'user_id' => $booking->user_id,
-            'user_name' => $booking->user?->name ?? 'Deleted user',
+            'user_name' => $booking->user?->name ?? __('Deleted user'),
             'rooms' => $booking->rooms->map(fn ($room) => [
                 'id' => $room->id,
                 'name' => $room->name,

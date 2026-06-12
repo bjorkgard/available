@@ -25,7 +25,7 @@ class CreateRoom
                 'max:255',
                 function (string $attribute, mixed $value, \Closure $fail) use ($kingdomHall): void {
                     if (Room::where('kingdom_hall_id', $kingdomHall->id)->where('name', $value)->exists()) {
-                        $fail('A room with this name already exists in this Kingdom Hall.');
+                        $fail(__('A room with this name already exists in the Kingdom Hall.'));
                     }
                 },
             ],

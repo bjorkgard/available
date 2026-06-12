@@ -24,7 +24,7 @@ class RoomController extends Controller
 
         $createRoom->handle($kingdomHall, $request->only(['name']));
 
-        return back()->with('success', 'Room created successfully.');
+        return back()->with('success', __('Room created.'));
     }
 
     /**
@@ -38,7 +38,7 @@ class RoomController extends Controller
 
         $renameRoom->handle($room, $request->only(['name']));
 
-        return back()->with('success', 'Room renamed successfully.');
+        return back()->with('success', __('Room renamed.'));
     }
 
     /**
@@ -52,6 +52,6 @@ class RoomController extends Controller
 
         $deleteRoom->handle($room);
 
-        return back()->with('success', 'Room deleted successfully.');
+        return back()->with('success', __('Room deleted.'));
     }
 }

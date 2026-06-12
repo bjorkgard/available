@@ -24,13 +24,13 @@ class MoveCongregation
     {
         if ($congregation->kingdom_hall_id === null) {
             throw ValidationException::withMessages([
-                'kingdom_hall' => ['This congregation is not currently assigned to a Kingdom Hall.'],
+                'kingdom_hall' => [__('This congregation is not currently assigned to a Kingdom Hall.')],
             ]);
         }
 
         if ($congregation->kingdom_hall_id === $targetKingdomHall->id) {
             throw ValidationException::withMessages([
-                'kingdom_hall' => ['The target Kingdom Hall is the same as the current one.'],
+                'kingdom_hall' => [__('The target Kingdom Hall is the same as the current one.')],
             ]);
         }
 
@@ -52,7 +52,7 @@ class MoveCongregation
                     $congregation->update(['color' => $newColor]);
                 } catch (ColorGenerationException $e) {
                     throw ValidationException::withMessages([
-                        'kingdom_hall' => ['Cannot move congregation: unable to generate a sufficiently distinct color for the destination Kingdom Hall.'],
+                        'kingdom_hall' => [__('Cannot move congregation: unable to generate a distinct color for the destination Kingdom Hall.')],
                     ]);
                 }
             } elseif (! $congregation->color && $siblingColors !== []) {
@@ -61,7 +61,7 @@ class MoveCongregation
                     $congregation->update(['color' => $newColor]);
                 } catch (ColorGenerationException $e) {
                     throw ValidationException::withMessages([
-                        'kingdom_hall' => ['Cannot move congregation: unable to generate a sufficiently distinct color for the destination Kingdom Hall.'],
+                        'kingdom_hall' => [__('Cannot move congregation: unable to generate a distinct color for the destination Kingdom Hall.')],
                     ]);
                 }
             } elseif (! $congregation->color && $siblingColors === []) {

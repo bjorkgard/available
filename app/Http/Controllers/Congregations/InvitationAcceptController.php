@@ -38,7 +38,7 @@ class InvitationAcceptController extends Controller
             // Store the invitation URL as the intended destination so redirect()->intended() returns here after login
             redirect()->setIntendedUrl($request->url());
 
-            return redirect()->route('login')->with('status', 'Please log in to accept this invitation.');
+            return redirect()->route('login')->with('status', __('Please log in to accept this invitation.'));
         }
 
         // New user: show the registration form
@@ -70,7 +70,7 @@ class InvitationAcceptController extends Controller
         $existingUser = User::where('email', $invitation->email)->first();
 
         if ($existingUser) {
-            return redirect()->route('login')->with('status', 'An account with this email already exists. Please log in.');
+            return redirect()->route('login')->with('status', __('An account with this email already exists. Please log in.'));
         }
 
         $request->validate([
@@ -82,6 +82,7 @@ class InvitationAcceptController extends Controller
                 'name' => $invitation->name,
                 'email' => $invitation->email,
                 'password' => $request->input('password'),
+                'locale' => $invitation->locale,
             ]);
 
             $congregation = $invitation->congregation;

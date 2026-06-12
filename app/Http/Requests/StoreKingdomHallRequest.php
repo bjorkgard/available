@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreKingdomHallRequest extends FormRequest
 {
@@ -19,6 +20,7 @@ class StoreKingdomHallRequest extends FormRequest
             'zip_code' => ['required', 'string', 'max:20'],
             'city' => ['required', 'string', 'max:100'],
             'number_of_rooms' => ['required', 'integer', 'min:1', 'max:50'],
+            'locale' => ['sometimes', 'string', Rule::in(config('app.supported_locales'))],
         ];
     }
 }
