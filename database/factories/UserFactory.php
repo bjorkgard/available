@@ -49,6 +49,16 @@ class UserFactory extends Factory
     }
 
     /**
+     * Indicate that the user has a specific locale preference.
+     */
+    public function withLocale(string $locale): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'locale' => $locale,
+        ]);
+    }
+
+    /**
      * Indicate that the model has two-factor authentication configured.
      */
     public function withTwoFactor(): static

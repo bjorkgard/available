@@ -26,6 +26,7 @@ class CongregationInvitation extends Model
         'email',
         'role',
         'invited_by',
+        'locale',
         'expires_at',
         'accepted_at',
     ];

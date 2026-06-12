@@ -28,6 +28,7 @@ class Congregation extends Model
         'congregation_number',
         'kingdom_hall_id',
         'color',
+        'locale',
     ];
 
     /**
