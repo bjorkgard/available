@@ -31,6 +31,25 @@ function createMatchMedia(width: number) {
 vi.mock('@inertiajs/react', () => ({
     Head: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
     usePage: () => ({ props: { currentCongregation: null } }),
+    useHttp: () => ({
+        submit: vi.fn(),
+        processing: false,
+        transform: vi.fn(),
+    }),
+}));
+
+// Mock react-i18next
+vi.mock('react-i18next', () => ({
+    useTranslation: () => ({
+        t: (key: string) => key,
+        i18n: { language: 'sv' },
+    }),
+    initReactI18next: { type: '3rdParty', init: () => {} },
+}));
+
+// Mock i18n module to prevent actual initialization
+vi.mock('@/lib/i18n', () => ({
+    default: { language: 'sv', changeLanguage: vi.fn() },
 }));
 
 // Mock @/routes to provide a stub calendar function
@@ -49,7 +68,7 @@ vi.mock('@/hooks/use-booking-channel', () => ({
 }));
 
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { APP_LOCALE } from '@/lib/locale';
+import { getAppLocale } from '@/lib/locale';
 import Calendar from '@/pages/calendar';
 
 function renderCalendar() {
@@ -76,7 +95,7 @@ describe('Calendar page state logic', () => {
             renderCalendar();
 
             const now = new Date();
-            const currentMonthName = new Intl.DateTimeFormat(APP_LOCALE, {
+            const currentMonthName = new Intl.DateTimeFormat(getAppLocale(), {
                 month: 'long',
             }).format(now);
 
@@ -94,7 +113,7 @@ describe('Calendar page state logic', () => {
         it('renders the Today button as disabled on initial load', () => {
             renderCalendar();
 
-            const todayButton = screen.getByRole('button', { name: /today/i });
+            const todayButton = screen.getByRole('button', { name: /Idag/i });
 
             expect(todayButton).toBeDisabled();
         });
@@ -110,7 +129,7 @@ describe('Calendar page state logic', () => {
             renderCalendar();
 
             const prevButton = screen.getByRole('button', {
-                name: /previous month/i,
+                name: /Föregående månad/i,
             });
 
             // minYear = 2025 - 10 = 2015
@@ -121,7 +140,7 @@ describe('Calendar page state logic', () => {
             }
 
             // Should be at Jan 2024
-            const januaryName = new Intl.DateTimeFormat(APP_LOCALE, {
+            const januaryName = new Intl.DateTimeFormat(getAppLocale(), {
                 month: 'long',
             }).format(new Date(2025, 0, 1));
             expect(screen.getByText(januaryName)).toBeInTheDocument();
@@ -146,7 +165,7 @@ describe('Calendar page state logic', () => {
             renderCalendar();
 
             const nextButton = screen.getByRole('button', {
-                name: /next month/i,
+                name: /Nästa månad/i,
             });
 
             // maxYear = 2025 + 10 = 2035
@@ -156,7 +175,7 @@ describe('Calendar page state logic', () => {
             }
 
             // Should be at Dec 2035
-            const decemberName = new Intl.DateTimeFormat(APP_LOCALE, {
+            const decemberName = new Intl.DateTimeFormat(getAppLocale(), {
                 month: 'long',
             }).format(new Date(2025, 11, 1));
             expect(screen.getByText(decemberName)).toBeInTheDocument();
@@ -192,7 +211,7 @@ describe('Calendar page state logic', () => {
             fireEvent.click(fillerButtons[0]);
 
             // After clicking, should navigate to February
-            const februaryName = new Intl.DateTimeFormat(APP_LOCALE, {
+            const februaryName = new Intl.DateTimeFormat(getAppLocale(), {
                 month: 'long',
             }).format(new Date(2025, 1, 1));
             expect(screen.getByText(februaryName)).toBeInTheDocument();
@@ -220,7 +239,7 @@ describe('Calendar page state logic', () => {
             fireEvent.click(lastFiller);
 
             // After clicking, should navigate to April
-            const aprilName = new Intl.DateTimeFormat(APP_LOCALE, {
+            const aprilName = new Intl.DateTimeFormat(getAppLocale(), {
                 month: 'long',
             }).format(new Date(2025, 3, 1));
             expect(screen.getByText(aprilName)).toBeInTheDocument();
@@ -232,14 +251,14 @@ describe('Calendar page state logic', () => {
             renderCalendar();
 
             const now = new Date();
-            const currentMonthName = new Intl.DateTimeFormat(APP_LOCALE, {
+            const currentMonthName = new Intl.DateTimeFormat(getAppLocale(), {
                 month: 'long',
             }).format(now);
             const currentYear = now.getFullYear();
 
             // Navigate forward 3 months
             const nextButton = screen.getByRole('button', {
-                name: /next month/i,
+                name: /Nästa månad/i,
             });
             fireEvent.click(nextButton);
             fireEvent.click(nextButton);
@@ -247,7 +266,7 @@ describe('Calendar page state logic', () => {
 
             // The Today button should now be enabled
             const todayButton = screen.getByRole('button', {
-                name: /today/i,
+                name: /Idag/i,
             });
             expect(todayButton).not.toBeDisabled();
 
@@ -266,20 +285,20 @@ describe('Calendar page state logic', () => {
             renderCalendar();
 
             const now = new Date();
-            const currentMonthName = new Intl.DateTimeFormat(APP_LOCALE, {
+            const currentMonthName = new Intl.DateTimeFormat(getAppLocale(), {
                 month: 'long',
             }).format(now);
 
             // Navigate backward 2 months
             const prevButton = screen.getByRole('button', {
-                name: /previous month/i,
+                name: /Föregående månad/i,
             });
             fireEvent.click(prevButton);
             fireEvent.click(prevButton);
 
             // The Today button should be enabled
             const todayButton = screen.getByRole('button', {
-                name: /today/i,
+                name: /Idag/i,
             });
             expect(todayButton).not.toBeDisabled();
 
