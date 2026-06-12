@@ -17,6 +17,8 @@ declare module '@inertiajs/core' {
             currentCongregation: Congregation | null;
             currentCongregationRole: 'superadmin' | 'admin' | 'member' | null;
             congregations: Congregation[];
+            locale: string;
+            supportedLocales: string[];
             [key: string]: unknown;
         };
     }

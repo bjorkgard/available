@@ -8,6 +8,7 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import { I18nProvider } from '@/lib/i18n-provider';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -30,7 +31,7 @@ createInertiaApp({
     withApp(app) {
         return (
             <TooltipProvider delayDuration={0}>
-                {app}
+                <I18nProvider>{app}</I18nProvider>
                 <Toaster />
                 <PwaInstallPrompt />
             </TooltipProvider>
