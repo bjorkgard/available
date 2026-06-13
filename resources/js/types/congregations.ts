@@ -36,6 +36,7 @@ export type Membership = {
     congregation_id: string;
     role: CongregationRole;
     user?: User;
+    last_active_at: string | null;
     created_at: string;
     updated_at: string;
 };
