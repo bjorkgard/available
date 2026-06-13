@@ -58,7 +58,7 @@ test('guest locale resolution follows priority: session > Accept-Language > sv',
         })(),
 
         'fallback' => (function () {
-            // No session locale, no matching Accept-Language → should default to 'sv'
+            // No session locale, no matching Accept-Language → should default to app locale
             $unsupportedHeaders = [
                 'de-DE,de;q=0.9,fr;q=0.8',
                 'zh-CN,zh;q=0.9',
@@ -75,7 +75,7 @@ test('guest locale resolution follows priority: session > Accept-Language > sv',
 
             $props = $response->original->getData()['page']['props'];
 
-            expect($props['locale'])->toBe('sv');
+            expect($props['locale'])->toBe(config('app.locale'));
         })(),
     };
 })->repeat(30);

@@ -48,9 +48,9 @@ test('valid setup submission creates kingdom hall with rooms and assigns superad
 
     $rooms = $kingdomHall->rooms()->orderBy('sort_order')->get();
     expect($rooms)->toHaveCount(3);
-    expect($rooms[0]->name)->toBe('Room 1');
-    expect($rooms[1]->name)->toBe('Room 2');
-    expect($rooms[2]->name)->toBe('Room 3');
+    expect($rooms[0]->name)->toBe(__('Room :number', ['number' => 1]));
+    expect($rooms[1]->name)->toBe(__('Room :number', ['number' => 2]));
+    expect($rooms[2]->name)->toBe(__('Room :number', ['number' => 3]));
 
     $membership = $congregation->memberships()->where('user_id', $user->id)->first();
     expect($membership->role)->toBe(CongregationRole::Superadmin);
