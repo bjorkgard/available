@@ -7,6 +7,7 @@ import {
     User,
 } from 'lucide-react';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
     ContextMenu,
@@ -61,6 +62,7 @@ export function BookingContextMenu({
     children,
 }: BookingContextMenuProps) {
     const [open, setOpen] = useState(false);
+    const { t } = useTranslation();
 
     const handleLongPress = useCallback(() => {
         setOpen(true);
@@ -127,7 +129,7 @@ export function BookingContextMenu({
                             {booking.can_edit && onEdit && (
                                 <ContextMenuItem onSelect={onEdit}>
                                     <PencilIcon />
-                                    Redigera
+                                    {t('Redigera')}
                                 </ContextMenuItem>
                             )}
 
@@ -137,7 +139,7 @@ export function BookingContextMenu({
                                     onSelect={onDelete}
                                 >
                                     <TrashIcon />
-                                    Ta bort
+                                    {t('Ta bort')}
                                 </ContextMenuItem>
                             )}
                         </>
