@@ -83,7 +83,9 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
                     autoFocus
                 />
                 <p className="text-xs text-muted-foreground">
-                    {t('Ett namn hjälper dig att identifiera denna passnyckel senare.')}
+                    {t(
+                        'Ett namn hjälper dig att identifiera denna passnyckel senare.',
+                    )}
                 </p>
             </div>
 
@@ -91,7 +93,9 @@ export default function PasskeyRegistration({ onSuccess }: Props) {
 
             <div className="flex gap-2">
                 <Button type="submit" disabled={isLoading || !name.trim()}>
-                    {isLoading ? t('Registrerar...') : t('Registrera passnyckel')}
+                    {isLoading
+                        ? t('Registrerar...')
+                        : t('Registrera passnyckel')}
                 </Button>
                 <Button type="button" variant="ghost" onClick={handleCancel}>
                     {t('Avbryt')}

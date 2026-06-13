@@ -100,9 +100,7 @@ export default function SetupWizard() {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="locale">
-                                {t('Språk')}
-                            </Label>
+                            <Label htmlFor="locale">{t('Språk')}</Label>
                             <Select
                                 name="locale"
                                 value={selectedLocale}
@@ -113,7 +111,9 @@ export default function SetupWizard() {
                                     tabIndex={5}
                                     className="w-full"
                                 >
-                                    <SelectValue placeholder={t('Välj språk')} />
+                                    <SelectValue
+                                        placeholder={t('Välj språk')}
+                                    />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {locales.map((loc) => (
@@ -143,6 +143,5 @@ export default function SetupWizard() {
 
 SetupWizard.layout = {
     title: 'Konfigurera din rikets sal',
-    description:
-        'Konfigurera den fysiska platsen där din församling möts.',
+    description: 'Konfigurera den fysiska platsen där din församling möts.',
 };

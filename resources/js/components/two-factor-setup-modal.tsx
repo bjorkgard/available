@@ -268,7 +268,9 @@ export default function TwoFactorSetupModal({
         if (twoFactorEnabled) {
             return {
                 title: t('Tvåfaktorsautentisering aktiverad'),
-                description: t('Tvåfaktorsautentisering är nu aktiverad. Skanna QR-koden eller ange konfigurationsnyckeln i din autentiseringsapp.'),
+                description: t(
+                    'Tvåfaktorsautentisering är nu aktiverad. Skanna QR-koden eller ange konfigurationsnyckeln i din autentiseringsapp.',
+                ),
                 buttonText: t('Stäng'),
             };
         }
@@ -276,14 +278,18 @@ export default function TwoFactorSetupModal({
         if (showVerificationStep) {
             return {
                 title: t('Verifiera autentiseringskod'),
-                description: t('Ange den 6-siffriga koden från din autentiseringsapp'),
+                description: t(
+                    'Ange den 6-siffriga koden från din autentiseringsapp',
+                ),
                 buttonText: t('Fortsätt'),
             };
         }
 
         return {
             title: t('Aktivera tvåfaktorsautentisering'),
-            description: t('För att slutföra aktiveringen av tvåfaktorsautentisering, skanna QR-koden eller ange konfigurationsnyckeln i din autentiseringsapp'),
+            description: t(
+                'För att slutföra aktiveringen av tvåfaktorsautentisering, skanna QR-koden eller ange konfigurationsnyckeln i din autentiseringsapp',
+            ),
             buttonText: t('Fortsätt'),
         };
     }, [twoFactorEnabled, showVerificationStep, t]);

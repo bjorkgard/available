@@ -62,7 +62,9 @@ export default function TwoFactorRecoveryCodes({
                     {t('2FA-återställningskoder')}
                 </CardTitle>
                 <CardDescription>
-                    {t('Återställningskoder låter dig återfå åtkomst om du förlorar din 2FA-enhet. Förvara dem i en säker lösenordshanterare.')}
+                    {t(
+                        'Återställningskoder låter dig återfå åtkomst om du förlorar din 2FA-enhet. Förvara dem i en säker lösenordshanterare.',
+                    )}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -77,7 +79,8 @@ export default function TwoFactorRecoveryCodes({
                             className="size-4"
                             aria-hidden="true"
                         />
-                        {codesAreVisible ? t('Dölj') : t('Visa')} {t('återställningskoder')}
+                        {codesAreVisible ? t('Dölj') : t('Visa')}{' '}
+                        {t('återställningskoder')}
                     </Button>
 
                     {canRegenerateCodes && (
@@ -146,7 +149,9 @@ export default function TwoFactorRecoveryCodes({
 
                                 <div className="text-xs text-muted-foreground select-none">
                                     <p id="regenerate-warning">
-                                        {t('Varje återställningskod kan användas en gång för att komma åt ditt konto och tas bort efter användning. Om du behöver fler, klicka på Generera nya koder ovan.')}
+                                        {t(
+                                            'Varje återställningskod kan användas en gång för att komma åt ditt konto och tas bort efter användning. Om du behöver fler, klicka på Generera nya koder ovan.',
+                                        )}
                                     </p>
                                 </div>
                             </>

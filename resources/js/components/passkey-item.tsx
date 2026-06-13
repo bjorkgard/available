@@ -72,7 +72,10 @@ export default function PasskeyItem({ passkey, onDelete }: Props) {
                 <DialogContent>
                     <DialogTitle>{t('Ta bort passnyckel')}</DialogTitle>
                     <DialogDescription>
-                        {t('Är du säker på att du vill ta bort passnyckeln "{{name}}"? Du kommer inte längre kunna använda den för att logga in.', { name: passkey.name })}
+                        {t(
+                            'Är du säker på att du vill ta bort passnyckeln "{{name}}"? Du kommer inte längre kunna använda den för att logga in.',
+                            { name: passkey.name },
+                        )}
                     </DialogDescription>
                     <DialogFooter className="gap-2">
                         <DialogClose asChild>
@@ -83,7 +86,9 @@ export default function PasskeyItem({ passkey, onDelete }: Props) {
                             onClick={handleDelete}
                             disabled={isDeleting}
                         >
-                            {isDeleting ? t('Tar bort...') : t('Ta bort passnyckel')}
+                            {isDeleting
+                                ? t('Tar bort...')
+                                : t('Ta bort passnyckel')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
