@@ -68,7 +68,7 @@ resources/js/
 │   └── app-layout.tsx, auth-layout.tsx
 ├── lib/                  # Utility functions
 │   │                     # utils.ts (cn() helper), calendar-utils.ts (date arithmetic),
-│   │                     # locale.ts (APP_LOCALE constant)
+│   │                     # locale.ts (getAppLocale() reactive locale helper, deprecated APP_LOCALE constant)
 │   └── __tests__/        # Library unit tests (vitest)
 ├── pages/                # Inertia page components (maps to routes)
 │   ├── __tests__/        # Page component tests (vitest)
