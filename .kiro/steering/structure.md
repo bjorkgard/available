@@ -48,12 +48,12 @@ resources/js/
 │   │                     # booking-context-menu, booking-dialog, breadcrumbs,
 │   │                     # calendar-context-menu, calendar-header, congregation-switcher,
 │   │                     # day-grid, delete-confirm-dialog, delete-user, error-boundary,
-│   │                     # heading, input-error, invite-member-dialog, manage-passkeys,
-│   │                     # manage-two-factor, member-removal-dialog, month-grid, nav-footer,
-│   │                     # nav-main, nav-user, passkey-item, passkey-register, passkey-verify,
-│   │                     # password-input, recurrence-edit-prompt, role-select, text-link,
-│   │                     # two-factor-recovery-codes, two-factor-setup-modal, user-info,
-│   │                     # user-menu-content, week-grid
+│   │                     # heading, input-error, invite-member-dialog, language-selector,
+│   │                     # manage-passkeys, manage-two-factor, member-removal-dialog, month-grid,
+│   │                     # nav-footer, nav-main, nav-user, passkey-item, passkey-register,
+│   │                     # passkey-verify, password-input, recurrence-edit-prompt, role-select,
+│   │                     # text-link, two-factor-recovery-codes, two-factor-setup-modal,
+│   │                     # user-info, user-menu-content, week-grid
 │   └── ui/               # shadcn/ui primitives (auto-generated, do not edit)
 ├── hooks/                # Custom React hooks
 │   │                     # use-appearance, use-booking-channel, use-clipboard, use-current-url,
