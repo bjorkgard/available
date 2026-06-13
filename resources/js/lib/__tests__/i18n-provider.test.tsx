@@ -2,10 +2,13 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { mockRouterOn, mockChangeLanguage } = vi.hoisted(() => ({
-    mockRouterOn: vi.fn(),
-    mockChangeLanguage: vi.fn(),
-}));
+const { mockRouterOn, mockChangeLanguage, mockAddResourceBundle } = vi.hoisted(
+    () => ({
+        mockRouterOn: vi.fn(),
+        mockChangeLanguage: vi.fn(),
+        mockAddResourceBundle: vi.fn(),
+    }),
+);
 
 // Mock @inertiajs/react
 vi.mock('@inertiajs/react', () => ({
@@ -19,6 +22,7 @@ vi.mock('@/lib/i18n', () => ({
     default: {
         language: 'sv',
         changeLanguage: mockChangeLanguage,
+        addResourceBundle: mockAddResourceBundle,
         use: () => ({ use: () => ({ init: () => {} }) }),
         init: () => {},
         t: (key: string) => key,
@@ -32,6 +36,7 @@ vi.mock('@/lib/i18n', () => ({
         hasLoadedNamespace: () => true,
         loadNamespaces: () => Promise.resolve(),
     },
+    translationCache: {} as Record<string, Record<string, string>>,
 }));
 
 import { I18nProvider } from '@/lib/i18n-provider';
@@ -50,6 +55,7 @@ describe('I18nProvider', () => {
             },
         );
         mockChangeLanguage.mockClear();
+        mockAddResourceBundle.mockClear();
     });
 
     afterEach(() => {
