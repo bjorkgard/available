@@ -51,12 +51,16 @@ export default function ManageTwoFactor(props: Props) {
             <Heading
                 variant="small"
                 title={t('Tvåfaktorsautentisering')}
-                description={t('Hantera dina inställningar för tvåfaktorsautentisering')}
+                description={t(
+                    'Hantera dina inställningar för tvåfaktorsautentisering',
+                )}
             />
             {twoFactorEnabled ? (
                 <div className="flex flex-col items-start justify-start space-y-4">
                     <p className="text-sm text-muted-foreground">
-                        {t('Du kommer att uppmanas ange en säker, slumpmässig kod vid inloggning, som du kan hämta från den TOTP-stödda appen på din telefon.')}
+                        {t(
+                            'Du kommer att uppmanas ange en säker, slumpmässig kod vid inloggning, som du kan hämta från den TOTP-stödda appen på din telefon.',
+                        )}
                     </p>
 
                     <div className="relative inline">
@@ -82,7 +86,9 @@ export default function ManageTwoFactor(props: Props) {
             ) : (
                 <div className="flex flex-col items-start justify-start space-y-4">
                     <p className="text-sm text-muted-foreground">
-                        {t('När du aktiverar tvåfaktorsautentisering kommer du att uppmanas ange en säker kod vid inloggning. Denna kod kan hämtas från en TOTP-stödd app på din telefon.')}
+                        {t(
+                            'När du aktiverar tvåfaktorsautentisering kommer du att uppmanas ange en säker kod vid inloggning. Denna kod kan hämtas från en TOTP-stödd app på din telefon.',
+                        )}
                     </p>
 
                     <div>

@@ -19,6 +19,8 @@ Congregation elders (superadmins), ministerial servants (admins), and publishers
 
 ## Current State
 
+The welcome/landing page is a custom product page with animated hero, calendar view showcase (3D scroll-based), step-by-step onboarding explanation, invitation flow preview, feature grid, and CTA sections. Uses `motion/react` for scroll-linked parallax and reveal animations (respects `prefers-reduced-motion`).
+
 The app has full authentication (login, register, passkeys, 2FA), congregation management (create via setup wizard, invite members, switch congregations, edit settings), Kingdom Hall management (address, rooms, multi-congregation sharing), user settings (profile, security, sessions, appearance), and session management (view active sessions, revoke other sessions).
 
 The calendar is the default landing page with a fully functional room-booking system:

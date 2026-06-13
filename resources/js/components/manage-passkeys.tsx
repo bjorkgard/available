@@ -52,7 +52,9 @@ export default function ManagePasskeys(props: Props) {
             <Heading
                 variant="small"
                 title={t('Passnycklar')}
-                description={t('Hantera dina passnycklar för lösenordsfri inloggning')}
+                description={t(
+                    'Hantera dina passnycklar för lösenordsfri inloggning',
+                )}
             />
 
             <div className="overflow-hidden rounded-lg border border-border">

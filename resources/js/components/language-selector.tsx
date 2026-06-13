@@ -49,7 +49,11 @@ export function LanguageSelector() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full justify-start gap-2">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start gap-2"
+                >
                     <Globe className="size-4" />
                     <span>{LOCALE_LABELS[locale] ?? locale}</span>
                 </Button>

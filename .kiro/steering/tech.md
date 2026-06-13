@@ -26,6 +26,7 @@
 - `date-fns` (date formatting with sv locale for shadcn Calendar)
 - `@laravel/passkeys` (WebAuthn/passkey support)
 - `input-otp` (OTP input for 2FA)
+- Motion (`motion/react`) for scroll-linked and reveal animations (respects `prefers-reduced-motion`)
 - `tw-animate-css` (Tailwind animation utilities)
 - ESLint 9 + Prettier 3
 - Vitest (frontend unit/component testing)

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -42,6 +43,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'locale' => fn () => app()->getLocale(),
             'supportedLocales' => config('app.supported_locales'),
+            'translations' => fn () => $this->loadTranslations(app()->getLocale()),
             'auth' => [
                 'user' => $user,
             ],
@@ -74,5 +76,44 @@ class HandleInertiaRequests extends Middleware
                 return $user->congregations;
             },
         ];
+    }
+
+    /**
+     * Load and flatten all translations for a given locale.
+     *
+     * @return array<string, string>
+     */
+    private function loadTranslations(string $locale): array
+    {
+        $translations = [];
+
+        $phpPath = lang_path($locale);
+
+        if (is_dir($phpPath)) {
+            foreach (glob($phpPath.'/*.php') as $file) {
+                $group = basename($file, '.php');
+                $entries = require $file;
+
+                if (is_array($entries)) {
+                    $flattened = Arr::dot($entries);
+
+                    foreach ($flattened as $key => $value) {
+                        $translations[$group.'.'.$key] = $value;
+                    }
+                }
+            }
+        }
+
+        $jsonPath = lang_path($locale.'.json');
+
+        if (file_exists($jsonPath)) {
+            $jsonTranslations = json_decode(file_get_contents($jsonPath), true);
+
+            if (is_array($jsonTranslations)) {
+                $translations = array_merge($translations, $jsonTranslations);
+            }
+        }
+
+        return $translations;
     }
 }
