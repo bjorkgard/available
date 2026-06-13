@@ -177,25 +177,25 @@ export default function MembersIndex({
                         <div
                             key={membership.id}
                             data-test="member-row"
-                            className="grid grid-cols-[1fr_10rem_12rem] items-center gap-4 rounded-lg border p-4"
+                            className="flex flex-wrap items-center gap-3 rounded-lg border p-4 sm:grid sm:grid-cols-[1fr_10rem_12rem] sm:gap-4"
                         >
-                            <div className="flex flex-col gap-0.5">
+                            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                                 <span className="font-medium">
                                     {membership.user?.name}
                                 </span>
-                                <span className="text-sm text-muted-foreground">
+                                <span className="truncate text-sm text-muted-foreground">
                                     {membership.user?.email}
                                 </span>
                             </div>
 
-                            <div className="justify-self-start text-sm text-muted-foreground">
+                            <div className="w-full text-sm text-muted-foreground sm:w-auto sm:justify-self-start">
                                 {formatLastSeen(
                                     membership.last_active_at,
                                     t,
                                 )}
                             </div>
 
-                            <div className="flex items-center justify-end gap-3">
+                            <div className="flex w-full items-center gap-3 sm:w-auto sm:justify-end">
                                 {canManage(viewerRole) ? (
                                     <>
                                         <RoleSelect
