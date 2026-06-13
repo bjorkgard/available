@@ -8,6 +8,7 @@ import {
     User,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
     ContextMenu,
@@ -17,7 +18,7 @@ import {
     ContextMenuSeparator,
     ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { APP_LOCALE } from '@/lib/locale';
+import { getAppLocale } from '@/lib/locale';
 import type { BookingResource } from '@/types';
 
 type CalendarContextMenuProps = {
@@ -33,13 +34,13 @@ function formatTimeRange(startsAt: string, endsAt: string): string {
     const start = new Date(startsAt);
     const end = new Date(endsAt);
 
-    const dateFormatter = new Intl.DateTimeFormat(APP_LOCALE, {
+    const dateFormatter = new Intl.DateTimeFormat(getAppLocale(), {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
     });
 
-    const timeFormatter = new Intl.DateTimeFormat(APP_LOCALE, {
+    const timeFormatter = new Intl.DateTimeFormat(getAppLocale(), {
         hour: '2-digit',
         minute: '2-digit',
     });
@@ -63,6 +64,8 @@ export function CalendarContextMenu({
     onDeleteBooking,
     children,
 }: CalendarContextMenuProps) {
+    const { t } = useTranslation();
+
     return (
         <ContextMenu>
             <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
@@ -123,7 +126,7 @@ export function CalendarContextMenu({
                     disabled={!!booking}
                 >
                     <Plus className="size-4" />
-                    Ny bokning
+                    {t('Ny bokning')}
                 </ContextMenuItem>
 
                 {/* Edit — disabled when no booking or user lacks permission */}
@@ -132,7 +135,7 @@ export function CalendarContextMenu({
                     disabled={!booking?.can_edit}
                 >
                     <PencilIcon className="size-4" />
-                    Redigera
+                    {t('Redigera')}
                 </ContextMenuItem>
 
                 {/* Delete — disabled when no booking or user lacks permission */}
@@ -142,7 +145,7 @@ export function CalendarContextMenu({
                     className="text-red-600 focus:text-red-600 dark:text-red-400 dark:focus:text-red-400"
                 >
                     <TrashIcon className="size-4" />
-                    Ta bort
+                    {t('Ta bort')}
                 </ContextMenuItem>
             </ContextMenuContent>
         </ContextMenu>

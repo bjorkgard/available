@@ -23,7 +23,7 @@ class UpdateCongregationColor
         // Validate hex format
         if (! ColorService::isValidHex($color)) {
             throw ValidationException::withMessages([
-                'color' => ['The color must be a valid hex color (e.g., #3B82F6).'],
+                'color' => [__('The color must be a valid hex color (e.g., #3B82F6).')],
             ]);
         }
 
@@ -37,7 +37,7 @@ class UpdateCongregationColor
 
             if (! $this->colorService->isDistinctFromAll($color, $siblingColors)) {
                 throw ValidationException::withMessages([
-                    'color' => ['This color is too similar to another congregation\'s color in this Kingdom Hall.'],
+                    'color' => [__('This color is too similar to another congregation\'s color in this Kingdom Hall.')],
                 ]);
             }
         }

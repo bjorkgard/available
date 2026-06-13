@@ -10,6 +10,7 @@ use App\Notifications\Congregations\InvitationNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class SendInvitation
@@ -25,18 +26,20 @@ class SendInvitation
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'role' => ['required', new Enum(CongregationRole::class)],
+            'locale' => ['sometimes', 'string', Rule::in(config('app.supported_locales'))],
         ])->validate();
 
         $role = CongregationRole::from($data['role']);
+        $locale = $data['locale'] ?? $congregation->locale ?? config('app.locale');
 
-        return DB::transaction(function () use ($inviter, $congregation, $data, $role) {
+        return DB::transaction(function () use ($inviter, $congregation, $data, $role, $locale) {
             $existingUser = User::where('email', $data['email'])->first();
 
             if ($existingUser) {
-                return $this->handleExistingUser($inviter, $congregation, $existingUser, $data, $role);
+                return $this->handleExistingUser($inviter, $congregation, $existingUser, $data, $role, $locale);
             }
 
-            return $this->handleNewUser($inviter, $congregation, $data, $role);
+            return $this->handleNewUser($inviter, $congregation, $data, $role, $locale);
         });
     }
 
@@ -49,6 +52,7 @@ class SendInvitation
         User $existingUser,
         array $data,
         CongregationRole $role,
+        string $locale,
     ): CongregationInvitation {
         $congregation->memberships()->firstOrCreate(
             ['user_id' => $existingUser->id],
@@ -61,6 +65,7 @@ class SendInvitation
             'email' => $data['email'],
             'role' => $role,
             'invited_by' => $inviter->id,
+            'locale' => $locale,
             'expires_at' => now()->addHours(72),
             'accepted_at' => now(),
         ]);
@@ -74,6 +79,7 @@ class SendInvitation
         Congregation $congregation,
         array $data,
         CongregationRole $role,
+        string $locale,
     ): CongregationInvitation {
         // Replace any existing pending invitation for the same email+congregation
         CongregationInvitation::where('congregation_id', $congregation->id)
@@ -91,11 +97,12 @@ class SendInvitation
             'email' => $data['email'],
             'role' => $role,
             'invited_by' => $inviter->id,
+            'locale' => $locale,
             'expires_at' => now()->addHours(72),
         ]);
 
         Notification::route('mail', $data['email'])
-            ->notify(new InvitationNotification($invitation));
+            ->notify((new InvitationNotification($invitation))->locale($invitation->locale));
 
         return $invitation;
     }

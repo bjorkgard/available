@@ -52,7 +52,7 @@ class KingdomHallController extends Controller
 
         $updateKingdomHall->handle($kingdomHall, $request->all());
 
-        return back()->with('success', 'Kingdom Hall updated successfully.');
+        return back()->with('success', __('Kingdom Hall updated.'));
     }
 
     /**
@@ -66,7 +66,7 @@ class KingdomHallController extends Controller
 
         $deleteKingdomHall->handle($kingdomHall);
 
-        return redirect()->route('home')->with('success', 'Kingdom Hall deleted successfully.');
+        return redirect()->route('home')->with('success', __('Kingdom Hall deleted.'));
     }
 
     /**
@@ -85,7 +85,7 @@ class KingdomHallController extends Controller
             'initial_user_email',
         ]));
 
-        return back()->with('success', 'Congregation added successfully.');
+        return back()->with('success', __('Congregation added.'));
     }
 
     /**
@@ -123,7 +123,7 @@ class KingdomHallController extends Controller
 
             if ($fallback) {
                 return redirect("/{$fallback->slug}/kingdom-hall")
-                    ->with('success', 'Congregation deleted successfully.');
+                    ->with('success', __('Congregation deleted.'));
             }
 
             // No remaining congregations — log out
@@ -134,6 +134,6 @@ class KingdomHallController extends Controller
             return redirect()->route('home');
         }
 
-        return back()->with('success', 'Congregation deleted successfully.');
+        return back()->with('success', __('Congregation deleted.'));
     }
 }

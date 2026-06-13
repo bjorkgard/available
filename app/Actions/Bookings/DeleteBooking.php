@@ -6,6 +6,7 @@ use App\Enums\CongregationRole;
 use App\Enums\DeleteScope;
 use App\Events\BookingDeleted;
 use App\Models\Booking;
+use App\Models\Congregation;
 use App\Models\Membership;
 use App\Models\RecurrencePattern;
 use App\Models\User;
@@ -158,15 +159,21 @@ class DeleteBooking
 
         $deleterRole = $this->resolveDeleterRole($deleter, $congregationId);
 
-        $owner->notify(new BookingDeletedNotification(
-            bookingName: $bookingName,
-            startsAt: Carbon::instance($startsAt),
-            endsAt: Carbon::instance($endsAt),
-            roomNames: $roomNames,
-            deleter: $deleter,
-            deleterRole: $deleterRole,
-            actionTimestamp: Carbon::now(),
-        ));
+        $locale = $owner->locale
+            ?? Congregation::find($congregationId)?->locale
+            ?? 'sv';
+
+        $owner->notify(
+            (new BookingDeletedNotification(
+                bookingName: $bookingName,
+                startsAt: Carbon::instance($startsAt),
+                endsAt: Carbon::instance($endsAt),
+                roomNames: $roomNames,
+                deleter: $deleter,
+                deleterRole: $deleterRole,
+                actionTimestamp: Carbon::now(),
+            ))->locale($locale)
+        );
     }
 
     /**

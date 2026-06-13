@@ -3,6 +3,7 @@ import { Building2, CalendarDays, Church, Users } from 'lucide-react';
 
 import AppLogo from '@/components/app-logo';
 import { CongregationSwitcher } from '@/components/congregation-switcher';
+import { LanguageSelector } from '@/components/language-selector';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -87,6 +88,11 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <LanguageSelector />
+                    </SidebarMenuItem>
+                </SidebarMenu>
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

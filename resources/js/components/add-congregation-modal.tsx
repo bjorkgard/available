@@ -1,4 +1,5 @@
 import { Form, usePage } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import InputError from '@/components/input-error';
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export default function AddCongregationModal({ open, onOpenChange }: Props) {
+    const { t } = useTranslation();
     const { currentCongregation } = usePage().props;
     const congregationSlug = currentCongregation!.slug;
 
@@ -33,34 +35,36 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
                     method="post"
                     className="space-y-6"
                     onSuccess={() => {
-                        toast.success('Församling tillagd.');
+                        toast.success(t('Församling tillagd.'));
                         onOpenChange(false);
                     }}
                     onError={() => {
-                        toast.error('Åtgärda felen nedan och försök igen.');
+                        toast.error(t('Åtgärda felen nedan och försök igen.'));
                     }}
                 >
                     {({ errors, processing }) => (
                         <>
                             <DialogHeader>
-                                <DialogTitle>Lägg till församling</DialogTitle>
+                                <DialogTitle>
+                                    {t('Lägg till församling')}
+                                </DialogTitle>
                                 <DialogDescription>
-                                    Lägg till en ny församling i Rikets sal. En
-                                    inbjudan skickas till den ansvariga
-                                    personen.
+                                    {t(
+                                        'Lägg till en ny församling i Rikets sal. En inbjudan skickas till den ansvariga personen.',
+                                    )}
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="congregation-name">
-                                        Församlingsnamn
+                                        {t('Församlingsnamn')}
                                     </Label>
                                     <Input
                                         id="congregation-name"
                                         name="name"
                                         type="text"
-                                        placeholder="Församlingsnamn"
+                                        placeholder={t('Församlingsnamn')}
                                         maxLength={255}
                                         required
                                     />
@@ -69,7 +73,7 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="congregation-number">
-                                        Församlingsnummer
+                                        {t('Församlingsnummer')}
                                     </Label>
                                     <Input
                                         id="congregation-number"
@@ -86,13 +90,13 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="initial-user-name">
-                                        Ansvarig persons namn
+                                        {t('Ansvarig persons namn')}
                                     </Label>
                                     <Input
                                         id="initial-user-name"
                                         name="initial_user_name"
                                         type="text"
-                                        placeholder="Förnamn Efternamn"
+                                        placeholder={t('Förnamn Efternamn')}
                                         maxLength={255}
                                         required
                                     />
@@ -103,7 +107,7 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="initial-user-email">
-                                        Ansvarig persons e-post
+                                        {t('Ansvarig persons e-post')}
                                     </Label>
                                     <Input
                                         id="initial-user-email"
@@ -121,11 +125,13 @@ export default function AddCongregationModal({ open, onOpenChange }: Props) {
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">Avbryt</Button>
+                                    <Button variant="secondary">
+                                        {t('Avbryt')}
+                                    </Button>
                                 </DialogClose>
 
                                 <Button type="submit" disabled={processing}>
-                                    Lägg till församling
+                                    {t('Lägg till församling')}
                                 </Button>
                             </DialogFooter>
                         </>

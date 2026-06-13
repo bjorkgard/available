@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef } from 'react';
+import { LanguageSelector } from '@/components/language-selector';
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -42,6 +43,9 @@ export function NavFooter({
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     ))}
+                    <SidebarMenuItem>
+                        <LanguageSelector />
+                    </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarGroupContent>
         </SidebarGroup>

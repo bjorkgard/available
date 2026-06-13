@@ -1,4 +1,5 @@
 import { CalendarDays, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -22,7 +23,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { APP_LOCALE } from '@/lib/locale';
+import { getAppLocale } from '@/lib/locale';
 
 export type ViewMode = 'month' | 'week' | 'day';
 
@@ -42,7 +43,9 @@ interface CalendarHeaderProps {
 }
 
 function getMonthNames(): string[] {
-    const formatter = new Intl.DateTimeFormat(APP_LOCALE, { month: 'long' });
+    const formatter = new Intl.DateTimeFormat(getAppLocale(), {
+        month: 'long',
+    });
 
     return Array.from({ length: 12 }, (_, i) =>
         formatter.format(new Date(2025, i, 1)),
@@ -55,36 +58,8 @@ function getYearRange(): number[] {
     return Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
 }
 
-function getNavigationLabel(viewMode: ViewMode): {
-    previous: string;
-    next: string;
-} {
-    switch (viewMode) {
-        case 'month':
-            return { previous: 'Föregående månad', next: 'Nästa månad' };
-        case 'week':
-            return { previous: 'Föregående vecka', next: 'Nästa vecka' };
-        case 'day':
-            return { previous: 'Föregående dag', next: 'Nästa dag' };
-    }
-}
-
-function getNavigationShortcut(viewMode: ViewMode): {
-    previous: string;
-    next: string;
-} {
-    switch (viewMode) {
-        case 'month':
-            return { previous: '←', next: '→' };
-        case 'week':
-            return { previous: '←', next: '→' };
-        case 'day':
-            return { previous: '←', next: '→' };
-    }
-}
-
 function formatDayContext(year: number, month: number, day: number): string {
-    const formatter = new Intl.DateTimeFormat(APP_LOCALE, {
+    const formatter = new Intl.DateTimeFormat(getAppLocale(), {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
@@ -101,7 +76,7 @@ function formatWeekContext(year: number, month: number, day: number): string {
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
 
-    const formatter = new Intl.DateTimeFormat(APP_LOCALE, {
+    const formatter = new Intl.DateTimeFormat(getAppLocale(), {
         day: 'numeric',
         month: 'short',
     });
@@ -123,10 +98,26 @@ export function CalendarHeader({
     isToday,
     onCreateBooking,
 }: CalendarHeaderProps) {
+    const { t } = useTranslation();
     const monthNames = getMonthNames();
     const years = getYearRange();
-    const navLabels = getNavigationLabel(viewMode);
-    const navShortcuts = getNavigationShortcut(viewMode);
+
+    const navLabels = (() => {
+        switch (viewMode) {
+            case 'month':
+                return {
+                    previous: t('Föregående månad'),
+                    next: t('Nästa månad'),
+                };
+            case 'week':
+                return {
+                    previous: t('Föregående vecka'),
+                    next: t('Nästa vecka'),
+                };
+            case 'day':
+                return { previous: t('Föregående dag'), next: t('Nästa dag') };
+        }
+    })();
 
     return (
         <div className="flex items-center gap-2">
@@ -145,7 +136,7 @@ export function CalendarHeader({
                     <p>
                         {navLabels.previous}{' '}
                         <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
-                            {navShortcuts.previous}
+                            ←
                         </kbd>
                     </p>
                 </TooltipContent>
@@ -155,7 +146,7 @@ export function CalendarHeader({
                 value={String(displayedMonth)}
                 onValueChange={(value) => onSelectMonth(Number(value))}
             >
-                <SelectTrigger aria-label="Välj månad">
+                <SelectTrigger aria-label={t('Välj månad')}>
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -171,7 +162,7 @@ export function CalendarHeader({
                 value={String(displayedYear)}
                 onValueChange={(value) => onSelectYear(Number(value))}
             >
-                <SelectTrigger aria-label="Välj år">
+                <SelectTrigger aria-label={t('Välj år')}>
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -198,7 +189,7 @@ export function CalendarHeader({
                     <p>
                         {navLabels.next}{' '}
                         <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
-                            {navShortcuts.next}
+                            →
                         </kbd>
                     </p>
                 </TooltipContent>
@@ -212,11 +203,11 @@ export function CalendarHeader({
                         disabled={isToday}
                         aria-disabled={isToday}
                     >
-                        Idag
+                        {t('Idag')}
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Gå till idag</p>
+                    <p>{t('Gå till idag')}</p>
                 </TooltipContent>
             </Tooltip>
 
@@ -227,14 +218,14 @@ export function CalendarHeader({
                             <Button
                                 variant="outline"
                                 size="icon"
-                                aria-label="Byt vy"
+                                aria-label={t('Byt vy')}
                             >
                                 <CalendarDays />
                             </Button>
                         </DropdownMenuTrigger>
                     </TooltipTrigger>
                     <DropdownMenuContent align="start">
-                        <DropdownMenuLabel>Vy</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t('Vy')}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuRadioGroup
                             value={viewMode}
@@ -243,22 +234,22 @@ export function CalendarHeader({
                             }
                         >
                             <DropdownMenuRadioItem value="month">
-                                Månad
+                                {t('Månad')}
                                 <DropdownMenuShortcut>⌘0</DropdownMenuShortcut>
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem value="week">
-                                Vecka
+                                {t('Vecka')}
                                 <DropdownMenuShortcut>⌘1</DropdownMenuShortcut>
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem value="day">
-                                Dag
+                                {t('Dag')}
                                 <DropdownMenuShortcut>⌘2</DropdownMenuShortcut>
                             </DropdownMenuRadioItem>
                         </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
                 <TooltipContent>
-                    <p>Byt vy</p>
+                    <p>{t('Byt vy')}</p>
                 </TooltipContent>
             </Tooltip>
 
@@ -286,7 +277,7 @@ export function CalendarHeader({
                 <div className="ml-auto">
                     <Button onClick={onCreateBooking}>
                         <Plus />
-                        Ny bokning
+                        {t('Ny bokning')}
                     </Button>
                 </div>
             )}

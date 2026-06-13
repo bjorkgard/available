@@ -3,7 +3,7 @@
  * No React dependencies — fully testable in isolation.
  */
 
-import { APP_LOCALE } from '@/lib/locale';
+import { getAppLocale } from '@/lib/locale';
 
 export interface GridDate {
     day: number;
@@ -130,7 +130,7 @@ export function getNextMonth(
  */
 export function getFirstDayOfWeek(locale?: string): number {
     try {
-        const loc = new Intl.Locale(locale ?? APP_LOCALE);
+        const loc = new Intl.Locale(locale ?? getAppLocale());
 
         // Use weekInfo if available (modern browsers)
         if ('weekInfo' in loc && loc.weekInfo) {
@@ -167,7 +167,7 @@ export function getFirstDayOfWeek(locale?: string): number {
  */
 export function getWeekdayNames(locale?: string): string[] {
     const firstDay = getFirstDayOfWeek(locale);
-    const resolvedLocale = locale ?? APP_LOCALE;
+    const resolvedLocale = locale ?? getAppLocale();
 
     try {
         const formatter = new Intl.DateTimeFormat(resolvedLocale, {
@@ -236,7 +236,7 @@ export function getWeekDays(
     const todayMonth = today.getMonth();
     const todayYear = today.getFullYear();
 
-    const formatter = new Intl.DateTimeFormat(locale ?? APP_LOCALE, {
+    const formatter = new Intl.DateTimeFormat(locale ?? getAppLocale(), {
         weekday: 'short',
     });
 

@@ -26,6 +26,7 @@ class CongregationFactory extends Factory
             'slug' => Str::slug($name),
             'congregation_number' => strtoupper(fake()->unique()->bothify('??####')),
             'color' => strtoupper(fake()->hexColor()),
+            'locale' => fake()->randomElement(['sv', 'en']),
         ];
     }
 

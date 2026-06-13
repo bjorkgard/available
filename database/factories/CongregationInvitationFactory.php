@@ -26,6 +26,7 @@ class CongregationInvitationFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'role' => CongregationRole::Member,
             'invited_by' => User::factory(),
+            'locale' => fake()->randomElement(['sv', 'en']),
             'expires_at' => now()->addHours(72),
         ];
     }

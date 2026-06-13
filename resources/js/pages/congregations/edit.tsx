@@ -1,5 +1,6 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, usePage } from '@inertiajs/react';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -13,6 +14,13 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { edit, update, updateColor } from '@/routes/congregation';
 import type { Congregation } from '@/types';
 
@@ -21,18 +29,26 @@ type CongregationPermissions = {
     canDeleteTeam: boolean;
 };
 
+const LOCALE_LABELS: Record<string, string> = {
+    sv: 'Svenska',
+    en: 'English',
+};
+
 type Props = {
-    team: Congregation & { slug: string };
+    team: Congregation & { slug: string; locale: string };
     permissions: CongregationPermissions;
 };
 
 export default function CongregationEdit({ team, permissions }: Props) {
+    const { t } = useTranslation();
+    const { supportedLocales } = usePage().props;
+
     const pageTitle = useMemo(
         () =>
             permissions.canUpdateTeam
-                ? `Edit ${team.name}`
-                : `View ${team.name}`,
-        [permissions.canUpdateTeam, team.name],
+                ? `${t('Redigera')} ${team.name}`
+                : team.name,
+        [permissions.canUpdateTeam, team.name, t],
     );
 
     return (
@@ -45,7 +61,9 @@ export default function CongregationEdit({ team, permissions }: Props) {
                         title={pageTitle}
                         description={
                             permissions.canUpdateTeam
-                                ? 'Manage your congregation settings'
+                                ? t(
+                                      'Uppdatera ditt församlingsnamn och inställningar',
+                                  )
                                 : undefined
                         }
                     />
@@ -53,9 +71,13 @@ export default function CongregationEdit({ team, permissions }: Props) {
                     {permissions.canUpdateTeam ? (
                         <Card>
                             <CardHeader>
-                                <CardTitle>Congregation settings</CardTitle>
+                                <CardTitle>
+                                    {t('Församlingsinställningar')}
+                                </CardTitle>
                                 <CardDescription>
-                                    Update your congregation name and settings
+                                    {t(
+                                        'Uppdatera ditt församlingsnamn och inställningar',
+                                    )}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -67,7 +89,7 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                         <>
                                             <div className="grid gap-2">
                                                 <Label htmlFor="name">
-                                                    Congregation name
+                                                    {t('Församlingsnamn')}
                                                 </Label>
                                                 <Input
                                                     id="name"
@@ -83,7 +105,7 @@ export default function CongregationEdit({ team, permissions }: Props) {
 
                                             <div className="grid gap-2">
                                                 <Label htmlFor="congregation_number">
-                                                    Congregation number
+                                                    {t('Församlingsnummer')}
                                                 </Label>
                                                 <Input
                                                     id="congregation_number"
@@ -95,14 +117,58 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                                     required
                                                 />
                                                 <p className="text-sm text-muted-foreground">
-                                                    Only digits and uppercase
-                                                    letters (A–Z), max 20
-                                                    characters
+                                                    {t(
+                                                        'Bara siffror och versaler (A–Z), max 20 tecken',
+                                                    )}
                                                 </p>
                                                 <InputError
                                                     message={
                                                         errors.congregation_number
                                                     }
+                                                />
+                                            </div>
+
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="locale">
+                                                    {t('Språk')}
+                                                </Label>
+                                                <Select
+                                                    name="locale"
+                                                    defaultValue={team.locale}
+                                                >
+                                                    <SelectTrigger
+                                                        id="locale"
+                                                        data-test="congregation-locale-select"
+                                                        className="w-full"
+                                                    >
+                                                        <SelectValue
+                                                            placeholder={t(
+                                                                'Välj språk',
+                                                            )}
+                                                        />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {supportedLocales.map(
+                                                            (loc) => (
+                                                                <SelectItem
+                                                                    key={loc}
+                                                                    value={loc}
+                                                                >
+                                                                    {LOCALE_LABELS[
+                                                                        loc
+                                                                    ] ?? loc}
+                                                                </SelectItem>
+                                                            ),
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {t(
+                                                        'Standardspråk för församlingsnotifikationer och nya medlemmar',
+                                                    )}
+                                                </p>
+                                                <InputError
+                                                    message={errors.locale}
                                                 />
                                             </div>
 
@@ -112,7 +178,7 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                                     data-test="congregation-save-button"
                                                     disabled={processing}
                                                 >
-                                                    Save
+                                                    {t('Spara')}
                                                 </Button>
                                             </div>
                                         </>
@@ -125,9 +191,9 @@ export default function CongregationEdit({ team, permissions }: Props) {
                     {permissions.canUpdateTeam ? (
                         <Card>
                             <CardHeader>
-                                <CardTitle>Congregation color</CardTitle>
+                                <CardTitle>{t('Församlingsfärg')}</CardTitle>
                                 <CardDescription>
-                                    Choose a color to identify your congregation
+                                    {t('Välj en färg för din församling')}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -139,7 +205,7 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                         <>
                                             <div className="grid gap-2">
                                                 <Label htmlFor="color">
-                                                    Color
+                                                    {t('Färg')}
                                                 </Label>
                                                 <div className="flex items-center gap-3">
                                                     <Input
@@ -155,8 +221,9 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                                     />
                                                 </div>
                                                 <p className="text-sm text-muted-foreground">
-                                                    Select a color and click on
-                                                    Save
+                                                    {t(
+                                                        'Välj en färg och klicka på Spara',
+                                                    )}
                                                 </p>
                                                 <InputError
                                                     message={errors.color}
@@ -169,7 +236,7 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                                     data-test="congregation-color-save-button"
                                                     disabled={processing}
                                                 >
-                                                    Save color
+                                                    {t('Spara färg')}
                                                 </Button>
                                             </div>
                                         </>
@@ -182,25 +249,28 @@ export default function CongregationEdit({ team, permissions }: Props) {
                     {permissions.canDeleteTeam ? (
                         <Card>
                             <CardHeader>
-                                <CardTitle>Delete congregation</CardTitle>
+                                <CardTitle>{t('Ta bort församling')}</CardTitle>
                                 <CardDescription>
-                                    Permanently delete your congregation
+                                    {t('Ta bort din församling permanent')}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10">
                                     <div className="relative space-y-0.5 text-red-600 dark:text-red-100">
-                                        <p className="font-medium">Warning</p>
+                                        <p className="font-medium">
+                                            {t('Varning')}
+                                        </p>
                                         <p className="text-sm">
-                                            Please proceed with caution, this
-                                            cannot be undone.
+                                            {t(
+                                                'Var försiktig, detta kan inte ångras.',
+                                            )}
                                         </p>
                                     </div>
                                     <Button
                                         variant="destructive"
                                         data-test="delete-congregation-button"
                                     >
-                                        Delete congregation
+                                        {t('Ta bort församling')}
                                     </Button>
                                 </div>
                             </CardContent>

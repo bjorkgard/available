@@ -70,13 +70,13 @@ class MemberController extends Controller
         } catch (Throwable $e) {
             return Inertia::flash('toast', [
                 'type' => 'error',
-                'message' => 'Failed to send invitation. Please try again.',
+                'message' => __('Failed to send invitation. Please try again.'),
             ])->back();
         }
 
         return Inertia::flash('toast', [
             'type' => 'success',
-            'message' => 'Invitation sent successfully.',
+            'message' => __('Invitation sent successfully.'),
         ])->back();
     }
 
@@ -99,7 +99,7 @@ class MemberController extends Controller
             'role' => $requestedRole,
         ]);
 
-        return back()->with('success', 'Member role updated.');
+        return back()->with('success', __('Member role updated.'));
     }
 
     /**
@@ -129,7 +129,7 @@ class MemberController extends Controller
 
             if (! $otherMemberExists) {
                 throw ValidationException::withMessages([
-                    'member' => 'This member cannot be removed because no other active members exist to receive their bookings. Remove their future bookings first or add another member.',
+                    'member' => __('This member cannot be removed because no other active members exist to receive their bookings. Remove their future bookings first or add another member.'),
                 ]);
             }
 
@@ -164,7 +164,7 @@ class MemberController extends Controller
 
         $member->delete();
 
-        return back()->with('success', 'Member removed from congregation.');
+        return back()->with('success', __('Member removed from congregation.'));
     }
 
     /**
@@ -181,7 +181,7 @@ class MemberController extends Controller
 
         return Inertia::flash('toast', [
             'type' => 'success',
-            'message' => 'Invitation cancelled.',
+            'message' => __('Invitation cancelled.'),
         ])->back();
     }
 

@@ -1,4 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
@@ -19,9 +20,11 @@ type Props = {
 };
 
 export default function AcceptInvitation({ invitation, passwordRules }: Props) {
+    const { t } = useTranslation();
+
     return (
         <>
-            <Head title="Accept Invitation" />
+            <Head title={t('Acceptera inbjudan')} />
             <Form
                 action={`/invitations/${invitation.code}/accept`}
                 method="post"
@@ -33,15 +36,18 @@ export default function AcceptInvitation({ invitation, passwordRules }: Props) {
                     <>
                         <div className="grid gap-6">
                             <p className="text-sm text-muted-foreground">
-                                You've been invited to join{' '}
+                                {t('Du har blivit inbjuden att gå med i')}{' '}
                                 <span className="font-medium text-foreground">
                                     {invitation.congregation_name}
                                 </span>
-                                . Create a password to set up your account.
+                                .{' '}
+                                {t(
+                                    'Skapa ett lösenord för att konfigurera ditt konto.',
+                                )}
                             </p>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="name">{t('Namn')}</Label>
                                 <Input
                                     id="name"
                                     type="text"
@@ -51,7 +57,9 @@ export default function AcceptInvitation({ invitation, passwordRules }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">
+                                    {t('E-postadress')}
+                                </Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -61,7 +69,9 @@ export default function AcceptInvitation({ invitation, passwordRules }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">
+                                    {t('Lösenord')}
+                                </Label>
                                 <PasswordInput
                                     id="password"
                                     required
@@ -69,7 +79,7 @@ export default function AcceptInvitation({ invitation, passwordRules }: Props) {
                                     tabIndex={1}
                                     autoComplete="new-password"
                                     name="password"
-                                    placeholder="Password"
+                                    placeholder={t('Lösenord')}
                                     passwordrules={passwordRules}
                                 />
                                 <InputError message={errors.password} />
@@ -77,7 +87,7 @@ export default function AcceptInvitation({ invitation, passwordRules }: Props) {
 
                             <div className="grid gap-2">
                                 <Label htmlFor="password_confirmation">
-                                    Confirm password
+                                    {t('Bekräfta lösenord')}
                                 </Label>
                                 <PasswordInput
                                     id="password_confirmation"
@@ -85,7 +95,7 @@ export default function AcceptInvitation({ invitation, passwordRules }: Props) {
                                     tabIndex={2}
                                     autoComplete="new-password"
                                     name="password_confirmation"
-                                    placeholder="Confirm password"
+                                    placeholder={t('Bekräfta lösenord')}
                                     passwordrules={passwordRules}
                                 />
                                 <InputError
@@ -99,7 +109,7 @@ export default function AcceptInvitation({ invitation, passwordRules }: Props) {
                                 tabIndex={3}
                             >
                                 {processing && <Spinner />}
-                                Create account & join
+                                {t('Skapa konto och gå med')}
                             </Button>
                         </div>
                     </>
@@ -110,6 +120,6 @@ export default function AcceptInvitation({ invitation, passwordRules }: Props) {
 }
 
 AcceptInvitation.layout = {
-    title: 'Accept invitation',
-    description: 'Set up your password to join the congregation',
+    title: 'Acceptera inbjudan',
+    description: 'Konfigurera ditt lösenord för att gå med i församlingen',
 };

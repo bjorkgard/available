@@ -4,7 +4,7 @@ import { flushSync } from 'react-dom';
 import { BookingBlock } from '@/components/booking-block';
 import { CalendarContextMenu } from '@/components/calendar-context-menu';
 import type { DropTarget } from '@/hooks/use-drag-booking';
-import { APP_LOCALE } from '@/lib/locale';
+import { getAppLocale } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 import type { BookingResource, Room } from '@/types';
 
@@ -150,7 +150,7 @@ export function DayGrid({
         heightPercent: number;
     } | null>(null);
 
-    const dateFormatter = new Intl.DateTimeFormat(APP_LOCALE, {
+    const dateFormatter = new Intl.DateTimeFormat(getAppLocale(), {
         weekday: 'long',
         day: 'numeric',
         month: 'long',

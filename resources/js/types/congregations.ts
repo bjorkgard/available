@@ -9,6 +9,7 @@ export type Congregation = {
     congregation_number: string;
     kingdom_hall_id: string | null;
     color: string | null;
+    locale: string;
     kingdom_hall?: KingdomHall;
 };
 

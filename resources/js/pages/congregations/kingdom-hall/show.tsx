@@ -8,6 +8,7 @@ import {
     Trash2Icon,
 } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import AddCongregationModal from '@/components/add-congregation-modal';
 import AddressEditModal from '@/components/address-edit-modal';
@@ -41,6 +42,7 @@ type Props = {
 };
 
 export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
+    const { t } = useTranslation();
     const page = usePage();
     const currentCongregation = page.props.currentCongregation as
         | { slug: string }
@@ -63,11 +65,11 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
 
     return (
         <TooltipProvider>
-            <Head title="Kingdom Hall" />
+            <Head title={t('Rikets sal')} />
 
             <div className="mx-auto flex w-full max-w-4xl flex-col space-y-8 px-4 py-6">
                 <Heading
-                    title="Kingdom Hall"
+                    title={t('Rikets sal')}
                     description={`${kingdomHall.street_address}, ${kingdomHall.zip_code} ${kingdomHall.city}`}
                 />
 
@@ -75,7 +77,7 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle className="flex items-center gap-2">
                             <Building2 className="h-5 w-5" />
-                            Address
+                            {t('Adress')}
                         </CardTitle>
                         {canManage && (
                             <Tooltip>
@@ -89,11 +91,13 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                                     >
                                         <PencilIcon className="size-4" />
                                         <span className="sr-only">
-                                            Edit address
+                                            {t('Redigera adress')}
                                         </span>
                                     </Button>
                                 </TooltipTrigger>
-                                <TooltipContent>Edit address</TooltipContent>
+                                <TooltipContent>
+                                    {t('Redigera adress')}
+                                </TooltipContent>
                             </Tooltip>
                         )}
                     </CardHeader>
@@ -101,7 +105,7 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                         <dl className="grid gap-3 sm:grid-cols-3">
                             <div>
                                 <dt className="text-sm font-medium text-muted-foreground">
-                                    Street address
+                                    {t('Gatuadress')}
                                 </dt>
                                 <dd className="mt-1">
                                     {kingdomHall.street_address}
@@ -109,13 +113,13 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                             </div>
                             <div>
                                 <dt className="text-sm font-medium text-muted-foreground">
-                                    Zip code
+                                    {t('Postnummer')}
                                 </dt>
                                 <dd className="mt-1">{kingdomHall.zip_code}</dd>
                             </div>
                             <div>
                                 <dt className="text-sm font-medium text-muted-foreground">
-                                    City
+                                    {t('Ort')}
                                 </dt>
                                 <dd className="mt-1">{kingdomHall.city}</dd>
                             </div>
@@ -128,14 +132,12 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                         <div>
                             <CardTitle className="flex items-center gap-2">
                                 <DoorOpen className="h-5 w-5" />
-                                Rooms
+                                {t('Rum')}
                             </CardTitle>
                             <CardDescription>
-                                {kingdomHall.rooms.length}{' '}
-                                {kingdomHall.rooms.length === 1
-                                    ? 'room'
-                                    : 'rooms'}{' '}
-                                available
+                                {t('{{count}} rum tillgängliga', {
+                                    count: kingdomHall.rooms.length,
+                                })}
                             </CardDescription>
                         </div>
                         {canManage && (
@@ -151,11 +153,13 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                                     >
                                         <PlusIcon className="size-4" />
                                         <span className="sr-only">
-                                            Add room
+                                            {t('Lägg till rum')}
                                         </span>
                                     </Button>
                                 </TooltipTrigger>
-                                <TooltipContent>Add room</TooltipContent>
+                                <TooltipContent>
+                                    {t('Lägg till rum')}
+                                </TooltipContent>
                             </Tooltip>
                         )}
                     </CardHeader>
@@ -187,12 +191,13 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                                                         >
                                                             <PencilIcon className="size-3.5" />
                                                             <span className="sr-only">
-                                                                Edit {room.name}
+                                                                {t('Redigera')}{' '}
+                                                                {room.name}
                                                             </span>
                                                         </Button>
                                                     </TooltipTrigger>
                                                     <TooltipContent>
-                                                        Edit
+                                                        {t('Redigera')}
                                                     </TooltipContent>
                                                 </Tooltip>
                                                 <Tooltip>
@@ -209,13 +214,13 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                                                         >
                                                             <Trash2Icon className="size-3.5" />
                                                             <span className="sr-only">
-                                                                Delete{' '}
+                                                                {t('Ta bort')}{' '}
                                                                 {room.name}
                                                             </span>
                                                         </Button>
                                                     </TooltipTrigger>
                                                     <TooltipContent>
-                                                        Delete
+                                                        {t('Ta bort')}
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </div>
@@ -232,14 +237,13 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                         <div>
                             <CardTitle className="flex items-center gap-2">
                                 <Church className="h-5 w-5" />
-                                Congregations
+                                {t('Församlingar')}
                             </CardTitle>
                             <CardDescription>
-                                {kingdomHall.congregations.length}{' '}
-                                {kingdomHall.congregations.length === 1
-                                    ? 'congregation'
-                                    : 'congregations'}{' '}
-                                in this Kingdom Hall
+                                {t(
+                                    '{{count}} församlingar i denna rikets sal',
+                                    { count: kingdomHall.congregations.length },
+                                )}
                             </CardDescription>
                         </div>
                         {canManage && (
@@ -254,12 +258,12 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                                     >
                                         <PlusIcon className="size-4" />
                                         <span className="sr-only">
-                                            Add congregation
+                                            {t('Lägg till församling')}
                                         </span>
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    Add congregation
+                                    {t('Lägg till församling')}
                                 </TooltipContent>
                             </Tooltip>
                         )}
@@ -298,13 +302,13 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                                                 >
                                                     <Trash2Icon className="size-3.5" />
                                                     <span className="sr-only">
-                                                        Delete{' '}
+                                                        {t('Ta bort')}{' '}
                                                         {congregation.name}
                                                     </span>
                                                 </Button>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                Delete
+                                                {t('Ta bort')}
                                             </TooltipContent>
                                         </Tooltip>
                                     )}
@@ -339,12 +343,17 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                                 setDeletingRoom(undefined);
                             }
                         }}
-                        title="Delete room"
-                        description={`Are you sure you want to delete "${deletingRoom?.name}"? This action cannot be undone.`}
+                        title={t('Ta bort rum')}
+                        description={t(
+                            'Är du säker på att du vill ta bort "{{name}}"? Denna åtgärd kan inte ångras.',
+                            { name: deletingRoom?.name },
+                        )}
                         action={`/${congregationSlug}/kingdom-hall/rooms/${deletingRoom?.id}`}
                         warning={
                             deletingRoom?.has_future_bookings
-                                ? 'This room has future bookings that will be deleted.'
+                                ? t(
+                                      'Detta rum har framtida bokningar som kommer att tas bort.',
+                                  )
                                 : undefined
                         }
                     />
@@ -355,13 +364,21 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
                                 setDeletingCongregation(undefined);
                             }
                         }}
-                        title="Delete congregation"
-                        description={`This will permanently delete "${deletingCongregation?.name}" and remove all its members and pending invitations.`}
+                        title={t('Ta bort församling')}
+                        description={t(
+                            'Detta kommer permanent ta bort "{{name}}" och ta bort alla dess medlemmar och väntande inbjudningar.',
+                            { name: deletingCongregation?.name },
+                        )}
                         action={`/${congregationSlug}/kingdom-hall/congregations/${deletingCongregation?.slug}`}
                         confirmationInput={
                             deletingCongregation
                                 ? {
-                                      label: `Type "${deletingCongregation.congregation_number}" to confirm`,
+                                      label: t(
+                                          'Skriv "{{value}}" för att bekräfta',
+                                          {
+                                              value: deletingCongregation.congregation_number,
+                                          },
+                                      ),
                                       expectedValue:
                                           deletingCongregation.congregation_number,
                                   }
@@ -377,7 +394,7 @@ export default function KingdomHallShow({ kingdomHall, canManage }: Props) {
 KingdomHallShow.layout = () => ({
     breadcrumbs: [
         {
-            title: 'Kingdom Hall',
+            title: 'Rikets sal',
             href: '',
         },
     ],

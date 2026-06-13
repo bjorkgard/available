@@ -1,14 +1,34 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, usePage } from '@inertiajs/react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 
+const LOCALE_LABELS: Record<string, string> = {
+    sv: 'Svenska',
+    en: 'English',
+};
+
 export default function SetupWizard() {
+    const { t } = useTranslation();
+    const { supportedLocales } = usePage().props;
+    const locales = (supportedLocales as string[]) ?? ['sv', 'en'];
+    const [selectedLocale, setSelectedLocale] = useState('sv');
+
     return (
         <>
-            <Head title="Set up your Kingdom Hall" />
+            <Head title={t('Konfigurera din rikets sal')} />
             <Form
                 action="/setup"
                 method="post"
@@ -19,7 +39,7 @@ export default function SetupWizard() {
                     <div className="grid gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="street_address">
-                                Street address
+                                {t('Gatuadress')}
                             </Label>
                             <Input
                                 id="street_address"
@@ -29,13 +49,13 @@ export default function SetupWizard() {
                                 tabIndex={1}
                                 autoComplete="street-address"
                                 name="street_address"
-                                placeholder="123 Main Street"
+                                placeholder={t('Gatuadress')}
                             />
                             <InputError message={errors.street_address} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="zip_code">Zip code</Label>
+                            <Label htmlFor="zip_code">{t('Postnummer')}</Label>
                             <Input
                                 id="zip_code"
                                 type="text"
@@ -43,13 +63,13 @@ export default function SetupWizard() {
                                 tabIndex={2}
                                 autoComplete="postal-code"
                                 name="zip_code"
-                                placeholder="12345"
+                                placeholder={t('Postnummer')}
                             />
                             <InputError message={errors.zip_code} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="city">City</Label>
+                            <Label htmlFor="city">{t('Stad')}</Label>
                             <Input
                                 id="city"
                                 type="text"
@@ -57,14 +77,14 @@ export default function SetupWizard() {
                                 tabIndex={3}
                                 autoComplete="address-level2"
                                 name="city"
-                                placeholder="City"
+                                placeholder={t('Stad')}
                             />
                             <InputError message={errors.city} />
                         </div>
 
                         <div className="grid gap-2">
                             <Label htmlFor="number_of_rooms">
-                                Number of rooms
+                                {t('Antal rum')}
                             </Label>
                             <Input
                                 id="number_of_rooms"
@@ -79,13 +99,40 @@ export default function SetupWizard() {
                             <InputError message={errors.number_of_rooms} />
                         </div>
 
+                        <div className="grid gap-2">
+                            <Label htmlFor="locale">
+                                {t('Språk')}
+                            </Label>
+                            <Select
+                                name="locale"
+                                value={selectedLocale}
+                                onValueChange={setSelectedLocale}
+                            >
+                                <SelectTrigger
+                                    id="locale"
+                                    tabIndex={5}
+                                    className="w-full"
+                                >
+                                    <SelectValue placeholder={t('Välj språk')} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {locales.map((loc) => (
+                                        <SelectItem key={loc} value={loc}>
+                                            {LOCALE_LABELS[loc] ?? loc}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.locale} />
+                        </div>
+
                         <Button
                             type="submit"
                             className="mt-2 w-full"
-                            tabIndex={5}
+                            tabIndex={6}
                         >
                             {processing && <Spinner />}
-                            Complete setup
+                            {t('Slutför konfiguration')}
                         </Button>
                     </div>
                 )}
@@ -95,7 +142,7 @@ export default function SetupWizard() {
 }
 
 SetupWizard.layout = {
-    title: 'Set up your Kingdom Hall',
+    title: 'Konfigurera din rikets sal',
     description:
-        'Configure the physical location where your congregation meets.',
+        'Konfigurera den fysiska platsen där din församling möts.',
 };

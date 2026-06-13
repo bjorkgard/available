@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { TriangleAlertIcon } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,7 @@ export default function DeleteConfirmationDialog({
     confirmationInput,
     warning,
 }: Props) {
+    const { t } = useTranslation();
     const [confirmValue, setConfirmValue] = useState('');
     const [processing, setProcessing] = useState(false);
 
@@ -60,11 +62,11 @@ export default function DeleteConfirmationDialog({
 
         router.delete(action, {
             onSuccess: () => {
-                toast.success('Borttaget.');
+                toast.success(t('Borttaget.'));
                 onOpenChange(false);
             },
             onError: () => {
-                toast.error('Något gick fel. Försök igen.');
+                toast.error(t('Något gick fel. Försök igen.'));
             },
             onFinish: () => {
                 setProcessing(false);
@@ -104,7 +106,7 @@ export default function DeleteConfirmationDialog({
 
                 <DialogFooter className="gap-2">
                     <DialogClose asChild>
-                        <Button variant="secondary">Avbryt</Button>
+                        <Button variant="secondary">{t('Avbryt')}</Button>
                     </DialogClose>
 
                     <Button
@@ -112,7 +114,7 @@ export default function DeleteConfirmationDialog({
                         disabled={isConfirmDisabled}
                         onClick={handleConfirm}
                     >
-                        Bekräfta
+                        {t('Bekräfta')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -5,7 +5,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { APP_LOCALE } from '@/lib/locale';
+import { getAppLocale } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 
 export type ViewMode = 'month' | 'week' | 'day';
@@ -25,11 +25,13 @@ interface BookingBlockProps {
     style?: CSSProperties;
 }
 
-const timeFormatter = new Intl.DateTimeFormat(APP_LOCALE, {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-});
+function getTimeFormatter() {
+    return new Intl.DateTimeFormat(getAppLocale(), {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    });
+}
 
 /**
  * Computes the top offset and height (as percentages of the day container)
@@ -55,8 +57,8 @@ function computeGridPosition(startsAt: string, endsAt: string) {
 export function BookingBlock({ booking, viewMode, style }: BookingBlockProps) {
     const { name, starts_at, ends_at, congregation_color, can_edit } = booking;
 
-    const startTime = timeFormatter.format(new Date(starts_at));
-    const endTime = timeFormatter.format(new Date(ends_at));
+    const startTime = getTimeFormatter().format(new Date(starts_at));
+    const endTime = getTimeFormatter().format(new Date(ends_at));
     const tooltipText = `${name} ${startTime}–${endTime}`;
 
     const colorStyles: CSSProperties = congregation_color

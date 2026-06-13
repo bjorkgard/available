@@ -1,4 +1,5 @@
 import { Form, usePage } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import InputError from '@/components/input-error';
@@ -29,6 +30,7 @@ export default function RoomModal({
     open,
     onOpenChange,
 }: Props) {
+    const { t } = useTranslation();
     const { currentCongregation } = usePage<{
         currentCongregation: { slug: string };
     }>().props;
@@ -50,12 +52,12 @@ export default function RoomModal({
                     className="space-y-6"
                     onSuccess={() => {
                         toast.success(
-                            isEditing ? 'Rum uppdaterat.' : 'Rum skapat.',
+                            isEditing ? t('Rum uppdaterat.') : t('Rum skapat.'),
                         );
                         onOpenChange(false);
                     }}
                     onError={() => {
-                        toast.error('Något gick fel. Försök igen.');
+                        toast.error(t('Något gick fel. Försök igen.'));
                     }}
                 >
                     {({ errors, processing }) => (
@@ -63,24 +65,36 @@ export default function RoomModal({
                             <DialogHeader>
                                 <DialogTitle>
                                     {isEditing
-                                        ? 'Redigera rum'
-                                        : 'Lägg till rum'}
+                                        ? t('Redigera rum')
+                                        : t('Lägg till rum')}
                                 </DialogTitle>
                                 <DialogDescription>
                                     {isEditing
-                                        ? `Byt namn på rummet i ${kingdomHall.street_address}.`
-                                        : `Lägg till ett nytt rum i ${kingdomHall.street_address}.`}
+                                        ? t(
+                                              'Byt namn på rummet i {{address}}.',
+                                              {
+                                                  address:
+                                                      kingdomHall.street_address,
+                                              },
+                                          )
+                                        : t(
+                                              'Lägg till ett nytt rum i {{address}}.',
+                                              {
+                                                  address:
+                                                      kingdomHall.street_address,
+                                              },
+                                          )}
                                 </DialogDescription>
                             </DialogHeader>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="room-name">Namn</Label>
+                                <Label htmlFor="room-name">{t('Namn')}</Label>
                                 <Input
                                     id="room-name"
                                     name="name"
                                     type="text"
                                     defaultValue={room?.name ?? ''}
-                                    placeholder="t.ex. Stora salen"
+                                    placeholder={t('t.ex. Stora salen')}
                                     required
                                     maxLength={255}
                                 />
@@ -89,11 +103,15 @@ export default function RoomModal({
 
                             <DialogFooter className="gap-2">
                                 <DialogClose asChild>
-                                    <Button variant="secondary">Avbryt</Button>
+                                    <Button variant="secondary">
+                                        {t('Avbryt')}
+                                    </Button>
                                 </DialogClose>
 
                                 <Button type="submit" disabled={processing}>
-                                    {isEditing ? 'Spara' : 'Lägg till rum'}
+                                    {isEditing
+                                        ? t('Spara')
+                                        : t('Lägg till rum')}
                                 </Button>
                             </DialogFooter>
                         </>

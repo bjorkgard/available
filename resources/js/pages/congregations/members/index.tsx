@@ -1,6 +1,7 @@
 import { Head, router } from '@inertiajs/react';
 import { Clock, Trash2, UserPlus } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Heading from '@/components/heading';
 import InviteMemberDialog from '@/components/invite-member-dialog';
@@ -33,36 +34,39 @@ const roleBadgeVariant: Record<
 const roleLabel: Record<CongregationRole, string> = {
     superadmin: 'Superadmin',
     admin: 'Admin',
-    member: 'Member',
+    member: 'Medlem',
 };
 
 function canManage(viewerRole: CongregationRole): boolean {
     return viewerRole === 'superadmin' || viewerRole === 'admin';
 }
 
-function formatTimeLeft(expiresAt: string): string {
+function formatTimeLeft(
+    expiresAt: string,
+    t: (key: string, options?: Record<string, unknown>) => string,
+): string {
     const now = Date.now();
     const expires = new Date(expiresAt).getTime();
     const diff = expires - now;
 
     if (diff <= 0) {
-        return 'expired';
+        return t('utgången');
     }
 
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(hours / 24);
 
     if (days > 0) {
-        return `expires in ${days}d ${hours % 24}h`;
+        return t('utgår om {{days}}d {{hours}}h', { days, hours: hours % 24 });
     }
 
     if (hours > 0) {
-        return `expires in ${hours}h`;
+        return t('utgår om {{hours}}h', { hours });
     }
 
     const minutes = Math.floor(diff / (1000 * 60));
 
-    return `expires in ${minutes}m`;
+    return t('utgår om {{minutes}}m', { minutes });
 }
 
 export default function MembersIndex({
@@ -71,6 +75,7 @@ export default function MembersIndex({
     congregation,
     viewerRole,
 }: Props) {
+    const { t } = useTranslation();
     const [inviteOpen, setInviteOpen] = useState(false);
 
     const handleRoleChange = (
@@ -87,7 +92,9 @@ export default function MembersIndex({
     const handleRemove = (membership: Membership) => {
         if (
             !confirm(
-                `Remove ${membership.user?.name ?? 'this member'} from the congregation?`,
+                t('Ta bort {{name}} från församlingen?', {
+                    name: membership.user?.name ?? t('denna medlem'),
+                }),
             )
         ) {
             return;
@@ -100,16 +107,18 @@ export default function MembersIndex({
 
     return (
         <>
-            <Head title="Members" />
+            <Head title={t('Medlemmar')} />
 
-            <h1 className="sr-only">Members</h1>
+            <h1 className="sr-only">{t('Medlemmar')}</h1>
 
             <div className="mx-auto flex w-full max-w-2xl flex-col space-y-6 px-4 py-6">
                 <div className="flex items-center justify-between">
                     <Heading
                         variant="small"
-                        title="Members"
-                        description="Manage congregation members and roles"
+                        title={t('Medlemmar')}
+                        description={t(
+                            'Hantera församlingsmedlemmar och roller',
+                        )}
                     />
 
                     {canManage(viewerRole) && (
@@ -117,7 +126,7 @@ export default function MembersIndex({
                             data-test="invite-member-button"
                             onClick={() => setInviteOpen(true)}
                         >
-                            <UserPlus /> Invite
+                            <UserPlus /> {t('Bjud in')}
                         </Button>
                     )}
                 </div>
@@ -159,7 +168,7 @@ export default function MembersIndex({
                                                 handleRemove(membership)
                                             }
                                         >
-                                            Remove
+                                            {t('Ta bort')}
                                         </Button>
                                     </>
                                 ) : (
@@ -168,7 +177,7 @@ export default function MembersIndex({
                                             roleBadgeVariant[membership.role]
                                         }
                                     >
-                                        {roleLabel[membership.role]}
+                                        {t(roleLabel[membership.role])}
                                     </Badge>
                                 )}
                             </div>
@@ -177,7 +186,7 @@ export default function MembersIndex({
 
                     {members.length === 0 && (
                         <p className="py-8 text-center text-muted-foreground">
-                            No members yet.
+                            {t('Inga medlemmar ännu.')}
                         </p>
                     )}
                 </div>
@@ -186,7 +195,7 @@ export default function MembersIndex({
                     <div className="space-y-3">
                         <h2 className="text-sm font-medium text-muted-foreground">
                             <Clock className="mr-1.5 inline-block h-3.5 w-3.5" />
-                            Pending invitations
+                            {t('Väntande inbjudningar')}
                         </h2>
 
                         <div className="space-y-2">
@@ -203,7 +212,7 @@ export default function MembersIndex({
                                             {invitation.email}
                                         </span>
                                         <span className="text-xs text-muted-foreground/50">
-                                            Sent{' '}
+                                            {t('Skickad')}{' '}
                                             {new Date(
                                                 invitation.created_at,
                                             ).toLocaleDateString(undefined, {
@@ -215,6 +224,7 @@ export default function MembersIndex({
                                                     {' · '}
                                                     {formatTimeLeft(
                                                         invitation.expires_at,
+                                                        t,
                                                     )}
                                                 </>
                                             )}
@@ -226,7 +236,7 @@ export default function MembersIndex({
                                             variant="outline"
                                             className="text-xs"
                                         >
-                                            {roleLabel[invitation.role]}
+                                            {t(roleLabel[invitation.role])}
                                         </Badge>
                                         <Button
                                             variant="ghost"
@@ -241,7 +251,7 @@ export default function MembersIndex({
                                         >
                                             <Trash2 className="h-3.5 w-3.5" />
                                             <span className="sr-only">
-                                                Cancel invitation
+                                                {t('Avbryt inbjudan')}
                                             </span>
                                         </Button>
                                     </div>
@@ -265,7 +275,7 @@ export default function MembersIndex({
 MembersIndex.layout = (props: { congregation?: { slug: string } }) => ({
     breadcrumbs: [
         {
-            title: 'Members',
+            title: 'Medlemmar',
             href: props.congregation
                 ? `/${props.congregation.slug}/members`
                 : '#',

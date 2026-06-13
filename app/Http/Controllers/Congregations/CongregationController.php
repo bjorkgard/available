@@ -12,6 +12,7 @@ use App\Models\KingdomHall;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -51,6 +52,7 @@ class CongregationController extends Controller
                 'slug' => $congregation->slug,
                 'congregation_number' => $congregation->congregation_number,
                 'color' => $congregation->color,
+                'locale' => $congregation->locale ?? 'sv',
                 'isPersonal' => false,
             ],
             'permissions' => [
@@ -87,9 +89,10 @@ class CongregationController extends Controller
                 'regex:/^[A-Z0-9]+$/',
                 'unique:congregations,congregation_number,'.$congregation->id,
             ],
+            'locale' => ['sometimes', 'string', Rule::in(config('app.supported_locales'))],
         ], [
-            'congregation_number.regex' => 'The congregation number must contain only digits and uppercase letters (A–Z).',
-            'congregation_number.unique' => 'This congregation number is already in use.',
+            'congregation_number.regex' => __('The congregation number must contain only digits and uppercase letters (A–Z).'),
+            'congregation_number.unique' => __('This congregation number is already in use.'),
         ]);
 
         $congregation->update($validated);
@@ -167,6 +170,6 @@ class CongregationController extends Controller
 
         $moveCongregation->handle($congregation, $targetKingdomHall);
 
-        return redirect()->back()->with('success', 'Congregation moved successfully.');
+        return redirect()->back()->with('success', __('Congregation moved successfully.'));
     }
 }

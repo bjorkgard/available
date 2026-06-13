@@ -48,9 +48,9 @@ test('valid setup submission creates kingdom hall with rooms and assigns superad
 
     $rooms = $kingdomHall->rooms()->orderBy('sort_order')->get();
     expect($rooms)->toHaveCount(3);
-    expect($rooms[0]->name)->toBe('Room 1');
-    expect($rooms[1]->name)->toBe('Room 2');
-    expect($rooms[2]->name)->toBe('Room 3');
+    expect($rooms[0]->name)->toBe(__('Room :number', ['number' => 1]));
+    expect($rooms[1]->name)->toBe(__('Room :number', ['number' => 2]));
+    expect($rooms[2]->name)->toBe(__('Room :number', ['number' => 3]));
 
     $membership = $congregation->memberships()->where('user_id', $user->id)->first();
     expect($membership->role)->toBe(CongregationRole::Superadmin);
@@ -111,6 +111,64 @@ test('setup wizard rejects room count outside valid range', function () {
     $response->assertSessionHasErrors(['number_of_rooms']);
 
     expect(KingdomHall::count())->toBe(0);
+});
+
+test('setup wizard sets congregation locale when provided', function () {
+    $congregation = Congregation::factory()->create();
+    $user = User::factory()->create();
+    $congregation->members()->attach($user, ['role' => CongregationRole::Admin->value]);
+    $user->switchCongregation($congregation);
+
+    $response = $this->actingAs($user)->post(route('setup.store'), [
+        'street_address' => '123 Main Street',
+        'zip_code' => '12345',
+        'city' => 'Springfield',
+        'number_of_rooms' => 2,
+        'locale' => 'en',
+    ]);
+
+    $response->assertSessionHasNoErrors();
+    $response->assertRedirect();
+
+    $congregation->refresh();
+    expect($congregation->locale)->toBe('en');
+});
+
+test('setup wizard defaults congregation locale to sv when not provided', function () {
+    $congregation = Congregation::factory()->create();
+    $user = User::factory()->create();
+    $congregation->members()->attach($user, ['role' => CongregationRole::Admin->value]);
+    $user->switchCongregation($congregation);
+
+    $response = $this->actingAs($user)->post(route('setup.store'), [
+        'street_address' => '456 Oak Ave',
+        'zip_code' => '67890',
+        'city' => 'Shelbyville',
+        'number_of_rooms' => 1,
+    ]);
+
+    $response->assertSessionHasNoErrors();
+    $response->assertRedirect();
+
+    $congregation->refresh();
+    expect($congregation->locale)->toBe('sv');
+});
+
+test('setup wizard rejects invalid locale value', function () {
+    $congregation = Congregation::factory()->create();
+    $user = User::factory()->create();
+    $congregation->members()->attach($user, ['role' => CongregationRole::Admin->value]);
+    $user->switchCongregation($congregation);
+
+    $response = $this->actingAs($user)->post(route('setup.store'), [
+        'street_address' => '123 Main Street',
+        'zip_code' => '12345',
+        'city' => 'Springfield',
+        'number_of_rooms' => 2,
+        'locale' => 'fr',
+    ]);
+
+    $response->assertSessionHasErrors(['locale']);
 });
 
 test('user can access dashboard after completing setup', function () {

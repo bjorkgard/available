@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -13,42 +14,43 @@ import type { NavItem } from '@/types';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Profile',
+        title: 'Profil',
         href: edit(),
         icon: null,
     },
     {
-        title: 'Security',
+        title: 'Säkerhet',
         href: editSecurity(),
         icon: null,
     },
     {
-        title: 'Sessions',
+        title: 'Sessioner',
         href: editSessions(),
         icon: null,
     },
     {
-        title: 'Appearance',
+        title: 'Utseende',
         href: editAppearance(),
         icon: null,
     },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
+    const { t } = useTranslation();
     const { isCurrentOrParentUrl } = useCurrentUrl();
 
     return (
         <div className="px-4 py-6">
             <Heading
-                title="Settings"
-                description="Manage your profile and account settings"
+                title={t('Inställningar')}
+                description={t('Hantera din profil och kontoinställningar')}
             />
 
             <div className="flex flex-col lg:flex-row lg:space-x-12">
                 <aside className="w-full max-w-xl lg:w-48">
                     <nav
                         className="flex flex-col space-y-1 space-x-0"
-                        aria-label="Settings"
+                        aria-label={t('Inställningar')}
                     >
                         {sidebarNavItems.map((item, index) => (
                             <Button
@@ -64,7 +66,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                     {item.icon && (
                                         <item.icon className="h-4 w-4" />
                                     )}
-                                    {item.title}
+                                    {t(item.title)}
                                 </Link>
                             </Button>
                         ))}
