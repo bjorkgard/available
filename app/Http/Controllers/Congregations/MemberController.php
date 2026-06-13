@@ -11,8 +11,10 @@ use App\Models\Congregation;
 use App\Models\CongregationInvitation;
 use App\Models\Membership;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -30,9 +32,26 @@ class MemberController extends Controller
     {
         $congregation = $this->resolveCongregation($request);
 
+        $lastActivityByUser = DB::table('sessions')
+            ->select('user_id', DB::raw('MAX(last_activity) as last_activity'))
+            ->whereNotNull('user_id')
+            ->groupBy('user_id');
+
         $members = $congregation->memberships()
             ->with('user')
+            ->leftJoinSub($lastActivityByUser, 'latest_session', function ($join) {
+                $join->on('congregation_members.user_id', '=', 'latest_session.user_id');
+            })
+            ->select('congregation_members.*', 'latest_session.last_activity')
             ->get()
+            ->map(function ($membership) {
+                $membership->last_active_at = $membership->last_activity
+                    ? Carbon::createFromTimestamp($membership->last_activity)->toIso8601String()
+                    : null;
+                unset($membership->last_activity);
+
+                return $membership;
+            })
             ->sortBy(fn ($membership) => $membership->user->name)
             ->values();
 

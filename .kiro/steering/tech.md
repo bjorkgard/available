@@ -88,8 +88,9 @@ php artisan make:model ModelName --help
 
 ## Locale & SSR
 
-- Application locale is `sv-SE` — all date/time formatting uses the shared `APP_LOCALE` constant from `resources/js/lib/locale.ts`.
-- Never use `navigator.language` or `Intl.DateTimeFormat(undefined, ...)` directly — always import and use `APP_LOCALE` to ensure SSR and client produce identical output (avoids hydration mismatches).
+- Application locale is `sv-SE` — all date/time formatting uses `getAppLocale()` from `resources/js/lib/locale.ts`, which reactively maps the current i18n language to a BCP 47 tag (`sv-SE`, `en-GB`).
+- The legacy `APP_LOCALE` constant is deprecated; prefer `getAppLocale()` in new code.
+- Never use `navigator.language` or `Intl.DateTimeFormat(undefined, ...)` directly — always import and use `getAppLocale()` to ensure SSR and client produce identical output (avoids hydration mismatches).
 - Timezone is `Europe/Stockholm` (configured in `config/app.php`).
 
 ## Key Configuration

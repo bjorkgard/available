@@ -375,5 +375,14 @@
     "Flera församlingar": "Multiple congregations",
     "Alla som delar salen ser varandras bokningar.": "Everyone sharing the hall sees each other's bookings.",
     "Redo att förenkla era bokningar?": "Ready to simplify your bookings?",
-    "Skapa ett konto kostnadsfritt och bjud in din församling idag.": "Create a free account and invite your congregation today."
+    "Skapa ett konto kostnadsfritt och bjud in din församling idag.": "Create a free account and invite your congregation today.",
+    "Aldrig": "Never",
+    "Online nu": "Online now",
+    "{{minutes}} min sedan": "{{minutes}} min ago",
+    "{{hours}} tim sedan": "{{hours}} hours ago",
+    "{{days}} dagar sedan": "{{days}} days ago",
+    "{{weeks}} veckor sedan": "{{weeks}} weeks ago",
+    "{{months}} månader sedan": "{{months}} months ago",
+    "Färgen visas i kalendern för att särskilja era bokningar": "The color is shown in the calendar to distinguish your bookings",
+    "Klicka på färgrutan för att välja en ny färg": "Click the color swatch to choose a new color"
 }

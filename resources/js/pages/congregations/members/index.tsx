@@ -69,6 +69,47 @@ function formatTimeLeft(
     return t('utgår om {{minutes}}m', { minutes });
 }
 
+function formatLastSeen(
+    lastActiveAt: string | null,
+    t: (key: string, options?: Record<string, unknown>) => string,
+): string {
+    if (!lastActiveAt) {
+        return t('Aldrig');
+    }
+
+    const now = Date.now();
+    const active = new Date(lastActiveAt).getTime();
+    const diff = now - active;
+
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+
+    if (minutes < 5) {
+        return t('Online nu');
+    }
+
+    if (minutes < 60) {
+        return t('{{minutes}} min sedan', { minutes });
+    }
+
+    if (hours < 24) {
+        return t('{{hours}} tim sedan', { hours });
+    }
+
+    if (days < 7) {
+        return t('{{days}} dagar sedan', { days });
+    }
+
+    if (weeks < 5) {
+        return t('{{weeks}} veckor sedan', { weeks });
+    }
+
+    return t('{{months}} månader sedan', { months });
+}
+
 export default function MembersIndex({
     members,
     pendingInvitations,
@@ -111,7 +152,7 @@ export default function MembersIndex({
 
             <h1 className="sr-only">{t('Medlemmar')}</h1>
 
-            <div className="mx-auto flex w-full max-w-2xl flex-col space-y-6 px-4 py-6">
+            <div className="mx-auto flex w-full max-w-4xl flex-col space-y-6 px-4 py-6">
                 <div className="flex items-center justify-between">
                     <Heading
                         variant="small"
@@ -136,18 +177,25 @@ export default function MembersIndex({
                         <div
                             key={membership.id}
                             data-test="member-row"
-                            className="flex items-center justify-between rounded-lg border p-4"
+                            className="flex flex-wrap items-center gap-3 rounded-lg border p-4 sm:grid sm:grid-cols-[1fr_10rem_12rem] sm:gap-4"
                         >
-                            <div className="flex flex-col gap-0.5">
+                            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                                 <span className="font-medium">
                                     {membership.user?.name}
                                 </span>
-                                <span className="text-sm text-muted-foreground">
+                                <span className="truncate text-sm text-muted-foreground">
                                     {membership.user?.email}
                                 </span>
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="w-full text-sm text-muted-foreground sm:w-auto sm:justify-self-start">
+                                {formatLastSeen(
+                                    membership.last_active_at,
+                                    t,
+                                )}
+                            </div>
+
+                            <div className="flex w-full items-center gap-3 sm:w-auto sm:justify-end">
                                 {canManage(viewerRole) ? (
                                     <>
                                         <RoleSelect
