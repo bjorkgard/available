@@ -375,5 +375,14 @@
     "Flera församlingar": "Flera församlingar",
     "Alla som delar salen ser varandras bokningar.": "Alla som delar salen ser varandras bokningar.",
     "Redo att förenkla era bokningar?": "Redo att förenkla era bokningar?",
-    "Skapa ett konto kostnadsfritt och bjud in din församling idag.": "Skapa ett konto kostnadsfritt och bjud in din församling idag."
+    "Skapa ett konto kostnadsfritt och bjud in din församling idag.": "Skapa ett konto kostnadsfritt och bjud in din församling idag.",
+    "Aldrig": "Aldrig",
+    "Online nu": "Online nu",
+    "{{minutes}} min sedan": "{{minutes}} min sedan",
+    "{{hours}} tim sedan": "{{hours}} tim sedan",
+    "{{days}} dagar sedan": "{{days}} dagar sedan",
+    "{{weeks}} veckor sedan": "{{weeks}} veckor sedan",
+    "{{months}} månader sedan": "{{months}} månader sedan",
+    "Färgen visas i kalendern för att särskilja era bokningar": "Färgen visas i kalendern för att särskilja era bokningar",
+    "Klicka på färgrutan för att välja en ny färg": "Klicka på färgrutan för att välja en ny färg"
 }
