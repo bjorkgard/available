@@ -59,7 +59,7 @@ resources/js/
 │   │                     # use-appearance, use-booking-channel, use-clipboard, use-current-url,
 │   │                     # use-drag-booking, use-flash-toast, use-initials,
 │   │                     # use-keyboard-shortcuts, use-long-press, use-mobile-navigation,
-│   │                     # use-mobile, use-responsive-view-mode, use-two-factor-auth
+│   │                     # use-mobile, use-now-indicator, use-responsive-view-mode, use-two-factor-auth
 │   └── __tests__/        # Hook unit tests (vitest)
 ├── layouts/              # Layout components
 │   ├── app/              # App shell layout parts (app-header-layout, app-sidebar-layout)
@@ -67,7 +67,9 @@ resources/js/
 │   ├── settings/         # Settings layout (layout.tsx)
 │   └── app-layout.tsx, auth-layout.tsx
 ├── lib/                  # Utility functions
-│   │                     # utils.ts (cn() helper), calendar-utils.ts (date arithmetic),
+│   │                     # utils.ts (cn() helper),
+│   │                     # calendar-utils.ts (date arithmetic, grid rendering helpers, overlap layout, formatting),
+│   │                     # format-utils.ts (relative time formatters: formatTimeLeft, formatLastSeen),
 │   │                     # locale.ts (getAppLocale() reactive locale helper, deprecated APP_LOCALE constant)
 │   └── __tests__/        # Library unit tests (vitest)
 ├── pages/                # Inertia page components (maps to routes)
@@ -141,3 +143,6 @@ resources/js/
 - Use `Inertia::render('folder/page', [...])` to render pages (lowercase, slash-separated)
 - A `Teams` abstraction layer exists as the underlying infrastructure for the congregation system (controllers, middleware, policies, rules, DTOs)
 - The shared `currentCongregation` Inertia prop eager-loads `kingdomHall.rooms`
+- Shared utility functions live in `lib/` (pure logic, no React) or `hooks/` (stateful React logic). When a function is used by 2+ components, extract it rather than duplicating.
+- `calendar-utils.ts` is the single source for all date arithmetic, grid rendering helpers (`GRID_HOURS`, `formatHour`, `formatDateString`, `computeOverlapLayout`, `computeGridPosition`), and calendar formatting (`getMonthNames`, `formatWeekContext`, `formatDayContext`).
+- `format-utils.ts` holds locale-aware relative-time formatters (`formatTimeLeft`, `formatLastSeen`).

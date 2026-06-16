@@ -26,9 +26,9 @@ The app has full authentication (login, register, passkeys, 2FA), congregation m
 Registration is a single-step form collecting user account, congregation details, and Kingdom Hall address. If the address matches an existing hall, a warning displays the hall's superadmin contacts so the user can request an invitation instead of creating a duplicate.
 
 The calendar is the default landing page with a fully functional room-booking system:
-- **Month view** — 7-column grid showing bookings as color-coded blocks (by congregation). Max 4 per day, "+N more" indicator. Drag-and-drop to move bookings between dates.
-- **Week view** — 7 day columns with bookings positioned pixel-accurately on a 15-minute grid. Overlapping bookings render side-by-side. Drag-and-drop with ghost preview.
-- **Day view** — Room columns with bookings per room, same grid positioning. Drag-and-drop within rooms.
+- **Month view** — 7-column grid showing bookings as color-coded blocks (by congregation). Max 4 per day, "+N more" indicator. Drag-and-drop to move bookings between dates. Today cell highlighted with tinted background and ring.
+- **Week view** — 7 day columns with bookings positioned pixel-accurately on a 15-minute grid. Overlapping bookings render side-by-side. Drag-and-drop with ghost preview. Current-time indicator (red line) on today's column.
+- **Day view** — Room columns with bookings per room, same grid positioning. Drag-and-drop within rooms. Current-time indicator on today.
 
 Booking features:
 - Create/edit/delete bookings with recurrence support (daily/weekly/monthly/yearly)
