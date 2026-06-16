@@ -386,5 +386,6 @@
     "{{weeks}} veckor sedan": "{{weeks}} veckor sedan",
     "{{months}} månader sedan": "{{months}} månader sedan",
     "Färgen visas i kalendern för att särskilja era bokningar": "Färgen visas i kalendern för att särskilja era bokningar",
-    "Klicka på färgrutan för att välja en ny färg": "Klicka på färgrutan för att välja en ny färg"
+    "Klicka på färgrutan för att välja en ny färg": "Klicka på färgrutan för att välja en ny färg",
+    "E-mail addresses from @jwpub.org are not allowed.": "E-postadresser från @jwpub.org är inte tillåtna."
 }
