@@ -208,7 +208,10 @@ function StepCard({
                 {icon}
             </div>
             <h3 className="text-base font-semibold text-foreground">{title}</h3>
-            <p className="text-sm leading-relaxed text-muted-foreground" style={{ textWrap: 'pretty' }}>
+            <p
+                className="text-sm leading-relaxed text-muted-foreground"
+                style={{ textWrap: 'pretty' }}
+            >
                 {description}
             </p>
         </motion.div>
@@ -257,7 +260,7 @@ export default function Welcome() {
             <div className="min-h-screen bg-background text-foreground">
                 {/* Navigation */}
                 <nav className="fixed top-5 right-5 left-5 z-50 mx-auto max-w-3xl">
-                    <div className="flex h-[52px] items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.04] px-2 pl-5 ring-1 ring-inset ring-white/[0.04] backdrop-blur-2xl dark:bg-white/[0.03]">
+                    <div className="flex h-[52px] items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.04] px-2 pl-5 ring-1 ring-white/[0.04] backdrop-blur-2xl ring-inset dark:bg-white/[0.03]">
                         <Link
                             href="/"
                             className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
@@ -282,7 +285,7 @@ export default function Welcome() {
                                 <>
                                     <Link
                                         href={login()}
-                                        className="hidden rounded-xl px-3.5 py-1.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors duration-150 hover:text-foreground dark:text-white/70 dark:hover:text-white sm:inline-flex"
+                                        className="hidden rounded-xl px-3.5 py-1.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors duration-150 hover:text-foreground sm:inline-flex dark:text-white/70 dark:hover:text-white"
                                     >
                                         {t('Logga in')}
                                     </Link>
@@ -406,14 +409,11 @@ export default function Welcome() {
                                     (getDay(monthStart) + 6) % 7;
                                 const daysInMonth = getDaysInMonth(now);
                                 const totalCells =
-                                    Math.ceil(
-                                        (startOffset + daysInMonth) / 7,
-                                    ) * 7;
-                                const monthLabel = format(
-                                    now,
-                                    'MMMM yyyy',
-                                    { locale: sv },
-                                );
+                                    Math.ceil((startOffset + daysInMonth) / 7) *
+                                    7;
+                                const monthLabel = format(now, 'MMMM yyyy', {
+                                    locale: sv,
+                                });
                                 const bookingDays = [
                                     3, 5, 8, 12, 15, 19, 22, 26, 29,
                                 ].filter((d) => d <= daysInMonth);
@@ -429,7 +429,7 @@ export default function Welcome() {
                                         <div className="mb-4 flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <div className="h-2 w-2 rounded-full bg-emerald-400" />
-                                                <span className="text-sm font-medium capitalize text-foreground">
+                                                <span className="text-sm font-medium text-foreground capitalize">
                                                     {monthLabel}
                                                 </span>
                                             </div>
@@ -439,7 +439,15 @@ export default function Welcome() {
                                             </div>
                                         </div>
                                         <div className="mb-2 grid grid-cols-7 gap-1">
-                                            {['M', 'T', 'O', 'T', 'F', 'L', 'S'].map((d, i) => (
+                                            {[
+                                                'M',
+                                                'T',
+                                                'O',
+                                                'T',
+                                                'F',
+                                                'L',
+                                                'S',
+                                            ].map((d, i) => (
                                                 <div
                                                     key={i}
                                                     className="flex h-6 items-center justify-center text-[10px] font-medium text-muted-foreground"
@@ -452,10 +460,19 @@ export default function Welcome() {
                                             {Array.from(
                                                 { length: totalCells },
                                                 (_, i) => {
-                                                    const dayNum = i - startOffset + 1;
-                                                    const isValidDay = dayNum >= 1 && dayNum <= daysInMonth;
-                                                    const isToday = isValidDay && dayNum === today;
-                                                    const hasBooking = isValidDay && bookingDays.includes(dayNum);
+                                                    const dayNum =
+                                                        i - startOffset + 1;
+                                                    const isValidDay =
+                                                        dayNum >= 1 &&
+                                                        dayNum <= daysInMonth;
+                                                    const isToday =
+                                                        isValidDay &&
+                                                        dayNum === today;
+                                                    const hasBooking =
+                                                        isValidDay &&
+                                                        bookingDays.includes(
+                                                            dayNum,
+                                                        );
 
                                                     return (
                                                         <div
@@ -469,13 +486,21 @@ export default function Welcome() {
                                                             }`}
                                                         >
                                                             <span className="text-[10px]">
-                                                                {isValidDay ? dayNum : ''}
+                                                                {isValidDay
+                                                                    ? dayNum
+                                                                    : ''}
                                                             </span>
                                                             {hasBooking && (
                                                                 <div className="mt-0.5 flex gap-0.5">
-                                                                    <div className={`h-1 w-1 rounded-full ${bookingColors[dayNum % 4]}`} />
-                                                                    {dayNum % 3 === 0 && (
-                                                                        <div className={`h-1 w-1 rounded-full ${bookingColors[(dayNum + 1) % 4]}`} />
+                                                                    <div
+                                                                        className={`h-1 w-1 rounded-full ${bookingColors[dayNum % 4]}`}
+                                                                    />
+                                                                    {dayNum %
+                                                                        3 ===
+                                                                        0 && (
+                                                                        <div
+                                                                            className={`h-1 w-1 rounded-full ${bookingColors[(dayNum + 1) % 4]}`}
+                                                                        />
                                                                     )}
                                                                 </div>
                                                             )}
@@ -510,8 +535,18 @@ export default function Welcome() {
                         <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-12">
                             <StepCard
                                 icon={
-                                    <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                    <svg
+                                        className="size-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={1.5}
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                                        />
                                     </svg>
                                 }
                                 title={t('Skapa konto')}
@@ -522,8 +557,18 @@ export default function Welcome() {
                             />
                             <StepCard
                                 icon={
-                                    <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                                    <svg
+                                        className="size-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={1.5}
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"
+                                        />
                                     </svg>
                                 }
                                 title={t('Ställ in Rikets sal')}
@@ -534,8 +579,18 @@ export default function Welcome() {
                             />
                             <StepCard
                                 icon={
-                                    <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                                    <svg
+                                        className="size-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={1.5}
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+                                        />
                                     </svg>
                                 }
                                 title={t('Boka direkt')}
@@ -809,7 +864,10 @@ export default function Welcome() {
                                     <h3 className="text-sm font-semibold text-foreground">
                                         {feature.title}
                                     </h3>
-                                    <p className="text-sm leading-relaxed text-muted-foreground" style={{ textWrap: 'pretty' }}>
+                                    <p
+                                        className="text-sm leading-relaxed text-muted-foreground"
+                                        style={{ textWrap: 'pretty' }}
+                                    >
                                         {feature.desc}
                                     </p>
                                 </motion.div>

@@ -204,8 +204,7 @@ export default function Aurora(props: AuroraProps) {
                 program.uniforms.uTime.value = time * speed * 0.1;
                 program.uniforms.uAmplitude.value =
                     propsRef.current.amplitude ?? 1.0;
-                program.uniforms.uBlend.value =
-                    propsRef.current.blend ?? blend;
+                program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
 
                 const stops = propsRef.current.colorStops ?? colorStops;
 
