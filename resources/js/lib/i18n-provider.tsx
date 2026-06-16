@@ -24,7 +24,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
                 translationCache[locale] = translations;
 
                 // If i18n already has this language loaded, add the resource bundle
-                i18n.addResourceBundle(locale, 'translation', translations, true, true);
+                i18n.addResourceBundle(
+                    locale,
+                    'translation',
+                    translations,
+                    true,
+                    true,
+                );
             }
 
             if (locale && i18n.language !== locale) {
