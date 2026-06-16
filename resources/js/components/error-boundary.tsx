@@ -2,7 +2,7 @@ import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 
 import { Button } from '@/components/ui/button';
-import FuzzyText from  './FuzzyText';
+import FuzzyText from './FuzzyText';
 
 interface Props {
     children: ReactNode;
@@ -49,7 +49,7 @@ export class ErrorBoundary extends Component<Props, State> {
                                 </svg>
                             </div>
 
-                            <FuzzyText 
+                            <FuzzyText
                                 baseIntensity={0.2}
                                 hoverIntensity={0.5}
                                 enableHover
