@@ -21,6 +21,7 @@ class KingdomHallFactory extends Factory
             'street_address' => fake()->streetAddress(),
             'zip_code' => fake()->postcode(),
             'city' => fake()->city(),
+            'country' => 'Sverige',
             'number_of_rooms' => fake()->numberBetween(1, 50),
         ];
     }
