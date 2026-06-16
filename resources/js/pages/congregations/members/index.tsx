@@ -189,10 +189,7 @@ export default function MembersIndex({
                             </div>
 
                             <div className="w-full text-sm text-muted-foreground sm:w-auto sm:justify-self-start">
-                                {formatLastSeen(
-                                    membership.last_active_at,
-                                    t,
-                                )}
+                                {formatLastSeen(membership.last_active_at, t)}
                             </div>
 
                             <div className="flex w-full items-center gap-3 sm:w-auto sm:justify-end">

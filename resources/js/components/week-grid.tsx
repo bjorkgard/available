@@ -177,12 +177,17 @@ export function WeekGrid({
             {/* Time grid: hour labels + day columns with bookings */}
             <div className="col-span-full grid grid-cols-[auto_repeat(7,1fr)] overflow-y-auto">
                 <div className="contents">
-                    {/* Hour label column */}
-                    <div className="row-span-full">
+                    {/* Hour label column — uses the same grid row structure as day columns */}
+                    <div
+                        className="row-span-full grid"
+                        style={{
+                            gridTemplateRows: `repeat(${HOURS.length}, 1fr)`,
+                        }}
+                    >
                         {HOURS.map((hour) => (
                             <div
                                 key={hour}
-                                className="flex h-16 w-14 items-start justify-end border-t border-dashed pt-1 pr-2 text-xs text-muted-foreground"
+                                className="flex w-14 items-start justify-end border-t border-dashed pt-1 pr-2 text-xs text-muted-foreground"
                             >
                                 {formatHour(hour)}
                             </div>
@@ -355,13 +360,20 @@ export function WeekGrid({
                                         });
                                     }}
                                 >
-                                    {/* Hour grid lines */}
-                                    {HOURS.map((hour) => (
-                                        <div
-                                            key={hour}
-                                            className="h-16 border-t border-dashed"
-                                        />
-                                    ))}
+                                    {/* Hour grid lines — use grid to match label column heights */}
+                                    <div
+                                        className="grid h-full"
+                                        style={{
+                                            gridTemplateRows: `repeat(${HOURS.length}, 1fr)`,
+                                        }}
+                                    >
+                                        {HOURS.map((hour) => (
+                                            <div
+                                                key={hour}
+                                                className="border-t border-dashed"
+                                            />
+                                        ))}
+                                    </div>
 
                                     {/* Booking blocks */}
                                     {dayBookings.map((booking) => {

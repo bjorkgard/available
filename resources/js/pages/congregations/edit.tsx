@@ -96,9 +96,7 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                                         id="name"
                                                         name="name"
                                                         data-test="congregation-name-input"
-                                                        defaultValue={
-                                                            team.name
-                                                        }
+                                                        defaultValue={team.name}
                                                         required
                                                     />
                                                     <InputError
@@ -108,9 +106,7 @@ export default function CongregationEdit({ team, permissions }: Props) {
 
                                                 <div className="grid gap-2">
                                                     <Label htmlFor="congregation_number">
-                                                        {t(
-                                                            'Församlingsnummer',
-                                                        )}
+                                                        {t('Församlingsnummer')}
                                                     </Label>
                                                     <Input
                                                         id="congregation_number"
@@ -253,9 +249,7 @@ export default function CongregationEdit({ team, permissions }: Props) {
                                     {t('Ta bort församling')}
                                 </CardTitle>
                                 <CardDescription>
-                                    {t(
-                                        'Var försiktig, detta kan inte ångras.',
-                                    )}
+                                    {t('Var försiktig, detta kan inte ångras.')}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>

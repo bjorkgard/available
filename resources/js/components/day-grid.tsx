@@ -198,17 +198,22 @@ export function DayGrid({
             {/* Time grid: hour labels + room columns */}
             <div className="min-h-0 flex-1 overflow-y-auto">
                 <div
-                    className="grid"
+                    className="grid h-full"
                     style={{
                         gridTemplateColumns: gridColsStyle,
                     }}
                 >
-                    {/* Hour label column */}
-                    <div className="row-span-full">
+                    {/* Hour label column — uses the same grid row structure as room columns */}
+                    <div
+                        className="row-span-full grid"
+                        style={{
+                            gridTemplateRows: `repeat(${HOURS.length}, 1fr)`,
+                        }}
+                    >
                         {HOURS.map((hour) => (
                             <div
                                 key={hour}
-                                className="flex h-16 w-14 items-start justify-end border-t border-dashed pt-1 pr-2 text-xs text-muted-foreground"
+                                className="flex w-14 items-start justify-end border-t border-dashed pt-1 pr-2 text-xs text-muted-foreground"
                             >
                                 {formatHour(hour)}
                             </div>
@@ -370,13 +375,20 @@ export function DayGrid({
                                         });
                                     }}
                                 >
-                                    {/* Hour grid lines */}
-                                    {HOURS.map((hour) => (
-                                        <div
-                                            key={`${room.id}-${hour}`}
-                                            className="h-16 border-t border-dashed"
-                                        />
-                                    ))}
+                                    {/* Hour grid lines — use grid to match label column heights */}
+                                    <div
+                                        className="grid h-full"
+                                        style={{
+                                            gridTemplateRows: `repeat(${HOURS.length}, 1fr)`,
+                                        }}
+                                    >
+                                        {HOURS.map((hour) => (
+                                            <div
+                                                key={`${room.id}-${hour}`}
+                                                className="border-t border-dashed"
+                                            />
+                                        ))}
+                                    </div>
 
                                     {/* Booking blocks */}
                                     {roomBookings.map((booking) => {
@@ -439,12 +451,19 @@ export function DayGrid({
                             onCreateBooking={() => onCreateBooking(dateStr)}
                         >
                             <div className="relative border-l">
-                                {HOURS.map((hour) => (
-                                    <div
-                                        key={hour}
-                                        className="h-16 border-t border-dashed"
-                                    />
-                                ))}
+                                <div
+                                    className="grid h-full"
+                                    style={{
+                                        gridTemplateRows: `repeat(${HOURS.length}, 1fr)`,
+                                    }}
+                                >
+                                    {HOURS.map((hour) => (
+                                        <div
+                                            key={hour}
+                                            className="border-t border-dashed"
+                                        />
+                                    ))}
+                                </div>
                             </div>
                         </CalendarContextMenu>
                     )}

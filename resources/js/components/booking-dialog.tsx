@@ -156,6 +156,9 @@ export default function BookingDialog({
     const [frequency, setFrequency] = useState<RecurrenceFrequency>('weekly');
     const [endType, setEndType] = useState<RecurrenceEndType>('date');
     const [congregationId, setCongregationId] = useState(defaultCongregationId);
+    const [recurrenceEndDate, setRecurrenceEndDate] = useState<
+        Date | undefined
+    >(undefined);
 
     // Sync form state when dialog opens (same or different booking)
     const prevBookingIdRef = useRef<string | null>(null);
@@ -225,9 +228,17 @@ export default function BookingDialog({
             };
 
             if (endType === 'date') {
-                recurrence.end_date = formData.get(
-                    'recurrence_end_date',
-                ) as string;
+                if (!recurrenceEndDate) {
+                    setErrors((prev) => ({
+                        ...prev,
+                        recurrence_end_date: t('Välj ett slutdatum.'),
+                    }));
+                    setProcessing(false);
+
+                    return;
+                }
+
+                recurrence.end_date = format(recurrenceEndDate, 'yyyy-MM-dd');
             } else {
                 recurrence.end_count = Number(
                     formData.get('recurrence_end_count'),
@@ -332,6 +343,7 @@ export default function BookingDialog({
             setIsRecurring(!!booking?.recurrence_pattern_id);
             setFrequency('weekly');
             setEndType('date');
+            setRecurrenceEndDate(undefined);
             setCongregationId(defaultCongregationId);
         }
     }
@@ -596,14 +608,71 @@ export default function BookingDialog({
 
                                             {endType === 'date' && (
                                                 <div className="grid gap-2">
-                                                    <Label htmlFor="booking-recurrence-end-date">
+                                                    <Label>
                                                         {t('Slutdatum')}
                                                     </Label>
-                                                    <Input
-                                                        id="booking-recurrence-end-date"
+                                                    <Popover>
+                                                        <PopoverTrigger asChild>
+                                                            <Button
+                                                                variant="outline"
+                                                                className={cn(
+                                                                    'w-full justify-start text-left font-normal',
+                                                                    !recurrenceEndDate &&
+                                                                        'text-muted-foreground',
+                                                                )}
+                                                            >
+                                                                <CalendarIcon className="size-4" />
+                                                                {recurrenceEndDate
+                                                                    ? format(
+                                                                          recurrenceEndDate,
+                                                                          'PPP',
+                                                                          {
+                                                                              locale: dateFnsLocale,
+                                                                          },
+                                                                      )
+                                                                    : t(
+                                                                          'Välj slutdatum',
+                                                                      )}
+                                                            </Button>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent
+                                                            className="w-auto p-0"
+                                                            align="start"
+                                                        >
+                                                            <Calendar
+                                                                mode="single"
+                                                                selected={
+                                                                    recurrenceEndDate
+                                                                }
+                                                                onSelect={
+                                                                    setRecurrenceEndDate
+                                                                }
+                                                                locale={
+                                                                    dateFnsLocale
+                                                                }
+                                                                disabled={(
+                                                                    date,
+                                                                ) =>
+                                                                    selectedDate
+                                                                        ? date <=
+                                                                          selectedDate
+                                                                        : false
+                                                                }
+                                                                autoFocus
+                                                            />
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                    <input
+                                                        type="hidden"
                                                         name="recurrence_end_date"
-                                                        type="date"
-                                                        required
+                                                        value={
+                                                            recurrenceEndDate
+                                                                ? format(
+                                                                      recurrenceEndDate,
+                                                                      'yyyy-MM-dd',
+                                                                  )
+                                                                : ''
+                                                        }
                                                     />
                                                     <InputError
                                                         message={
