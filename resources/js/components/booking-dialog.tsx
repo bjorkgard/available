@@ -228,9 +228,17 @@ export default function BookingDialog({
             };
 
             if (endType === 'date') {
-                recurrence.end_date = formData.get(
-                    'recurrence_end_date',
-                ) as string;
+                if (!recurrenceEndDate) {
+                    setErrors((prev) => ({
+                        ...prev,
+                        recurrence_end_date: t('Välj ett slutdatum.'),
+                    }));
+                    setProcessing(false);
+
+                    return;
+                }
+
+                recurrence.end_date = format(recurrenceEndDate, 'yyyy-MM-dd');
             } else {
                 recurrence.end_count = Number(
                     formData.get('recurrence_end_count'),

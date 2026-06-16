@@ -38,6 +38,7 @@
     "Datum": "Date",
     "Välj ett datum": "Choose a date",
     "Välj slutdatum": "Choose end date",
+    "Välj ett slutdatum.": "Please choose an end date.",
     "Från": "From",
     "Till": "To",
     "Inga rum tillgängliga.": "No rooms available.",
