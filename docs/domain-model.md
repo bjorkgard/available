@@ -139,3 +139,4 @@ CongregationInvitation
 5. Bookings older than 6 months are automatically deleted (daily `bookings:cleanup` command)
 6. Invitation codes expire and cannot be reused after acceptance
 7. Congregation slugs are auto-generated and updated when the name changes
+8. A Kingdom Hall address (street, zip code, city, country) must be unique — duplicates are prevented at the database level

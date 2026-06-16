@@ -131,6 +131,7 @@ The application uses **SQLite** as the default database. All primary keys are **
 | `country` | string(100) | Default: 'Sverige' |
 | `number_of_rooms` | integer | |
 | `timestamps` | | |
+| | | Unique constraint on [street_address, zip_code, city, country] |
 
 ### `rooms`
 
