@@ -71,7 +71,6 @@ export default function Security(props: Props) {
                                     id="current_password"
                                     ref={currentPasswordInput}
                                     name="current_password"
-                                    className="mt-1 block w-full"
                                     autoComplete="current-password"
                                     placeholder={t('Nuvarande lösenord')}
                                 />
@@ -88,7 +87,6 @@ export default function Security(props: Props) {
                                     id="password"
                                     ref={passwordInput}
                                     name="password"
-                                    className="mt-1 block w-full"
                                     autoComplete="new-password"
                                     placeholder={t('Nytt lösenord')}
                                     passwordrules={props.passwordRules}
@@ -105,7 +103,6 @@ export default function Security(props: Props) {
                                 <PasswordInput
                                     id="password_confirmation"
                                     name="password_confirmation"
-                                    className="mt-1 block w-full"
                                     autoComplete="new-password"
                                     placeholder={t('Bekräfta lösenord')}
                                     passwordrules={props.passwordRules}

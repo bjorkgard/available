@@ -53,7 +53,6 @@ export default function Profile({
 
                                 <Input
                                     id="name"
-                                    className="mt-1 block w-full"
                                     defaultValue={auth.user.name}
                                     name="name"
                                     required
@@ -61,10 +60,7 @@ export default function Profile({
                                     placeholder={t('Fullständigt namn')}
                                 />
 
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.name}
-                                />
+                                <InputError message={errors.name} />
                             </div>
 
                             <div className="grid gap-2">
@@ -75,7 +71,6 @@ export default function Profile({
                                 <Input
                                     id="email"
                                     type="email"
-                                    className="mt-1 block w-full"
                                     defaultValue={auth.user.email}
                                     name="email"
                                     required
@@ -83,10 +78,7 @@ export default function Profile({
                                     placeholder={t('E-postadress')}
                                 />
 
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.email}
-                                />
+                                <InputError message={errors.email} />
                             </div>
 
                             {mustVerifyEmail &&
