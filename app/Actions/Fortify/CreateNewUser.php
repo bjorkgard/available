@@ -11,6 +11,7 @@ use App\Models\Membership;
 use App\Models\User;
 use App\Rules\NotJwpubEmail;
 use App\Services\ColorService;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -76,13 +77,31 @@ class CreateNewUser implements CreatesNewUsers
                 'password' => $input['password'],
             ]);
 
-            $kingdomHall = KingdomHall::create([
-                'street_address' => $input['street_address'],
-                'zip_code' => $input['zip_code'],
-                'city' => $input['city'],
-                'country' => $input['country'],
-                'number_of_rooms' => 1,
-            ]);
+            try {
+                $kingdomHall = KingdomHall::create([
+                    'street_address' => $input['street_address'],
+                    'zip_code' => $input['zip_code'],
+                    'city' => $input['city'],
+                    'country' => $input['country'],
+                    'number_of_rooms' => 1,
+                ]);
+            } catch (QueryException $e) {
+                // Race condition: another request created the same hall concurrently
+                if (str_contains($e->getMessage(), 'UNIQUE constraint failed') || str_contains($e->getMessage(), 'Duplicate entry')) {
+                    $existingHall = KingdomHall::where('street_address', $input['street_address'])
+                        ->where('zip_code', $input['zip_code'])
+                        ->where('city', $input['city'])
+                        ->where('country', $input['country'])
+                        ->firstOrFail();
+
+                    throw ValidationException::withMessages([
+                        'street_address' => [__('Det finns redan en Rikets sal registrerad på denna adress. Kontakta en superadmin för att bli inbjuden.')],
+                        'existing_hall_superadmins' => [$this->getSuperadminsForHall($existingHall)->toJson()],
+                    ]);
+                }
+
+                throw $e;
+            }
 
             // Create a default room
             $kingdomHall->rooms()->create([
