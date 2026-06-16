@@ -2,6 +2,7 @@ import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 
 import { Button } from '@/components/ui/button';
+import FuzzyText from  './FuzzyText';
 
 interface Props {
     children: ReactNode;
@@ -48,9 +49,13 @@ export class ErrorBoundary extends Component<Props, State> {
                                 </svg>
                             </div>
 
-                            <h2 className="text-xl font-semibold tracking-tight">
+                            <FuzzyText 
+                                baseIntensity={0.2}
+                                hoverIntensity={0.5}
+                                enableHover
+                            >
                                 Något gick fel
-                            </h2>
+                            </FuzzyText>
 
                             <p className="text-sm text-muted-foreground">
                                 Ett oväntat fel inträffade. Det är oftast
