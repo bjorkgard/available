@@ -1,4 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import { format, getDaysInMonth, getDay, startOfMonth } from 'date-fns';
+import { sv } from 'date-fns/locale';
 import {
     motion,
     useInView,
@@ -10,7 +12,9 @@ import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AppLogoIcon from '@/components/app-logo-icon';
+import Aurora from '@/components/aurora';
 import { LanguageSelector } from '@/components/language-selector';
+import StarBorder from '@/components/StarBorder';
 import { calendar, login, register } from '@/routes';
 
 // Simple seeded pseudo-random for deterministic booking positions
@@ -168,12 +172,12 @@ function CalendarCard({
 }
 
 function StepCard({
-    number,
+    icon,
     title,
     description,
     delay = 0,
 }: {
-    number: string;
+    icon: React.ReactNode;
     title: string;
     description: string;
     delay?: number;
@@ -200,11 +204,11 @@ function StepCard({
             }}
             className="flex flex-col gap-3"
         >
-            <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground">
-                {number}
+            <div className="flex size-10 items-center justify-center rounded-xl bg-foreground/5 text-foreground">
+                {icon}
             </div>
-            <h3 className="text-lg font-semibold text-foreground">{title}</h3>
-            <p className="text-sm leading-relaxed text-muted-foreground">
+            <h3 className="text-base font-semibold text-foreground">{title}</h3>
+            <p className="text-sm leading-relaxed text-muted-foreground" style={{ textWrap: 'pretty' }}>
                 {description}
             </p>
         </motion.div>
@@ -252,22 +256,25 @@ export default function Welcome() {
             <Head title={t('Välkommen')} />
             <div className="min-h-screen bg-background text-foreground">
                 {/* Navigation */}
-                <nav className="fixed top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-                    <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-                        <div className="flex items-center gap-2">
-                            <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
-                                <AppLogoIcon className="size-5 fill-current text-primary-foreground" />
+                <nav className="fixed top-5 right-5 left-5 z-50 mx-auto max-w-3xl">
+                    <div className="flex h-[52px] items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.04] px-2 pl-5 ring-1 ring-inset ring-white/[0.04] backdrop-blur-2xl dark:bg-white/[0.03]">
+                        <Link
+                            href="/"
+                            className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+                        >
+                            <div className="flex size-7 items-center justify-center rounded-md bg-primary">
+                                <AppLogoIcon className="size-4 fill-current text-primary-foreground" />
                             </div>
-                            <span className="font-semibold text-foreground">
+                            <span className="text-sm font-semibold tracking-tight text-foreground">
                                 Salbokning
                             </span>
-                        </div>
-                        <div className="flex items-center gap-2">
+                        </Link>
+                        <div className="flex items-center gap-1.5">
                             <LanguageSelector />
                             {auth.user ? (
                                 <Link
                                     href={calendarUrl}
-                                    className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform active:scale-[0.97]"
+                                    className="rounded-xl bg-white px-4 py-1.5 text-sm font-semibold text-neutral-900 shadow-sm shadow-black/10 transition-all duration-150 hover:shadow-md hover:shadow-black/15 active:scale-[0.96]"
                                 >
                                     {t('Kalender')}
                                 </Link>
@@ -275,13 +282,13 @@ export default function Welcome() {
                                 <>
                                     <Link
                                         href={login()}
-                                        className="rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap text-foreground transition-colors hover:bg-muted"
+                                        className="hidden rounded-xl px-3.5 py-1.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors duration-150 hover:text-foreground dark:text-white/70 dark:hover:text-white sm:inline-flex"
                                     >
                                         {t('Logga in')}
                                     </Link>
                                     <Link
                                         href={register()}
-                                        className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform active:scale-[0.97]"
+                                        className="rounded-xl bg-white px-4 py-1.5 text-sm font-semibold text-neutral-900 shadow-sm shadow-black/10 transition-all duration-150 hover:shadow-md hover:shadow-black/15 active:scale-[0.96]"
                                     >
                                         {t('Registrera')}
                                     </Link>
@@ -297,165 +304,191 @@ export default function Welcome() {
                     style={
                         reduce ? undefined : { y: heroY, opacity: heroOpacity }
                     }
-                    className="relative flex min-h-[100dvh] items-center pt-16"
+                    className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 pt-24 pb-16"
                 >
-                    <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 lg:grid-cols-2 lg:gap-16">
-                        {/* Left: Copy */}
-                        <div className="flex flex-col justify-center">
-                            <motion.h1
-                                initial={reduce ? false : { opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    duration: 0.7,
-                                    ease: [0.16, 1, 0.3, 1],
-                                }}
-                                className="text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl"
-                            >
-                                {t('Boka rum i Rikets sal, utan krångel')}
-                            </motion.h1>
-                            <motion.p
-                                initial={reduce ? false : { opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    duration: 0.7,
-                                    delay: 0.1,
-                                    ease: [0.16, 1, 0.3, 1],
-                                }}
-                                className="mt-5 max-w-[50ch] text-lg leading-relaxed text-muted-foreground"
-                            >
-                                {t(
-                                    'Se tillgänglighet direkt, boka rum på sekunder. Alla församlingar som delar salen har full översikt.',
-                                )}
-                            </motion.p>
-                            <motion.div
-                                initial={reduce ? false : { opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    duration: 0.7,
-                                    delay: 0.2,
-                                    ease: [0.16, 1, 0.3, 1],
-                                }}
-                                className="mt-8 flex gap-3"
-                            >
-                                {auth.user ? (
-                                    <Link
-                                        href={calendarUrl}
-                                        className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-sm transition-transform active:scale-[0.97]"
-                                    >
-                                        {t('Öppna kalender')}
-                                    </Link>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={register()}
-                                            className="inline-flex items-center rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-sm transition-transform active:scale-[0.97]"
-                                        >
-                                            {t('Kom igång')}
-                                        </Link>
-                                        <Link
-                                            href={login()}
-                                            className="inline-flex items-center rounded-lg border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                                        >
-                                            {t('Logga in')}
-                                        </Link>
-                                    </>
-                                )}
-                            </motion.div>
-                        </div>
+                    {/* Aurora background */}
+                    <div className="pointer-events-none absolute inset-0 z-0 opacity-40 dark:opacity-50">
+                        <Aurora
+                            colorStops={['#3b82f6', '#10b981', '#6366f1']}
+                            amplitude={1.2}
+                            blend={0.7}
+                            speed={0.5}
+                        />
+                    </div>
 
-                        {/* Right: Abstract calendar visualization */}
-                        <motion.div
-                            initial={
-                                reduce ? false : { opacity: 0, scale: 0.95 }
-                            }
-                            animate={{ opacity: 1, scale: 1 }}
+                    <div className="relative z-10 flex max-w-3xl flex-col items-center text-center">
+                        <motion.h1
+                            initial={reduce ? false : { opacity: 0, y: 24 }}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{
-                                duration: 0.9,
-                                delay: 0.3,
+                                duration: 0.8,
                                 ease: [0.16, 1, 0.3, 1],
                             }}
-                            className="relative hidden lg:flex lg:items-center lg:justify-center"
+                            className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl"
+                            style={{ textWrap: 'balance' }}
                         >
-                            <div className="relative w-full max-w-md">
-                                {/* Floating calendar card */}
-                                <div className="overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl shadow-black/5 dark:shadow-black/30">
-                                    {/* Calendar header */}
-                                    <div className="mb-4 flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <div className="h-2 w-2 rounded-full bg-emerald-400" />
-                                            <span className="text-sm font-medium text-foreground">
-                                                {t('Juni 2026')}
-                                            </span>
-                                        </div>
-                                        <div className="flex gap-1.5">
-                                            <div className="h-6 w-6 rounded-md bg-muted" />
-                                            <div className="h-6 w-6 rounded-md bg-muted" />
-                                        </div>
-                                    </div>
-                                    {/* Weekday headers */}
-                                    <div className="mb-2 grid grid-cols-7 gap-1">
-                                        {[
-                                            'M',
-                                            'T',
-                                            'O',
-                                            'T',
-                                            'F',
-                                            'L',
-                                            'S',
-                                        ].map((d, i) => (
-                                            <div
-                                                key={i}
-                                                className="flex h-6 items-center justify-center text-[10px] font-medium text-muted-foreground"
-                                            >
-                                                {d}
-                                            </div>
-                                        ))}
-                                    </div>
-                                    {/* Calendar grid */}
-                                    <div className="grid grid-cols-7 gap-1">
-                                        {Array.from({ length: 35 }, (_, i) => {
-                                            const day = i - 0; // June starts on Monday
-                                            const hasBooking = [
-                                                3, 5, 8, 12, 15, 19, 22, 26, 29,
-                                            ].includes(i);
-                                            const isToday = i === 12;
-                                            const bookingColors = [
-                                                'bg-emerald-400',
-                                                'bg-sky-400',
-                                                'bg-amber-400',
-                                                'bg-rose-400',
-                                            ];
-
-                                            return (
-                                                <div
-                                                    key={i}
-                                                    className={`flex aspect-square flex-col items-center justify-center rounded-lg p-0.5 ${isToday ? 'bg-primary text-primary-foreground' : 'text-foreground'}`}
-                                                >
-                                                    <span className="text-[10px]">
-                                                        {day + 1}
-                                                    </span>
-                                                    {hasBooking && (
-                                                        <div className="mt-0.5 flex gap-0.5">
-                                                            <div
-                                                                className={`h-1 w-1 rounded-full ${bookingColors[i % 4]}`}
-                                                            />
-                                                            {i % 3 === 0 && (
-                                                                <div
-                                                                    className={`h-1 w-1 rounded-full ${bookingColors[(i + 1) % 4]}`}
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                                {/* Decorative background glow */}
-                                <div className="pointer-events-none absolute -inset-12 -z-10 rounded-full bg-primary/5 blur-3xl" />
-                            </div>
+                            {t('Boka rum i Rikets sal, utan krångel')}
+                        </motion.h1>
+                        <motion.p
+                            initial={reduce ? false : { opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                                duration: 0.8,
+                                delay: 0.1,
+                                ease: [0.16, 1, 0.3, 1],
+                            }}
+                            className="mt-6 max-w-[52ch] text-lg leading-relaxed text-muted-foreground"
+                            style={{ textWrap: 'pretty' }}
+                        >
+                            {t(
+                                'Se tillgänglighet direkt, boka rum på sekunder. Alla församlingar som delar salen har full översikt.',
+                            )}
+                        </motion.p>
+                        <motion.div
+                            initial={reduce ? false : { opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                                duration: 0.8,
+                                delay: 0.2,
+                                ease: [0.16, 1, 0.3, 1],
+                            }}
+                            className="mt-10 flex gap-3"
+                        >
+                            {auth.user ? (
+                                <Link
+                                    href={calendarUrl}
+                                    className="inline-flex items-center rounded-xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all duration-150 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.97]"
+                                >
+                                    {t('Öppna kalender')}
+                                </Link>
+                            ) : (
+                                <>
+                                    <Link
+                                        href={register()}
+                                        className="inline-flex items-center rounded-xl bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all duration-150 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.97]"
+                                    >
+                                        {t('Kom igång')}
+                                    </Link>
+                                    <Link
+                                        href={login()}
+                                        className="inline-flex items-center rounded-xl border border-border/60 bg-background/50 px-7 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors duration-150 hover:bg-muted/80"
+                                    >
+                                        {t('Logga in')}
+                                    </Link>
+                                </>
+                            )}
                         </motion.div>
                     </div>
+
+                    {/* Floating calendar showcase below hero copy */}
+                    <motion.div
+                        initial={reduce ? false : { opacity: 0, y: 40 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 1,
+                            delay: 0.4,
+                            ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="relative z-10 mt-16 w-full max-w-sm"
+                    >
+                        <StarBorder
+                            as="div"
+                            color="white"
+                            speed="8s"
+                            thickness={1}
+                            className="w-full"
+                        >
+                            {(() => {
+                                const now = new Date();
+                                const today = now.getDate();
+                                const monthStart = startOfMonth(now);
+                                const startOffset =
+                                    (getDay(monthStart) + 6) % 7;
+                                const daysInMonth = getDaysInMonth(now);
+                                const totalCells =
+                                    Math.ceil(
+                                        (startOffset + daysInMonth) / 7,
+                                    ) * 7;
+                                const monthLabel = format(
+                                    now,
+                                    'MMMM yyyy',
+                                    { locale: sv },
+                                );
+                                const bookingDays = [
+                                    3, 5, 8, 12, 15, 19, 22, 26, 29,
+                                ].filter((d) => d <= daysInMonth);
+                                const bookingColors = [
+                                    'bg-emerald-400',
+                                    'bg-sky-400',
+                                    'bg-amber-400',
+                                    'bg-rose-400',
+                                ];
+
+                                return (
+                                    <>
+                                        <div className="mb-4 flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <div className="h-2 w-2 rounded-full bg-emerald-400" />
+                                                <span className="text-sm font-medium capitalize text-foreground">
+                                                    {monthLabel}
+                                                </span>
+                                            </div>
+                                            <div className="flex gap-1.5">
+                                                <div className="h-6 w-6 rounded-md bg-muted" />
+                                                <div className="h-6 w-6 rounded-md bg-muted" />
+                                            </div>
+                                        </div>
+                                        <div className="mb-2 grid grid-cols-7 gap-1">
+                                            {['M', 'T', 'O', 'T', 'F', 'L', 'S'].map((d, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="flex h-6 items-center justify-center text-[10px] font-medium text-muted-foreground"
+                                                >
+                                                    {d}
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="grid grid-cols-7 gap-1">
+                                            {Array.from(
+                                                { length: totalCells },
+                                                (_, i) => {
+                                                    const dayNum = i - startOffset + 1;
+                                                    const isValidDay = dayNum >= 1 && dayNum <= daysInMonth;
+                                                    const isToday = isValidDay && dayNum === today;
+                                                    const hasBooking = isValidDay && bookingDays.includes(dayNum);
+
+                                                    return (
+                                                        <div
+                                                            key={i}
+                                                            className={`flex aspect-square flex-col items-center justify-center rounded-lg p-0.5 ${
+                                                                isToday
+                                                                    ? 'bg-primary text-primary-foreground'
+                                                                    : isValidDay
+                                                                      ? 'text-foreground'
+                                                                      : 'text-transparent'
+                                                            }`}
+                                                        >
+                                                            <span className="text-[10px]">
+                                                                {isValidDay ? dayNum : ''}
+                                                            </span>
+                                                            {hasBooking && (
+                                                                <div className="mt-0.5 flex gap-0.5">
+                                                                    <div className={`h-1 w-1 rounded-full ${bookingColors[dayNum % 4]}`} />
+                                                                    {dayNum % 3 === 0 && (
+                                                                        <div className={`h-1 w-1 rounded-full ${bookingColors[(dayNum + 1) % 4]}`} />
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                },
+                                            )}
+                                        </div>
+                                    </>
+                                );
+                            })()}
+                        </StarBorder>
+                    </motion.div>
                 </motion.section>
 
                 {/* How it Works */}
@@ -470,12 +503,17 @@ export default function Welcome() {
                                 ease: [0.16, 1, 0.3, 1],
                             }}
                             className="text-3xl font-bold tracking-tight text-foreground md:text-4xl"
+                            style={{ textWrap: 'balance' }}
                         >
                             {t('Tre steg till en bokad sal')}
                         </motion.h2>
-                        <div className="mt-12 grid gap-10 md:grid-cols-3 md:gap-12">
+                        <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-12">
                             <StepCard
-                                number="1"
+                                icon={
+                                    <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                    </svg>
+                                }
                                 title={t('Skapa konto')}
                                 description={t(
                                     'Registrera dig med din e-post. Det tar under en minut.',
@@ -483,7 +521,11 @@ export default function Welcome() {
                                 delay={0}
                             />
                             <StepCard
-                                number="2"
+                                icon={
+                                    <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                                    </svg>
+                                }
                                 title={t('Ställ in Rikets sal')}
                                 description={t(
                                     'Lägg till salens adress och rum. Bjud in andra församlingar att dela samma sal.',
@@ -491,10 +533,14 @@ export default function Welcome() {
                                 delay={0.08}
                             />
                             <StepCard
-                                number="3"
+                                icon={
+                                    <svg className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                                    </svg>
+                                }
                                 title={t('Boka direkt')}
                                 description={t(
-                                    'Öppna kalendern, se tillgänglighet i realtid och dra för att boka. Klart.',
+                                    'Öppna kalendern, se tillgänglighet i realtid och dra för att boka.',
                                 )}
                                 delay={0.16}
                             />
@@ -703,8 +749,8 @@ export default function Welcome() {
                     </div>
                 </section>
 
-                {/* Features Grid */}
-                <section className="relative border-t border-border py-24 lg:py-32">
+                {/* Features */}
+                <section className="relative py-24 lg:py-32">
                     <div className="mx-auto max-w-6xl px-6">
                         <motion.h2
                             initial={reduce ? false : { opacity: 0, y: 20 }}
@@ -714,118 +760,56 @@ export default function Welcome() {
                                 duration: 0.6,
                                 ease: [0.16, 1, 0.3, 1],
                             }}
-                            className="text-3xl font-bold tracking-tight text-foreground md:text-4xl"
+                            className="max-w-lg text-3xl font-bold tracking-tight text-foreground md:text-4xl"
+                            style={{ textWrap: 'balance' }}
                         >
                             {t('Allt du behöver för att koordinera salen')}
                         </motion.h2>
-                        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="mt-14 grid gap-x-12 gap-y-10 sm:grid-cols-2">
                             {[
                                 {
-                                    icon: (
-                                        <svg
-                                            className="size-5"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth={1.5}
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                                            />
-                                        </svg>
-                                    ),
                                     title: t('Realtidsuppdateringar'),
                                     desc: t(
-                                        'Se ändringar direkt när andra bokar eller flyttar.',
+                                        'Ändringar syns omedelbart för alla. Ingen behöver ladda om sidan eller fråga om det redan är bokat.',
                                     ),
                                 },
                                 {
-                                    icon: (
-                                        <svg
-                                            className="size-5"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth={1.5}
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                                            />
-                                        </svg>
-                                    ),
-                                    title: t('Behörigheter'),
+                                    title: t('Rollbaserade behörigheter'),
                                     desc: t(
-                                        'Superadmin, admin och medlem med olika rättigheter.',
+                                        'Superadmin styr salen, admin hanterar sin församling, medlemmar bokar sina egna tider.',
                                     ),
                                 },
                                 {
-                                    icon: (
-                                        <svg
-                                            className="size-5"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth={1.5}
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"
-                                            />
-                                        </svg>
-                                    ),
                                     title: t('Återkommande bokningar'),
                                     desc: t(
-                                        'Dagliga, veckovisa eller månatliga bokningar med ett klick.',
+                                        'Ställ in veckovisa möten eller månatliga samlingar en gång. De dyker upp automatiskt framåt i kalendern.',
                                     ),
                                 },
                                 {
-                                    icon: (
-                                        <svg
-                                            className="size-5"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth={1.5}
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
-                                            />
-                                        </svg>
-                                    ),
-                                    title: t('Flera församlingar'),
+                                    title: t('Dela mellan församlingar'),
                                     desc: t(
-                                        'Alla som delar salen ser varandras bokningar.',
+                                        'Alla som delar Rikets sal ser varandras bokningar. Färgkodade per församling för snabb överblick.',
                                     ),
                                 },
                             ].map((feature, i) => (
                                 <motion.div
                                     key={i}
                                     initial={
-                                        reduce ? false : { opacity: 0, y: 20 }
+                                        reduce ? false : { opacity: 0, y: 16 }
                                     }
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true, amount: 0.4 }}
                                     transition={{
                                         duration: 0.5,
-                                        delay: reduce ? 0 : i * 0.06,
+                                        delay: reduce ? 0 : i * 0.05,
                                         ease: [0.16, 1, 0.3, 1],
                                     }}
-                                    className="flex flex-col gap-3"
+                                    className="flex flex-col gap-2"
                                 >
-                                    <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-foreground">
-                                        {feature.icon}
-                                    </div>
                                     <h3 className="text-sm font-semibold text-foreground">
                                         {feature.title}
                                     </h3>
-                                    <p className="text-sm leading-relaxed text-muted-foreground">
+                                    <p className="text-sm leading-relaxed text-muted-foreground" style={{ textWrap: 'pretty' }}>
                                         {feature.desc}
                                     </p>
                                 </motion.div>
@@ -835,8 +819,16 @@ export default function Welcome() {
                 </section>
 
                 {/* CTA Section */}
-                <section className="relative border-t border-border py-24 lg:py-32">
-                    <div className="mx-auto max-w-6xl px-6 text-center">
+                <section className="relative overflow-hidden py-24 lg:py-32">
+                    <div className="pointer-events-none absolute inset-0 z-0 opacity-20 dark:opacity-30">
+                        <Aurora
+                            colorStops={['#6366f1', '#10b981', '#3b82f6']}
+                            amplitude={0.8}
+                            blend={0.6}
+                            speed={0.3}
+                        />
+                    </div>
+                    <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
                         <motion.h2
                             initial={reduce ? false : { opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -846,6 +838,7 @@ export default function Welcome() {
                                 ease: [0.16, 1, 0.3, 1],
                             }}
                             className="text-3xl font-bold tracking-tight text-foreground md:text-4xl"
+                            style={{ textWrap: 'balance' }}
                         >
                             {t('Redo att förenkla era bokningar?')}
                         </motion.h2>
@@ -859,6 +852,7 @@ export default function Welcome() {
                                 ease: [0.16, 1, 0.3, 1],
                             }}
                             className="mx-auto mt-4 max-w-[45ch] text-base text-muted-foreground"
+                            style={{ textWrap: 'pretty' }}
                         >
                             {t(
                                 'Skapa ett konto kostnadsfritt och bjud in din församling idag.',
@@ -873,19 +867,19 @@ export default function Welcome() {
                                 delay: 0.2,
                                 ease: [0.16, 1, 0.3, 1],
                             }}
-                            className="mt-8"
+                            className="mt-10"
                         >
                             {auth.user ? (
                                 <Link
                                     href={calendarUrl}
-                                    className="inline-flex items-center rounded-lg bg-primary px-8 py-3.5 text-sm font-medium text-primary-foreground shadow-sm transition-transform active:scale-[0.97]"
+                                    className="inline-flex items-center rounded-xl bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all duration-150 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.97]"
                                 >
                                     {t('Öppna kalender')}
                                 </Link>
                             ) : (
                                 <Link
                                     href={register()}
-                                    className="inline-flex items-center rounded-lg bg-primary px-8 py-3.5 text-sm font-medium text-primary-foreground shadow-sm transition-transform active:scale-[0.97]"
+                                    className="inline-flex items-center rounded-xl bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all duration-150 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.97]"
                                 >
                                     {t('Kom igång')}
                                 </Link>

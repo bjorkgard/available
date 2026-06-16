@@ -66,6 +66,7 @@
         "laravel-vite-plugin": "^3.0.0",
         "lucide-react": "^0.475.0",
         "motion": "^12.40.0",
+        "ogl": "^1.0.11",
         "pusher-js": "^8.5.0",
         "radix-ui": "^1.5.0",
         "react": "^19.2.0",

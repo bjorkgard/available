@@ -43,7 +43,7 @@ app/
 resources/js/
 ├── actions/              # Wayfinder-generated controller action functions (auto-generated)
 ├── components/           # Shared React components
-│   │                     # alert-error, app-content, app-header, app-logo-icon, app-logo, app-shell,
+│   │                     # alert-error, app-content, app-header, app-logo-icon, app-logo, app-shell, aurora,
 │   │                     # app-sidebar-header, app-sidebar, appearance-tabs, booking-block,
 │   │                     # booking-context-menu, booking-dialog, breadcrumbs,
 │   │                     # calendar-context-menu, calendar-header, congregation-switcher,
@@ -52,7 +52,7 @@ resources/js/
 │   │                     # manage-passkeys, manage-two-factor, member-removal-dialog, month-grid,
 │   │                     # nav-footer, nav-main, nav-user, passkey-item, passkey-register,
 │   │                     # passkey-verify, password-input, recurrence-edit-prompt, role-select,
-│   │                     # text-link, two-factor-recovery-codes, two-factor-setup-modal,
+│   │                     # StarBorder, text-link, two-factor-recovery-codes, two-factor-setup-modal,
 │   │                     # user-info, user-menu-content, week-grid
 │   └── ui/               # shadcn/ui primitives (auto-generated, do not edit)
 ├── hooks/                # Custom React hooks
