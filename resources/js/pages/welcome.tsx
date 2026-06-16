@@ -282,7 +282,7 @@ export default function Welcome() {
                                 <>
                                     <Link
                                         href={login()}
-                                        className="hidden rounded-xl px-3.5 py-1.5 text-sm font-medium whitespace-nowrap text-white/70 transition-colors duration-150 hover:text-white sm:inline-flex"
+                                        className="hidden rounded-xl px-3.5 py-1.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors duration-150 hover:text-foreground dark:text-white/70 dark:hover:text-white sm:inline-flex"
                                     >
                                         {t('Logga in')}
                                     </Link>
