@@ -7,6 +7,7 @@ use App\Concerns\ProfileValidationRules;
 use App\Enums\CongregationRole;
 use App\Models\Congregation;
 use App\Models\User;
+use App\Rules\NotJwpubEmail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,7 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => $this->nameRules(),
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
+            'email' => ['required', 'string', 'email', 'max:255', new NotJwpubEmail, Rule::unique(User::class)],
             'password' => $this->passwordRules(),
             'congregation_name' => ['required', 'string', 'max:255'],
             'congregation_number' => [

@@ -7,6 +7,7 @@ use App\Models\Congregation;
 use App\Models\CongregationInvitation;
 use App\Models\User;
 use App\Notifications\Congregations\InvitationNotification;
+use App\Rules\NotJwpubEmail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
@@ -24,7 +25,7 @@ class SendInvitation
     {
         Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['required', 'email', 'max:255', new NotJwpubEmail],
             'role' => ['required', new Enum(CongregationRole::class)],
             'locale' => ['sometimes', 'string', Rule::in(config('app.supported_locales'))],
         ])->validate();

@@ -9,6 +9,7 @@ use App\Models\CongregationInvitation;
 use App\Models\KingdomHall;
 use App\Models\User;
 use App\Notifications\Congregations\InvitationNotification;
+use App\Rules\NotJwpubEmail;
 use App\Services\ColorService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -30,7 +31,7 @@ class CreateCongregation
             'name' => ['required', 'string', 'max:255'],
             'congregation_number' => ['required', 'string', 'max:20', 'regex:/^[A-Z0-9]+$/', 'unique:congregations,congregation_number'],
             'initial_user_name' => ['required', 'string', 'max:255'],
-            'initial_user_email' => ['required', 'email', 'max:255'],
+            'initial_user_email' => ['required', 'email', 'max:255', new NotJwpubEmail],
         ])->validate();
 
         return DB::transaction(function () use ($creator, $kingdomHall, $data): Congregation {
