@@ -5,7 +5,11 @@ import { BookingBlock } from '@/components/booking-block';
 import { CalendarContextMenu } from '@/components/calendar-context-menu';
 import type { DropTarget } from '@/hooks/use-drag-booking';
 import type { DateInfo, GridDate } from '@/lib/calendar-utils';
-import { getWeekdayNames } from '@/lib/calendar-utils';
+import {
+    formatDateString,
+    getBookingsForDay,
+    getWeekdayNames,
+} from '@/lib/calendar-utils';
 import { cn } from '@/lib/utils';
 import type { BookingResource } from '@/types';
 
@@ -33,30 +37,6 @@ interface MonthGridProps {
 
 /** Maximum bookings to display per day cell before showing "+N more" */
 const MAX_VISIBLE_BOOKINGS = 4;
-
-function getBookingsForDate(
-    bookings: BookingResource[],
-    year: number,
-    month: number,
-    day: number,
-): BookingResource[] {
-    const dateStart = new Date(year, month, day);
-    const dateEnd = new Date(year, month, day + 1);
-
-    return bookings.filter((b) => {
-        const startsAt = new Date(b.starts_at);
-        const endsAt = new Date(b.ends_at);
-
-        return startsAt < dateEnd && endsAt > dateStart;
-    });
-}
-
-function formatDateString(year: number, month: number, day: number): string {
-    const m = (month + 1).toString().padStart(2, '0');
-    const d = day.toString().padStart(2, '0');
-
-    return `${year}-${m}-${d}`;
-}
 
 export function MonthGrid({
     grid,
@@ -102,7 +82,7 @@ export function MonthGrid({
                     date.year === today.year;
 
                 if (!date.isCurrentMonth) {
-                    const fillerBookings = getBookingsForDate(
+                    const fillerBookings = getBookingsForDay(
                         bookings,
                         date.year,
                         date.month,
@@ -201,7 +181,7 @@ export function MonthGrid({
                     );
                 }
 
-                const dayBookings = getBookingsForDate(
+                const dayBookings = getBookingsForDay(
                     bookings,
                     date.year,
                     date.month,
@@ -241,7 +221,7 @@ export function MonthGrid({
                             className={cn(
                                 'flex flex-col items-start overflow-hidden border p-2',
                                 isToday &&
-                                    'rounded-md border-2 border-blue-500 font-semibold',
+                                    'bg-primary/8 ring-1 ring-primary/40 ring-inset dark:bg-primary/10 dark:ring-primary/30',
                                 dropHighlightIndex === gridIndex &&
                                     'bg-primary/5 ring-2 ring-primary/30 ring-inset',
                             )}

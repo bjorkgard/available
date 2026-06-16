@@ -4,6 +4,15 @@ import { flushSync } from 'react-dom';
 import { BookingBlock } from '@/components/booking-block';
 import { CalendarContextMenu } from '@/components/calendar-context-menu';
 import type { DropTarget } from '@/hooks/use-drag-booking';
+import { useNowIndicator } from '@/hooks/use-now-indicator';
+import {
+    computeOverlapLayout,
+    formatDateString,
+    formatHour,
+    formatTimeFromMinutes,
+    getBookingsForDay,
+    GRID_HOURS,
+} from '@/lib/calendar-utils';
 import { getAppLocale } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 import type { BookingResource, Room } from '@/types';
@@ -30,26 +39,6 @@ interface DayGridProps {
     draggedBooking?: BookingResource | null;
 }
 
-const HOURS = Array.from({ length: 12 }, (_, i) => i * 2); // 0, 2, 4, ..., 22
-
-function formatHour(hour: number): string {
-    return `${String(hour).padStart(2, '0')}:00`;
-}
-
-function formatDateString(year: number, month: number, day: number): string {
-    const m = (month + 1).toString().padStart(2, '0');
-    const d = day.toString().padStart(2, '0');
-
-    return `${year}-${m}-${d}`;
-}
-
-function formatTimeFromMinutes(minutes: number): string {
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-}
-
 function getBookingsForDayAndRoom(
     bookings: BookingResource[],
     year: number,
@@ -57,70 +46,9 @@ function getBookingsForDayAndRoom(
     day: number,
     roomId: string,
 ): BookingResource[] {
-    const dayStart = new Date(year, month, day);
-    const dayEnd = new Date(year, month, day + 1);
-
-    return bookings.filter((b) => {
-        const startsAt = new Date(b.starts_at);
-        const endsAt = new Date(b.ends_at);
-        const overlapsDay = startsAt < dayEnd && endsAt > dayStart;
-        const inRoom = b.rooms.some((r) => r.id === roomId);
-
-        return overlapsDay && inRoom;
-    });
-}
-
-/**
- * Computes overlapping groups for side-by-side rendering.
- */
-function computeOverlapLayout(
-    bookings: BookingResource[],
-): Map<string, { column: number; totalColumns: number }> {
-    const layout = new Map<string, { column: number; totalColumns: number }>();
-
-    if (bookings.length === 0) {
-        return layout;
-    }
-
-    const sorted = [...bookings].sort(
-        (a, b) =>
-            new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime(),
+    return getBookingsForDay(bookings, year, month, day).filter((b) =>
+        b.rooms.some((r) => r.id === roomId),
     );
-
-    const groups: BookingResource[][] = [];
-    let currentGroup: BookingResource[] = [];
-    let groupEnd = -Infinity;
-
-    for (const booking of sorted) {
-        const start = new Date(booking.starts_at).getTime();
-        const end = new Date(booking.ends_at).getTime();
-
-        if (start >= groupEnd) {
-            if (currentGroup.length > 0) {
-                groups.push(currentGroup);
-            }
-
-            currentGroup = [booking];
-            groupEnd = end;
-        } else {
-            currentGroup.push(booking);
-            groupEnd = Math.max(groupEnd, end);
-        }
-    }
-
-    if (currentGroup.length > 0) {
-        groups.push(currentGroup);
-    }
-
-    for (const group of groups) {
-        const totalColumns = group.length;
-
-        for (let i = 0; i < group.length; i++) {
-            layout.set(group[i].id, { column: i, totalColumns });
-        }
-    }
-
-    return layout;
 }
 
 export function DayGrid({
@@ -150,6 +78,9 @@ export function DayGrid({
         heightPercent: number;
     } | null>(null);
 
+    // Current time indicator
+    const nowPercent = useNowIndicator();
+
     const dateFormatter = new Intl.DateTimeFormat(getAppLocale(), {
         weekday: 'long',
         day: 'numeric',
@@ -174,7 +105,7 @@ export function DayGrid({
                     <span
                         className={cn(
                             'text-sm font-medium',
-                            isToday && 'font-semibold text-blue-500',
+                            isToday && 'font-semibold text-primary',
                         )}
                     >
                         {formattedDate}
@@ -207,10 +138,10 @@ export function DayGrid({
                     <div
                         className="row-span-full grid"
                         style={{
-                            gridTemplateRows: `repeat(${HOURS.length}, 1fr)`,
+                            gridTemplateRows: `repeat(${GRID_HOURS.length}, 1fr)`,
                         }}
                     >
-                        {HOURS.map((hour) => (
+                        {GRID_HOURS.map((hour) => (
                             <div
                                 key={hour}
                                 className="flex w-14 items-start justify-end border-t border-dashed pt-1 pr-2 text-xs text-muted-foreground"
@@ -379,10 +310,10 @@ export function DayGrid({
                                     <div
                                         className="grid h-full"
                                         style={{
-                                            gridTemplateRows: `repeat(${HOURS.length}, 1fr)`,
+                                            gridTemplateRows: `repeat(${GRID_HOURS.length}, 1fr)`,
                                         }}
                                     >
-                                        {HOURS.map((hour) => (
+                                        {GRID_HOURS.map((hour) => (
                                             <div
                                                 key={`${room.id}-${hour}`}
                                                 className="border-t border-dashed"
@@ -441,6 +372,17 @@ export function DayGrid({
                                                 }}
                                             />
                                         )}
+
+                                    {/* Current time indicator */}
+                                    {isToday && (
+                                        <div
+                                            className="pointer-events-none absolute right-0 left-0 z-10 flex items-center"
+                                            style={{ top: `${nowPercent}%` }}
+                                        >
+                                            <div className="size-2 rounded-full bg-red-500" />
+                                            <div className="h-px flex-1 bg-red-500" />
+                                        </div>
+                                    )}
                                 </div>
                             </CalendarContextMenu>
                         );
@@ -454,10 +396,10 @@ export function DayGrid({
                                 <div
                                     className="grid h-full"
                                     style={{
-                                        gridTemplateRows: `repeat(${HOURS.length}, 1fr)`,
+                                        gridTemplateRows: `repeat(${GRID_HOURS.length}, 1fr)`,
                                     }}
                                 >
-                                    {HOURS.map((hour) => (
+                                    {GRID_HOURS.map((hour) => (
                                         <div
                                             key={hour}
                                             className="border-t border-dashed"

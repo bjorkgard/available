@@ -328,3 +328,203 @@ export function getPreviousDay(
         day: date.getDate(),
     };
 }
+
+// ─── Grid Rendering Utilities ────────────────────────────────────────────────
+
+/** Two-hour intervals for week/day grid hour labels (0, 2, 4, ..., 22). */
+export const GRID_HOURS = Array.from({ length: 12 }, (_, i) => i * 2);
+
+/**
+ * Formats an hour number as "HH:00".
+ */
+export function formatHour(hour: number): string {
+    return `${String(hour).padStart(2, '0')}:00`;
+}
+
+/**
+ * Formats a date (0-indexed month) as an ISO-style "YYYY-MM-DD" string.
+ */
+export function formatDateString(
+    year: number,
+    month: number,
+    day: number,
+): string {
+    const m = (month + 1).toString().padStart(2, '0');
+    const d = day.toString().padStart(2, '0');
+
+    return `${year}-${m}-${d}`;
+}
+
+/**
+ * Converts a total-minutes value to "HH:MM" string.
+ */
+export function formatTimeFromMinutes(minutes: number): string {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+}
+
+/**
+ * Returns bookings that overlap a given day.
+ */
+export function getBookingsForDay<
+    T extends { starts_at: string; ends_at: string },
+>(bookings: T[], year: number, month: number, day: number): T[] {
+    const dayStart = new Date(year, month, day);
+    const dayEnd = new Date(year, month, day + 1);
+
+    return bookings.filter((b) => {
+        const startsAt = new Date(b.starts_at);
+        const endsAt = new Date(b.ends_at);
+
+        return startsAt < dayEnd && endsAt > dayStart;
+    });
+}
+
+/**
+ * Computes overlapping groups for side-by-side rendering of bookings.
+ * Returns a map from booking ID to its column index and total columns in that group.
+ */
+export function computeOverlapLayout<
+    T extends { id: string; starts_at: string; ends_at: string },
+>(bookings: T[]): Map<string, { column: number; totalColumns: number }> {
+    const layout = new Map<string, { column: number; totalColumns: number }>();
+
+    if (bookings.length === 0) {
+        return layout;
+    }
+
+    const sorted = [...bookings].sort(
+        (a, b) =>
+            new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime(),
+    );
+
+    const groups: T[][] = [];
+    let currentGroup: T[] = [];
+    let groupEnd = -Infinity;
+
+    for (const booking of sorted) {
+        const start = new Date(booking.starts_at).getTime();
+        const end = new Date(booking.ends_at).getTime();
+
+        if (start >= groupEnd) {
+            if (currentGroup.length > 0) {
+                groups.push(currentGroup);
+            }
+
+            currentGroup = [booking];
+            groupEnd = end;
+        } else {
+            currentGroup.push(booking);
+            groupEnd = Math.max(groupEnd, end);
+        }
+    }
+
+    if (currentGroup.length > 0) {
+        groups.push(currentGroup);
+    }
+
+    for (const group of groups) {
+        const totalColumns = group.length;
+
+        for (let i = 0; i < group.length; i++) {
+            layout.set(group[i].id, { column: i, totalColumns });
+        }
+    }
+
+    return layout;
+}
+
+/**
+ * Computes the top offset and height (as percentages of the day container)
+ * for a booking in week/day views based on a 24-hour day.
+ */
+export function computeGridPosition(startsAt: string, endsAt: string) {
+    const start = new Date(startsAt);
+    const end = new Date(endsAt);
+
+    const startMinutes = start.getHours() * 60 + start.getMinutes();
+    const endMinutes = end.getHours() * 60 + end.getMinutes();
+
+    const totalMinutesInDay = 24 * 60;
+    const topPercent = (startMinutes / totalMinutesInDay) * 100;
+    const heightPercent =
+        ((endMinutes - startMinutes) / totalMinutesInDay) * 100;
+
+    return { topPercent, heightPercent };
+}
+
+/**
+ * Returns the booking duration in minutes.
+ */
+export function getDurationMinutes(startsAt: string, endsAt: string): number {
+    const start = new Date(startsAt);
+    const end = new Date(endsAt);
+
+    return (end.getTime() - start.getTime()) / 60000;
+}
+
+/**
+ * Locale-aware month names (12 entries).
+ */
+export function getMonthNames(locale?: string): string[] {
+    const formatter = new Intl.DateTimeFormat(locale ?? getAppLocale(), {
+        month: 'long',
+    });
+
+    return Array.from({ length: 12 }, (_, i) =>
+        formatter.format(new Date(2025, i, 1)),
+    );
+}
+
+/**
+ * Returns an 11-year range centered on the current year.
+ */
+export function getYearRange(): number[] {
+    const currentYear = new Date().getFullYear();
+
+    return Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
+}
+
+/**
+ * Formats a date as "weekday, day month" (e.g. "tisdag 3 juni").
+ */
+export function formatDayContext(
+    year: number,
+    month: number,
+    day: number,
+    locale?: string,
+): string {
+    const formatter = new Intl.DateTimeFormat(locale ?? getAppLocale(), {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+    });
+
+    return formatter.format(new Date(year, month, day));
+}
+
+/**
+ * Formats a week range as "day month – day month" (e.g. "2 jun – 8 jun").
+ */
+export function formatWeekContext(
+    year: number,
+    month: number,
+    day: number,
+    locale?: string,
+): string {
+    const start = new Date(year, month, day);
+    const dayOfWeek = start.getDay();
+    const weekStart = new Date(start);
+    weekStart.setDate(start.getDate() - dayOfWeek);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+
+    const formatter = new Intl.DateTimeFormat(locale ?? getAppLocale(), {
+        day: 'numeric',
+        month: 'short',
+    });
+
+    return `${formatter.format(weekStart)} – ${formatter.format(weekEnd)}`;
+}
