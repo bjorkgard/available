@@ -22,6 +22,7 @@ class KingdomHall extends Model
         'street_address',
         'zip_code',
         'city',
+        'country',
         'number_of_rooms',
     ];
 

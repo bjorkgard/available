@@ -21,6 +21,10 @@ test('registration validation rejects incomplete submissions with correct errors
         'password',
         'congregation_name',
         'congregation_number',
+        'street_address',
+        'zip_code',
+        'city',
+        'country',
     ];
 
     $completePayload = [
@@ -30,6 +34,10 @@ test('registration validation rejects incomplete submissions with correct errors
         'password_confirmation' => 'SecurePass1!',
         'congregation_name' => fake()->company(),
         'congregation_number' => strtoupper(fake()->bothify('??##??')),
+        'street_address' => fake()->streetAddress(),
+        'zip_code' => fake()->postcode(),
+        'city' => fake()->city(),
+        'country' => 'Sverige',
     ];
 
     // Randomly select 1-3 fields to remove
@@ -57,7 +65,7 @@ test('registration validation rejects incomplete submissions with correct errors
     $this->assertGuest();
 
     // Non-password fields that were submitted should be preserved in session old input
-    $nonPasswordFields = ['name', 'email', 'congregation_name', 'congregation_number'];
+    $nonPasswordFields = ['name', 'email', 'congregation_name', 'congregation_number', 'street_address', 'zip_code', 'city', 'country'];
     foreach ($nonPasswordFields as $field) {
         if (array_key_exists($field, $incompletePayload)) {
             $response->assertSessionHasInput($field, $incompletePayload[$field]);

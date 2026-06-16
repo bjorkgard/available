@@ -103,7 +103,11 @@ export default function Login({ status, canResetPassword }: Props) {
 
                         <div className="text-center text-sm text-muted-foreground">
                             {t('Har du inget konto?')}{' '}
-                            <TextLink href={register()} tabIndex={5}>
+                            <TextLink
+                                href={register()}
+                                tabIndex={5}
+                                className="ml-2"
+                            >
                                 {t('Skapa konto')}
                             </TextLink>
                         </div>

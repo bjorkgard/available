@@ -22,6 +22,10 @@ test('registration rejects duplicate congregation number', function () {
         'password_confirmation' => 'password123',
         'congregation_name' => fake()->company(),
         'congregation_number' => $congregationNumber,
+        'street_address' => fake()->unique()->streetAddress(),
+        'zip_code' => fake()->postcode(),
+        'city' => fake()->city(),
+        'country' => 'Sverige',
     ]);
 
     $response->assertSessionHasErrors('congregation_number');
@@ -44,6 +48,10 @@ test('registration rejects duplicate email', function () {
         'password_confirmation' => 'password123',
         'congregation_name' => fake()->company(),
         'congregation_number' => $congregationNumber,
+        'street_address' => fake()->unique()->streetAddress(),
+        'zip_code' => fake()->postcode(),
+        'city' => fake()->city(),
+        'country' => 'Sverige',
     ]);
 
     $response->assertSessionHasErrors('email');

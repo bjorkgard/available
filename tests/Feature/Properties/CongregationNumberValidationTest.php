@@ -23,6 +23,10 @@ test('congregation number accepts only valid uppercase alphanumeric strings 1-20
         'password_confirmation' => 'Password123!',
         'congregation_name' => fake()->company(),
         'congregation_number' => $congregationNumber,
+        'street_address' => fake()->unique()->streetAddress(),
+        'zip_code' => fake()->postcode(),
+        'city' => fake()->city(),
+        'country' => 'Sverige',
     ]);
 
     $isValid = preg_match('/^[A-Z0-9]{1,20}$/', $congregationNumber) === 1;

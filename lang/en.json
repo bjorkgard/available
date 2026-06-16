@@ -387,5 +387,14 @@
     "{{months}} månader sedan": "{{months}} months ago",
     "Färgen visas i kalendern för att särskilja era bokningar": "The color is shown in the calendar to distinguish your bookings",
     "Klicka på färgrutan för att välja en ny färg": "Click the color swatch to choose a new color",
-    "E-mail addresses from @jwpub.org are not allowed.": "Email addresses from @jwpub.org are not allowed."
+    "E-mail addresses from @jwpub.org are not allowed.": "Email addresses from @jwpub.org are not allowed.",
+    "Ditt konto": "Your account",
+    "Gatuadress": "Street address",
+    "Postnummer": "Zip code",
+    "Ort": "City",
+    "Land": "Country",
+    "Det finns redan en Rikets sal registrerad på denna adress.": "There is already a Kingdom Hall registered at this address.",
+    "Kontakta en superadmin för att bli inbjuden till den befintliga Rikets salen:": "Contact a superadmin to be invited to the existing Kingdom Hall:",
+    "Registrera dig, din församling och din Rikets sal för att komma igång": "Register yourself, your congregation and your Kingdom Hall to get started",
+    "Det finns redan en Rikets sal registrerad på denna adress. Kontakta en superadmin för att bli inbjuden.": "There is already a Kingdom Hall registered at this address. Contact a superadmin to be invited."
 }
