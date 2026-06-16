@@ -30,6 +30,7 @@ class CreateKingdomHall
             'street_address' => ['required', 'string', 'max:255'],
             'zip_code' => ['required', 'string', 'max:20'],
             'city' => ['required', 'string', 'max:100'],
+            'country' => ['sometimes', 'string', 'max:100'],
             'number_of_rooms' => ['required', 'integer', 'min:1', 'max:50'],
         ])->validate();
 
@@ -38,6 +39,7 @@ class CreateKingdomHall
                 'street_address' => $validated['street_address'],
                 'zip_code' => $validated['zip_code'],
                 'city' => $validated['city'],
+                'country' => $validated['country'] ?? 'Sverige',
                 'number_of_rooms' => $validated['number_of_rooms'],
             ]);
 

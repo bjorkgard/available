@@ -10,8 +10,17 @@ class RegisterResponse implements RegisterResponseContract
 {
     public function toResponse($request): Response
     {
-        return $request->wantsJson()
-            ? new JsonResponse(['two_factor' => false], 201)
-            : redirect()->route('setup.show');
+        if ($request->wantsJson()) {
+            return new JsonResponse(['two_factor' => false], 201);
+        }
+
+        $user = $request->user();
+        $congregation = $user->currentCongregation;
+
+        if ($congregation?->kingdom_hall_id) {
+            return redirect()->route('calendar', ['current_congregation' => $congregation->slug]);
+        }
+
+        return redirect()->route('setup.show');
     }
 }
