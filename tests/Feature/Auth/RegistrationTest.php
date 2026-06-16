@@ -2,6 +2,7 @@
 
 use App\Enums\CongregationRole;
 use App\Models\Congregation;
+use App\Models\KingdomHall;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -13,7 +14,7 @@ test('registration screen can be rendered', function () {
     $response->assertOk();
 });
 
-test('valid registration creates user, congregation, and admin membership', function () {
+test('valid registration creates user, congregation, kingdom hall and superadmin membership', function () {
     $response = $this->post(route('register.store'), [
         'name' => 'Test User',
         'email' => 'test@example.com',
@@ -21,6 +22,10 @@ test('valid registration creates user, congregation, and admin membership', func
         'password_confirmation' => 'password',
         'congregation_name' => 'Test Congregation',
         'congregation_number' => 'CONG123',
+        'street_address' => 'Testvägen 1',
+        'zip_code' => '12345',
+        'city' => 'Teststad',
+        'country' => 'Sverige',
     ]);
 
     $response->assertSessionHasNoErrors();
@@ -32,11 +37,20 @@ test('valid registration creates user, congregation, and admin membership', func
         ->and($user->name)->toBe('Test User')
         ->and($user->currentCongregation)->not->toBeNull()
         ->and($user->currentCongregation->name)->toBe('Test Congregation')
-        ->and($user->currentCongregation->congregation_number)->toBe('CONG123');
+        ->and($user->currentCongregation->congregation_number)->toBe('CONG123')
+        ->and($user->currentCongregation->kingdom_hall_id)->not->toBeNull();
+
+    $kingdomHall = $user->currentCongregation->kingdomHall;
+    expect($kingdomHall)->not->toBeNull()
+        ->and($kingdomHall->street_address)->toBe('Testvägen 1')
+        ->and($kingdomHall->zip_code)->toBe('12345')
+        ->and($kingdomHall->city)->toBe('Teststad')
+        ->and($kingdomHall->country)->toBe('Sverige')
+        ->and($kingdomHall->rooms)->toHaveCount(1);
 
     $membership = $user->congregationMemberships()->first();
     expect($membership)->not->toBeNull()
-        ->and($membership->role)->toBe(CongregationRole::Admin);
+        ->and($membership->role)->toBe(CongregationRole::Superadmin);
 
     $response->assertRedirect();
 });
@@ -51,11 +65,47 @@ test('registration rejects duplicate congregation number', function () {
         'password_confirmation' => 'password',
         'congregation_name' => 'New Congregation',
         'congregation_number' => 'EXISTING1',
+        'street_address' => 'Testvägen 1',
+        'zip_code' => '12345',
+        'city' => 'Teststad',
+        'country' => 'Sverige',
     ]);
 
     $response->assertSessionHasErrors('congregation_number');
     $this->assertGuest();
     expect(User::where('email', 'test@example.com')->exists())->toBeFalse();
+});
+
+test('registration rejects duplicate kingdom hall address and shows superadmins', function () {
+    $hall = KingdomHall::factory()->create([
+        'street_address' => 'Hallvägen 5',
+        'zip_code' => '11111',
+        'city' => 'Hallstad',
+        'country' => 'Sverige',
+    ]);
+
+    $congregation = Congregation::factory()->create(['kingdom_hall_id' => $hall->id]);
+    $superadmin = User::factory()->create(['name' => 'Admin User', 'email' => 'admin@example.com']);
+    $congregation->memberships()->create([
+        'user_id' => $superadmin->id,
+        'role' => CongregationRole::Superadmin,
+    ]);
+
+    $response = $this->post(route('register.store'), [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'congregation_name' => 'Test Congregation',
+        'congregation_number' => 'NEWCONG1',
+        'street_address' => 'Hallvägen 5',
+        'zip_code' => '11111',
+        'city' => 'Hallstad',
+        'country' => 'Sverige',
+    ]);
+
+    $response->assertSessionHasErrors(['street_address', 'existing_hall_superadmins']);
+    $this->assertGuest();
 });
 
 test('registration rejects duplicate email', function () {
@@ -68,6 +118,10 @@ test('registration rejects duplicate email', function () {
         'password_confirmation' => 'password',
         'congregation_name' => 'Test Congregation',
         'congregation_number' => 'UNIQUE123',
+        'street_address' => 'Testvägen 1',
+        'zip_code' => '12345',
+        'city' => 'Teststad',
+        'country' => 'Sverige',
     ]);
 
     $response->assertSessionHasErrors('email');
@@ -83,6 +137,10 @@ test('registration rejects non-alphanumeric congregation number', function () {
         'password_confirmation' => 'password',
         'congregation_name' => 'Test Congregation',
         'congregation_number' => 'CONG-123!',
+        'street_address' => 'Testvägen 1',
+        'zip_code' => '12345',
+        'city' => 'Teststad',
+        'country' => 'Sverige',
     ]);
 
     $response->assertSessionHasErrors('congregation_number');
@@ -97,6 +155,10 @@ test('registration rejects lowercase congregation number', function () {
         'password_confirmation' => 'password',
         'congregation_name' => 'Test Congregation',
         'congregation_number' => 'cong123',
+        'street_address' => 'Testvägen 1',
+        'zip_code' => '12345',
+        'city' => 'Teststad',
+        'country' => 'Sverige',
     ]);
 
     $response->assertSessionHasErrors('congregation_number');
@@ -111,6 +173,10 @@ test('registration rejects missing required fields', function (string $missingFi
         'password_confirmation' => 'password',
         'congregation_name' => 'Test Congregation',
         'congregation_number' => 'CONG123',
+        'street_address' => 'Testvägen 1',
+        'zip_code' => '12345',
+        'city' => 'Teststad',
+        'country' => 'Sverige',
     ];
 
     unset($data[$missingField]);
@@ -125,6 +191,10 @@ test('registration rejects missing required fields', function (string $missingFi
     'password' => 'password',
     'congregation_name' => 'congregation_name',
     'congregation_number' => 'congregation_number',
+    'street_address' => 'street_address',
+    'zip_code' => 'zip_code',
+    'city' => 'city',
+    'country' => 'country',
 ]);
 
 test('registration preserves non-password fields on validation error', function () {
@@ -135,6 +205,10 @@ test('registration preserves non-password fields on validation error', function 
         'password_confirmation' => 'short',
         'congregation_name' => 'Test Congregation',
         'congregation_number' => 'CONG123',
+        'street_address' => 'Testvägen 1',
+        'zip_code' => '12345',
+        'city' => 'Teststad',
+        'country' => 'Sverige',
     ]);
 
     $response->assertSessionHasErrors('email');
@@ -143,6 +217,10 @@ test('registration preserves non-password fields on validation error', function 
     $response->assertSessionHasInput('name', 'Test User');
     $response->assertSessionHasInput('congregation_name', 'Test Congregation');
     $response->assertSessionHasInput('congregation_number', 'CONG123');
+    $response->assertSessionHasInput('street_address', 'Testvägen 1');
+    $response->assertSessionHasInput('zip_code', '12345');
+    $response->assertSessionHasInput('city', 'Teststad');
+    $response->assertSessionHasInput('country', 'Sverige');
 
     $inputKeys = array_keys(session()->getOldInput());
     expect($inputKeys)->not->toContain('password')
