@@ -184,32 +184,46 @@ export default function Aurora(props: AuroraProps) {
 
         ctn.appendChild(gl.canvas);
 
+        const prefersReducedMotion = window.matchMedia(
+            '(prefers-reduced-motion: reduce)',
+        ).matches;
+
         let animateId = 0;
 
-        const update = (t: number) => {
+        if (prefersReducedMotion) {
+            // Render a single static frame
+            resize();
+            program.uniforms.uTime.value = 0;
+            renderer.render({ scene: mesh });
+        } else {
+            const update = (t: number) => {
+                animateId = requestAnimationFrame(update);
+
+                const { time = t * 0.01, speed = 1.0 } = propsRef.current;
+
+                program.uniforms.uTime.value = time * speed * 0.1;
+                program.uniforms.uAmplitude.value =
+                    propsRef.current.amplitude ?? 1.0;
+                program.uniforms.uBlend.value =
+                    propsRef.current.blend ?? blend;
+
+                const stops = propsRef.current.colorStops ?? colorStops;
+
+                program.uniforms.uColorStops.value = stops.map(
+                    (hex: string) => {
+                        const c = new Color(hex);
+
+                        return [c.r, c.g, c.b];
+                    },
+                );
+
+                renderer.render({ scene: mesh });
+            };
+
             animateId = requestAnimationFrame(update);
 
-            const { time = t * 0.01, speed = 1.0 } = propsRef.current;
-
-            program.uniforms.uTime.value = time * speed * 0.1;
-            program.uniforms.uAmplitude.value =
-                propsRef.current.amplitude ?? 1.0;
-            program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
-
-            const stops = propsRef.current.colorStops ?? colorStops;
-
-            program.uniforms.uColorStops.value = stops.map((hex: string) => {
-                const c = new Color(hex);
-
-                return [c.r, c.g, c.b];
-            });
-
-            renderer.render({ scene: mesh });
-        };
-
-        animateId = requestAnimationFrame(update);
-
-        resize();
+            resize();
+        }
 
         return () => {
             cancelAnimationFrame(animateId);
