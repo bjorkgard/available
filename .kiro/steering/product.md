@@ -23,6 +23,8 @@ The welcome/landing page is a custom product page with animated hero, calendar v
 
 The app has full authentication (login, register, passkeys, 2FA), congregation management (create via setup wizard, invite members, switch congregations, edit settings), Kingdom Hall management (address, rooms, multi-congregation sharing), user settings (profile, security, sessions, appearance), and session management (view active sessions, revoke other sessions).
 
+Registration is a single-step form collecting user account, congregation details, and Kingdom Hall address. If the address matches an existing hall, a warning displays the hall's superadmin contacts so the user can request an invitation instead of creating a duplicate.
+
 The calendar is the default landing page with a fully functional room-booking system:
 - **Month view** — 7-column grid showing bookings as color-coded blocks (by congregation). Max 4 per day, "+N more" indicator. Drag-and-drop to move bookings between dates.
 - **Week view** — 7 day columns with bookings positioned pixel-accurately on a 15-minute grid. Overlapping bookings render side-by-side. Drag-and-drop with ghost preview.

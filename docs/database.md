@@ -28,6 +28,7 @@ The application uses **SQLite** as the default database. All primary keys are **
                                                    │ street_address│
                                                    │ zip_code     │
                                                    │ city         │
+                                                   │ country      │
                                                    │ number_of_   │
                                                    │  rooms       │
                                                    └───────┬──────┘
@@ -127,6 +128,7 @@ The application uses **SQLite** as the default database. All primary keys are **
 | `street_address` | string(255) | |
 | `zip_code` | string(20) | |
 | `city` | string(100) | |
+| `country` | string(100) | Default: 'Sverige' |
 | `number_of_rooms` | integer | |
 | `timestamps` | | |
 
