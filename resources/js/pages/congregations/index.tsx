@@ -132,9 +132,11 @@ export default function CongregationsIndex({ teams }: Props) {
                     ))}
 
                     {teams.length === 0 ? (
-                        <p className="py-8 text-center text-muted-foreground">
-                            {t('Du tillhör inga församlingar ännu.')}
-                        </p>
+                        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12">
+                            <p className="text-sm text-muted-foreground">
+                                {t('Du tillhör inga församlingar ännu.')}
+                            </p>
+                        </div>
                     ) : null}
                 </div>
             </div>
