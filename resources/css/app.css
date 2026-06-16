@@ -59,6 +59,9 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    --animate-star-movement-bottom: star-movement-bottom linear infinite alternate;
+    --animate-star-movement-top: star-movement-top linear infinite alternate;
 }
 
 :root {
@@ -139,5 +142,27 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+@keyframes star-movement-bottom {
+    0% {
+        transform: translate(0%, 0%);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-100%, 0%);
+        opacity: 0;
+    }
+}
+
+@keyframes star-movement-top {
+    0% {
+        transform: translate(0%, 0%);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(100%, 0%);
+        opacity: 0;
     }
 }
