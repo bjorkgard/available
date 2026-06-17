@@ -266,7 +266,12 @@ export function CalendarHeader({
                 </Tooltip>
 
                 {onCreateBooking && (
-                    <Button size="sm" className="h-8" onClick={onCreateBooking}>
+                    <Button
+                        size="sm"
+                        className="h-8"
+                        onClick={onCreateBooking}
+                        aria-label={t('Ny bokning')}
+                    >
                         <Plus className="size-3.5" />
                         <span className="hidden sm:inline">
                             {t('Ny bokning')}

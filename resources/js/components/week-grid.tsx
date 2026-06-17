@@ -69,7 +69,7 @@ export function WeekGrid({
     } | null>(null);
 
     // Current time indicator
-    const nowPercent = useNowIndicator();
+    const { nowPercent, todayDate } = useNowIndicator();
 
     return (
         <div className="grid h-full grid-cols-[auto_repeat(7,1fr)] grid-rows-[auto_1fr]">
@@ -350,7 +350,7 @@ export function WeekGrid({
                                         )}
 
                                     {/* Current time indicator */}
-                                    {day.isToday && (
+                                    {dateStr === todayDate && (
                                         <div
                                             className="pointer-events-none absolute right-0 left-0 z-10 flex items-center"
                                             style={{ top: `${nowPercent}%` }}

@@ -79,7 +79,7 @@ export function DayGrid({
     } | null>(null);
 
     // Current time indicator
-    const nowPercent = useNowIndicator();
+    const { nowPercent, todayDate } = useNowIndicator();
 
     const dateFormatter = new Intl.DateTimeFormat(getAppLocale(), {
         weekday: 'long',
@@ -93,6 +93,7 @@ export function DayGrid({
     );
 
     const dateStr = formatDateString(date.year, date.month, date.day);
+    const isTodayLive = dateStr === todayDate;
 
     return (
         <div className="flex h-full flex-col">
@@ -374,7 +375,7 @@ export function DayGrid({
                                         )}
 
                                     {/* Current time indicator */}
-                                    {isToday && (
+                                    {isTodayLive && (
                                         <div
                                             className="pointer-events-none absolute right-0 left-0 z-10 flex items-center"
                                             style={{ top: `${nowPercent}%` }}
