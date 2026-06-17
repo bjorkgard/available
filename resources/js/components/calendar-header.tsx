@@ -108,7 +108,7 @@ export function CalendarHeader({
                     <TooltipContent>
                         <p>
                             {navLabels.previous}{' '}
-                            <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                            <kbd className="ml-1 rounded bg-primary-foreground/20 px-1 py-0.5 text-xs">
                                 ←
                             </kbd>
                         </p>
@@ -130,7 +130,7 @@ export function CalendarHeader({
                     <TooltipContent>
                         <p>
                             {navLabels.next}{' '}
-                            <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                            <kbd className="ml-1 rounded bg-primary-foreground/20 px-1 py-0.5 text-xs">
                                 →
                             </kbd>
                         </p>
@@ -194,7 +194,7 @@ export function CalendarHeader({
                 <TooltipContent>
                     <p>
                         {t('Gå till idag')}{' '}
-                        <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                        <kbd className="ml-1 rounded bg-primary-foreground/20 px-1 py-0.5 text-xs">
                             T
                         </kbd>
                     </p>
@@ -296,7 +296,7 @@ export function CalendarHeader({
                         <TooltipContent>
                             <p>
                                 {t('Ny bokning')}{' '}
-                                <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                                <kbd className="ml-1 rounded bg-primary-foreground/20 px-1 py-0.5 text-xs">
                                     N
                                 </kbd>
                             </p>
@@ -320,7 +320,7 @@ export function CalendarHeader({
                         <TooltipContent>
                             <p>
                                 {t('Kortkommandon')}{' '}
-                                <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                                <kbd className="ml-1 rounded bg-primary-foreground/20 px-1 py-0.5 text-xs">
                                     ?
                                 </kbd>
                             </p>
