@@ -8,7 +8,7 @@ The calendar is the primary interface of the application — the default landing
 
 ## Views
 
-### Month View (⌘0)
+### Month View (M)
 
 - 7-column grid (Mon–Sun)
 - Bookings shown as color-coded blocks (by congregation color)
@@ -16,7 +16,7 @@ The calendar is the primary interface of the application — the default landing
 - "+N more" indicator when day has more than 4 bookings
 - Drag-and-drop to move bookings between dates
 
-### Week View (⌘1)
+### Week View (W)
 
 - 7 day columns with a 15-minute time grid
 - Bookings positioned pixel-accurately based on start/end times
@@ -24,7 +24,7 @@ The calendar is the primary interface of the application — the default landing
 - Drag-and-drop with ghost preview and 15-min snapping
 - Default view on tablet screens
 
-### Day View (⌘2)
+### Day View (D)
 
 - One column per room in the Kingdom Hall
 - Same 15-minute grid positioning as week view
@@ -34,7 +34,8 @@ The calendar is the primary interface of the application — the default landing
 ## View Switching
 
 - **Dropdown menu** in the calendar header
-- **Keyboard shortcuts:** ⌘0 (month), ⌘1 (week), ⌘2 (day)
+- **Keyboard shortcuts:** M (month), W (week), D (day)
+- **Additional shortcuts:** N (new booking), T (go to today), ? (keyboard shortcuts help)
 - **Responsive defaults:** mobile → day, tablet → week, desktop → month
 - The `use-responsive-view-mode` hook manages automatic switching
 

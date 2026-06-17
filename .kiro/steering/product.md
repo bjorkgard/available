@@ -42,7 +42,7 @@ Booking features:
 - Automated cleanup of bookings older than 6 months (daily scheduled command)
 - Member removal handles booking transfer/deletion
 
-View switching: dropdown menu with keyboard shortcuts (⌘0 month, ⌘1 week, ⌘2 day). Responsive defaults: mobile → day, tablet → week, desktop → month.
+View switching: dropdown menu with keyboard shortcuts (M month, W week, D day). Additional shortcuts: N new booking, T go to today, ? keyboard shortcuts help. Responsive defaults: mobile → day, tablet → week, desktop → month.
 
 ## Design Principles
 
