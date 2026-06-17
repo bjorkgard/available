@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Localization enforcement",
+      "description": "Reviews edited PHP, TSX, and TS files for unlocalized user-facing strings. Reports violations with file path, line number, and the offending string.",
+      "trigger": "PostFileSave",
+      "matcher": "(.*[^/]*\\.php$|.*[^/]*\\.tsx$|.*[^/]*\\.ts$)",
+      "action": {
+        "type": "agent",
+        "prompt": "Review the edited file for unlocalized user-facing strings. Follow these rules:\n\n**PHP files**: Check for string literals that are user-facing but NOT wrapped in `__()` or `trans()`. User-facing strings include:\n- Strings passed to `session()->flash()`, `Inertia::flash()`, or flash message helpers\n- Notification content (mail subject lines, body text, action text in `toMail()` methods)\n- Custom validation `$fail()` messages\n- Strings rendered in Blade output\n\n**TSX/TS files**: Check for string literals that are user-facing but NOT wrapped in the `t()` function from react-i18next. User-facing strings include:\n- JSX text content (text between tags like `<Button>Save</Button>`)\n- Component props that render text: `label`, `placeholder`, `title`, `description`, `aria-label`\n- Toast messages (`toast.success(...)`, `toast.error(...)`, `sonner` calls)\n\n**Exclude from checks** (these are NOT violations):\n- Log messages, internal exception messages, class names, route names\n- Configuration keys, database column names, enum values\n- Test files (`tests/` directory, `__tests__/` directories)\n- Code comments, type annotations, import paths\n- CSS class names, HTML attributes that don't render text\n- Wayfinder-generated files (`actions/`, `routes/`, `wayfinder/`)\n- shadcn/ui components (`components/ui/`)\n- String interpolation keys or object property names\n\nIf you find violations, output a warning for each one with:\n- File path\n- Line number\n- The offending string\n\nIf no violations are found, output nothing."
+      },
+      "enabled": true
+    }
+  ]
+}

@@ -405,5 +405,21 @@
     "Det finns redan en Rikets sal registrerad på denna adress.": "There is already a Kingdom Hall registered at this address.",
     "Kontakta en superadmin för att bli inbjuden till den befintliga Rikets salen:": "Contact a superadmin to be invited to the existing Kingdom Hall:",
     "Registrera dig, din församling och din Rikets sal för att komma igång": "Register yourself, your congregation and your Kingdom Hall to get started",
-    "Det finns redan en Rikets sal registrerad på denna adress. Kontakta en superadmin för att bli inbjuden.": "There is already a Kingdom Hall registered at this address. Contact a superadmin to be invited."
+    "Det finns redan en Rikets sal registrerad på denna adress. Kontakta en superadmin för att bli inbjuden.": "There is already a Kingdom Hall registered at this address. Contact a superadmin to be invited.",
+    "Navigering": "Navigation",
+    "Föregående period": "Previous period",
+    "Nästa period": "Next period",
+    "Vyer": "Views",
+    "Månadsvy": "Month view",
+    "Veckovy": "Week view",
+    "Dagsvy": "Day view",
+    "Åtgärder": "Actions",
+    "Visa kortkommandon": "Show keyboard shortcuts",
+    "Växla ljust/mörkt läge": "Toggle light/dark mode",
+    "Dra och släpp": "Drag and drop",
+    "Dra": "Drag",
+    "Flytta bokning till annan tid eller dag": "Move booking to another time or day",
+    "Kortkommandon": "Keyboard shortcuts",
+    "Använd dessa tangenter för att snabbt navigera och hantera kalendern.": "Use these keys to quickly navigate and manage the calendar.",
+    "Kortkommandon är inaktiva när du skriver i ett textfält.": "Keyboard shortcuts are disabled when typing in a text field."
 }
