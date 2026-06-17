@@ -277,3 +277,33 @@ test('member inviter cannot assign any role', function () {
 
     $this->action->handle($member, $congregation, $data);
 })->throws(ValidationException::class);
+
+test('hall-level superadmin with lower direct role can still assign superadmin', function () {
+    $kingdomHall = KingdomHall::factory()->create();
+    $congregationA = Congregation::factory()->create(['kingdom_hall_id' => $kingdomHall->id]);
+    $congregationB = Congregation::factory()->create(['kingdom_hall_id' => $kingdomHall->id]);
+
+    $user = User::factory()->create();
+
+    // Superadmin in congregation A
+    $congregationA->memberships()->create([
+        'user_id' => $user->id,
+        'role' => CongregationRole::Superadmin,
+    ]);
+
+    // But only a member in congregation B
+    $congregationB->memberships()->create([
+        'user_id' => $user->id,
+        'role' => CongregationRole::Member,
+    ]);
+
+    $data = [
+        'name' => 'New Superadmin',
+        'email' => 'new-sa@example.com',
+        'role' => CongregationRole::Superadmin->value,
+    ];
+
+    $invitation = $this->action->handle($user, $congregationB, $data);
+
+    expect($invitation->role)->toBe(CongregationRole::Superadmin);
+});

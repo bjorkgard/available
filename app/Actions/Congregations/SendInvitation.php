@@ -119,9 +119,15 @@ class SendInvitation
      */
     private function ensureInviterCanAssignRole(User $inviter, Congregation $congregation, CongregationRole $role): void
     {
+        // Hall-level superadmins can always assign any role, even if their
+        // direct membership in this congregation is a lower role.
+        if ($inviter->isSuperadminInSameKingdomHall($congregation)) {
+            return;
+        }
+
         $inviterRole = $inviter->congregationRole($congregation);
 
-        // Superadmins can assign any role
+        // Direct superadmins can assign any role
         if ($inviterRole === CongregationRole::Superadmin) {
             return;
         }
