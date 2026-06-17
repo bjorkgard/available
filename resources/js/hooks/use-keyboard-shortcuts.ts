@@ -98,8 +98,7 @@ export function useKeyboardShortcuts(
                 !event.altKey &&
                 !isTextInputElement(document.activeElement)
             ) {
-                const handler =
-                    shortcutsRef.current[event.key.toLowerCase()];
+                const handler = shortcutsRef.current[event.key.toLowerCase()];
 
                 if (handler) {
                     event.preventDefault();

@@ -31,10 +31,7 @@ function Kbd({ children }: { children: string }) {
     );
 }
 
-export default function KeyboardShortcutsDialog({
-    open,
-    onOpenChange,
-}: Props) {
+export default function KeyboardShortcutsDialog({ open, onOpenChange }: Props) {
     const { t } = useTranslation();
 
     const groups: ShortcutGroup[] = [
@@ -88,7 +85,7 @@ export default function KeyboardShortcutsDialog({
                 <div className="space-y-4">
                     {groups.map((group) => (
                         <div key={group.title}>
-                            <h4 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            <h4 className="mb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 {group.title}
                             </h4>
                             <ul className="space-y-1.5">
