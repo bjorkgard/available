@@ -40,12 +40,18 @@ export function isTextInputElement(element: Element | null): boolean {
 }
 
 export function shouldIgnoreEvent(event: KeyboardEvent): boolean {
-    if (event.ctrlKey || event.metaKey || event.altKey) {
+    if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
         return true;
     }
 
     return isTextInputElement(document.activeElement);
 }
+
+/**
+ * Keys that inherently require Shift to type (e.g. ? is Shift+/).
+ * These are exempt from the Shift modifier guard.
+ */
+const SHIFT_EXEMPT_KEYS = new Set(['?']);
 
 type ShortcutMap = Record<string, () => void>;
 
@@ -78,6 +84,26 @@ export function useKeyboardShortcuts(
                     ctrlHandler();
 
                     return;
+                }
+
+                return;
+            }
+
+            // Allow Shift-exempt keys (like ?) to bypass the Shift guard
+            if (
+                event.shiftKey &&
+                SHIFT_EXEMPT_KEYS.has(event.key) &&
+                !event.ctrlKey &&
+                !event.metaKey &&
+                !event.altKey &&
+                !isTextInputElement(document.activeElement)
+            ) {
+                const handler =
+                    shortcutsRef.current[event.key.toLowerCase()];
+
+                if (handler) {
+                    event.preventDefault();
+                    handler();
                 }
 
                 return;
