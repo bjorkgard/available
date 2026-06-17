@@ -99,7 +99,6 @@ export default function Sessions({ sessions }: Props) {
                                 <PasswordInput
                                     id="password"
                                     name="password"
-                                    className="mt-1 block w-full"
                                     autoComplete="current-password"
                                     placeholder={t('Lösenord')}
                                 />

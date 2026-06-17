@@ -54,7 +54,7 @@ export class ErrorBoundary extends Component<Props, State> {
                                 hoverIntensity={0.5}
                                 enableHover
                             >
-                                Något gick fel
+                                Error
                             </FuzzyText>
 
                             <p className="text-sm text-muted-foreground">

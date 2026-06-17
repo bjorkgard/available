@@ -2,7 +2,6 @@ import { Link } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import Heading from '@/components/heading';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
@@ -46,29 +45,25 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                 description={t('Hantera din profil och kontoinställningar')}
             />
 
-            <div className="flex flex-col lg:flex-row lg:space-x-12">
+            <div className="flex flex-col lg:flex-row lg:gap-12">
                 <aside className="w-full max-w-xl lg:w-48">
                     <nav
-                        className="flex flex-col space-y-1 space-x-0"
+                        className="flex flex-row gap-1 overflow-x-auto lg:flex-col"
                         aria-label={t('Inställningar')}
                     >
                         {sidebarNavItems.map((item, index) => (
-                            <Button
+                            <Link
                                 key={`${toUrl(item.href)}-${index}`}
-                                size="sm"
-                                variant="ghost"
-                                asChild
-                                className={cn('w-full justify-start', {
-                                    'bg-muted': isCurrentOrParentUrl(item.href),
-                                })}
+                                href={item.href}
+                                className={cn(
+                                    'inline-flex items-center rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors',
+                                    isCurrentOrParentUrl(item.href)
+                                        ? 'bg-muted text-foreground'
+                                        : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground',
+                                )}
                             >
-                                <Link href={item.href}>
-                                    {item.icon && (
-                                        <item.icon className="h-4 w-4" />
-                                    )}
-                                    {t(item.title)}
-                                </Link>
-                            </Button>
+                                {t(item.title)}
+                            </Link>
                         ))}
                     </nav>
                 </aside>

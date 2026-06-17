@@ -6,6 +6,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { computeGridPosition, getDurationMinutes } from '@/lib/calendar-utils';
 import { getAppLocale } from '@/lib/locale';
 import { cn } from '@/lib/utils';
 
@@ -36,37 +37,6 @@ function getTimeFormatter() {
         minute: '2-digit',
         hour12: false,
     });
-}
-
-/**
- * Computes the top offset and height (as percentages of the day container)
- * for a booking in week/day views based on a 15-minute grid.
- *
- * A full day has 24 hours × 4 slots = 96 slots.
- */
-function computeGridPosition(startsAt: string, endsAt: string) {
-    const start = new Date(startsAt);
-    const end = new Date(endsAt);
-
-    const startMinutes = start.getHours() * 60 + start.getMinutes();
-    const endMinutes = end.getHours() * 60 + end.getMinutes();
-
-    const totalMinutesInDay = 24 * 60;
-    const topPercent = (startMinutes / totalMinutesInDay) * 100;
-    const heightPercent =
-        ((endMinutes - startMinutes) / totalMinutesInDay) * 100;
-
-    return { topPercent, heightPercent };
-}
-
-/**
- * Returns the booking duration in minutes.
- */
-function getDurationMinutes(startsAt: string, endsAt: string): number {
-    const start = new Date(startsAt);
-    const end = new Date(endsAt);
-
-    return (end.getTime() - start.getTime()) / 60000;
 }
 
 export function BookingBlock({ booking, viewMode, style }: BookingBlockProps) {

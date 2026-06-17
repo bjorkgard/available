@@ -312,7 +312,11 @@ export default function Register({ passwordRules }: Props) {
 
                             <div className="text-center text-sm text-muted-foreground">
                                 {t('Har du redan ett konto?')}{' '}
-                                <TextLink href={login()} tabIndex={12} className='ml-2'>
+                                <TextLink
+                                    href={login()}
+                                    tabIndex={12}
+                                    className="ml-2"
+                                >
                                     {t('Logga in')}
                                 </TextLink>
                             </div>
