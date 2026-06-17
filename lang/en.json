@@ -312,6 +312,8 @@
     "Member role updated.": "Member role updated.",
     "Member removed.": "Member removed.",
     "Member removed from congregation.": "Member removed from congregation.",
+    "You do not have permission to assign this role.": "You do not have permission to assign this role.",
+    "You do not have permission to invite members.": "You do not have permission to invite members.",
     "Profile updated.": "Profile updated.",
     "Password updated.": "Password updated.",
     "Other sessions terminated.": "Other sessions terminated.",

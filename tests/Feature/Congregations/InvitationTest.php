@@ -308,3 +308,66 @@ test('unauthenticated existing user is redirected to login', function () {
 
     $response->assertRedirect(route('login'));
 });
+
+test('admin cannot invite with superadmin role', function () {
+    [$kingdomHall, $congregation, $admin] = createKingdomHallWithCongregation(CongregationRole::Admin);
+
+    $response = $this->actingAs($admin)->post(
+        route('members.invite', ['current_congregation' => $congregation->slug]),
+        [
+            'name' => 'Someone',
+            'email' => 'someone@example.com',
+            'role' => CongregationRole::Superadmin->value,
+        ]
+    );
+
+    $response->assertSessionHasErrors('role');
+
+    $this->assertDatabaseMissing('congregation_invitations', [
+        'congregation_id' => $congregation->id,
+        'email' => 'someone@example.com',
+    ]);
+});
+
+test('admin can invite with admin role', function () {
+    [$kingdomHall, $congregation, $admin] = createKingdomHallWithCongregation(CongregationRole::Admin);
+
+    $response = $this->actingAs($admin)->post(
+        route('members.invite', ['current_congregation' => $congregation->slug]),
+        [
+            'name' => 'New Admin',
+            'email' => 'newadmin@example.com',
+            'role' => CongregationRole::Admin->value,
+        ]
+    );
+
+    $response->assertRedirect();
+
+    $this->assertDatabaseHas('congregation_invitations', [
+        'congregation_id' => $congregation->id,
+        'email' => 'newadmin@example.com',
+        'role' => CongregationRole::Admin->value,
+    ]);
+});
+
+test('superadmin can invite with superadmin role', function () {
+    [$kingdomHall, $congregation, $superadmin] = createKingdomHallWithCongregation(CongregationRole::Superadmin);
+
+    $response = $this->actingAs($superadmin)->post(
+        route('members.invite', ['current_congregation' => $congregation->slug]),
+        [
+            'name' => 'New Superadmin',
+            'email' => 'newsuperadmin@example.com',
+            'role' => CongregationRole::Superadmin->value,
+        ]
+    );
+
+    $response->assertRedirect();
+    $response->assertInertiaFlash('toast.type', 'success');
+
+    $this->assertDatabaseHas('congregation_invitations', [
+        'congregation_id' => $congregation->id,
+        'email' => 'newsuperadmin@example.com',
+        'role' => CongregationRole::Superadmin->value,
+    ]);
+});

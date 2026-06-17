@@ -312,6 +312,8 @@
     "Member role updated.": "Medlemsroll uppdaterad.",
     "Member removed.": "Medlem borttagen.",
     "Member removed from congregation.": "Medlem borttagen från församlingen.",
+    "You do not have permission to assign this role.": "Du har inte behörighet att tilldela denna roll.",
+    "You do not have permission to invite members.": "Du har inte behörighet att bjuda in medlemmar.",
     "Profile updated.": "Profil uppdaterad.",
     "Password updated.": "Lösenord uppdaterat.",
     "Other sessions terminated.": "Andra sessioner avslutade.",
