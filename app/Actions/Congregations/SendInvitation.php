@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\ValidationException;
 
 class SendInvitation
 {
@@ -31,6 +32,8 @@ class SendInvitation
         ])->validate();
 
         $role = CongregationRole::from($data['role']);
+
+        $this->ensureInviterCanAssignRole($inviter, $congregation, $role);
         $locale = $data['locale'] ?? $congregation->locale ?? config('app.locale');
 
         return DB::transaction(function () use ($inviter, $congregation, $data, $role, $locale) {
@@ -106,5 +109,35 @@ class SendInvitation
             ->notify((new InvitationNotification($invitation))->locale($invitation->locale));
 
         return $invitation;
+    }
+
+    /**
+     * Ensure the inviter is allowed to assign the given role.
+     *
+     * Superadmins can assign any role. Admins can only assign admin or member.
+     * Members cannot invite at all (handled by policy), but this is a safety net.
+     */
+    private function ensureInviterCanAssignRole(User $inviter, Congregation $congregation, CongregationRole $role): void
+    {
+        $inviterRole = $inviter->congregationRole($congregation);
+
+        // Superadmins can assign any role
+        if ($inviterRole === CongregationRole::Superadmin) {
+            return;
+        }
+
+        // Admins cannot assign superadmin role
+        if ($role === CongregationRole::Superadmin) {
+            throw ValidationException::withMessages([
+                'role' => [__('You do not have permission to assign this role.')],
+            ]);
+        }
+
+        // Admins can assign admin or member — if they aren't admin, reject
+        if ($inviterRole !== CongregationRole::Admin) {
+            throw ValidationException::withMessages([
+                'role' => [__('You do not have permission to invite members.')],
+            ]);
+        }
     }
 }
