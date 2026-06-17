@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Update Documentation",
+      "description": "When application source files (models, controllers, routes, migrations, React pages, or types) are edited, prompts the agent to review and update the relevant documentation in docs/ and steering files in .kiro/steering/ to keep them accurate and in sync with the codebase.",
+      "trigger": "PostFileSave",
+      "matcher": "(app/Models/[^/]*\\.php$|app/Http/Controllers/.*[^/]*\\.php$|routes/[^/]*\\.php$|database/migrations/[^/]*\\.php$|resources/js/pages/.*[^/]*\\.tsx$|resources/js/types/[^/]*\\.ts$|app/Enums/[^/]*\\.php$|app/Policies/[^/]*\\.php$|app/Events/[^/]*\\.php$|app/Actions/.*[^/]*\\.php$|composer\\.json$|package\\.json$)",
+      "action": {
+        "type": "agent",
+        "prompt": "A source file that affects documentation has been modified. Review the change and determine if any documentation in the docs/ folder OR steering files in .kiro/steering/ need to be updated to stay accurate.\n\nFor docs/, check if the change affects: domain model (docs/domain-model.md), database schema (docs/database.md), routes (docs/api-routes.md), authentication (docs/authentication.md), architecture (docs/architecture.md), frontend (docs/frontend.md), calendar system (docs/calendar.md), real-time features (docs/real-time.md), or getting started (docs/getting-started.md). If a doc is outdated, update only the affected sections. Ensure README.md TOC and back links remain intact.\n\nFor .kiro/steering/, check if the change affects: tech stack (.kiro/steering/tech.md — commands, conventions, config references), project structure (.kiro/steering/structure.md — directory trees, file lists, conventions), or product description (.kiro/steering/product.md — current state, features, domain model). Update only the affected sections of steering files to reflect the new reality."
+      },
+      "enabled": true
+    }
+  ]
+}
