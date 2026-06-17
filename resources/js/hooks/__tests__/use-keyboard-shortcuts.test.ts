@@ -146,18 +146,18 @@ describe('useKeyboardShortcuts', () => {
     /**
      * Validates: Requirements 2.1, 2.2
      */
-    it('"d" key toggles appearance from light to dark', () => {
+    it('"l" key toggles appearance from light to dark', () => {
         const updateAppearance = vi.fn();
         const appearance = 'light';
 
         renderHook(() =>
             useKeyboardShortcuts({
-                d: () =>
+                l: () =>
                     updateAppearance(appearance === 'light' ? 'dark' : 'light'),
             }),
         );
 
-        dispatchKeydown('d');
+        dispatchKeydown('l');
 
         expect(updateAppearance).toHaveBeenCalledWith('dark');
     });
@@ -165,18 +165,18 @@ describe('useKeyboardShortcuts', () => {
     /**
      * Validates: Requirements 2.1, 2.3
      */
-    it('"d" key toggles appearance from dark to light', () => {
+    it('"l" key toggles appearance from dark to light', () => {
         const updateAppearance = vi.fn();
         const appearance: string = 'dark';
 
         renderHook(() =>
             useKeyboardShortcuts({
-                d: () =>
+                l: () =>
                     updateAppearance(appearance === 'light' ? 'dark' : 'light'),
             }),
         );
 
-        dispatchKeydown('d');
+        dispatchKeydown('l');
 
         expect(updateAppearance).toHaveBeenCalledWith('light');
     });
@@ -184,18 +184,18 @@ describe('useKeyboardShortcuts', () => {
     /**
      * Validates: Requirements 2.1, 2.3
      */
-    it('"d" key toggles appearance from system to light', () => {
+    it('"l" key toggles appearance from system to light', () => {
         const updateAppearance = vi.fn();
         const appearance: string = 'system';
 
         renderHook(() =>
             useKeyboardShortcuts({
-                d: () =>
+                l: () =>
                     updateAppearance(appearance === 'light' ? 'dark' : 'light'),
             }),
         );
 
-        dispatchKeydown('d');
+        dispatchKeydown('l');
 
         expect(updateAppearance).toHaveBeenCalledWith('light');
     });
