@@ -14,6 +14,7 @@ import { DayGrid } from '@/components/day-grid';
 import DeleteConfirmDialog from '@/components/delete-confirm-dialog';
 import type { DeleteScope } from '@/components/delete-confirm-dialog';
 import { ErrorBoundary } from '@/components/error-boundary';
+import KeyboardShortcutsDialog from '@/components/keyboard-shortcuts-dialog';
 import { MonthGrid } from '@/components/month-grid';
 import RecurrenceEditPrompt from '@/components/recurrence-edit-prompt';
 import type { RecurrenceEditScope } from '@/components/recurrence-edit-prompt';
@@ -520,16 +521,21 @@ export default function Calendar() {
         }
     }
 
+    // Keyboard shortcuts help dialog
+    const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
     useKeyboardShortcuts(
         {
             arrowleft: onPrevious,
             arrowright: onNext,
+            m: () => setViewMode('month'),
+            w: () => setViewMode('week'),
+            d: () => setViewMode('day'),
+            n: () => handleCreateBooking(),
+            t: onGoToToday,
+            '?': () => setShortcutsOpen(true),
         },
-        {
-            '0': () => setViewMode('month'),
-            '1': () => setViewMode('week'),
-            '2': () => setViewMode('day'),
-        },
+        {},
     );
 
     return (
@@ -549,6 +555,7 @@ export default function Calendar() {
                     onViewModeChange={setViewMode}
                     isToday={isTodayVisible}
                     onCreateBooking={() => handleCreateBooking()}
+                    onShowShortcuts={() => setShortcutsOpen(true)}
                 />
                 {kingdomHallId && connectionStatus !== 'connected' && (
                     <div className="fixed top-4 right-4 z-50 flex items-center gap-1.5 rounded-md bg-muted px-2.5 py-1 text-xs text-muted-foreground shadow-sm">
@@ -654,6 +661,11 @@ export default function Calendar() {
                 open={dragScopePromptOpen}
                 onSelect={handleDragScopeSelect}
                 onCancel={handleDragScopeCancel}
+            />
+
+            <KeyboardShortcutsDialog
+                open={shortcutsOpen}
+                onOpenChange={setShortcutsOpen}
             />
         </ErrorBoundary>
     );

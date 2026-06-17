@@ -40,7 +40,7 @@ export function isTextInputElement(element: Element | null): boolean {
 }
 
 export function shouldIgnoreEvent(event: KeyboardEvent): boolean {
-    if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
+    if (event.ctrlKey || event.metaKey || event.altKey) {
         return true;
     }
 

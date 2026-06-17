@@ -13,7 +13,7 @@ export default function AppLayout({
     const { appearance, updateAppearance } = useAppearance();
 
     useKeyboardShortcuts({
-        d: () => updateAppearance(appearance === 'light' ? 'dark' : 'light'),
+        l: () => updateAppearance(appearance === 'light' ? 'dark' : 'light'),
     });
 
     return (
