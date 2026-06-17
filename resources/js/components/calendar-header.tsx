@@ -1,4 +1,10 @@
-import { CalendarDays, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import {
+    CalendarDays,
+    ChevronLeft,
+    ChevronRight,
+    Keyboard,
+    Plus,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,6 +51,7 @@ interface CalendarHeaderProps {
     onViewModeChange: (mode: ViewMode) => void;
     isToday: boolean;
     onCreateBooking?: () => void;
+    onShowShortcuts?: () => void;
 }
 
 export function CalendarHeader({
@@ -60,6 +67,7 @@ export function CalendarHeader({
     onViewModeChange,
     isToday,
     onCreateBooking,
+    onShowShortcuts,
 }: CalendarHeaderProps) {
     const { t } = useTranslation();
     const monthNames = getMonthNames();
@@ -184,7 +192,12 @@ export function CalendarHeader({
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>{t('Gå till idag')}</p>
+                    <p>
+                        {t('Gå till idag')}{' '}
+                        <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                            T
+                        </kbd>
+                    </p>
                 </TooltipContent>
             </Tooltip>
 
@@ -242,19 +255,19 @@ export function CalendarHeader({
                                 <DropdownMenuRadioItem value="month">
                                     {t('Månad')}
                                     <DropdownMenuShortcut>
-                                        ⌘0
+                                        M
                                     </DropdownMenuShortcut>
                                 </DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="week">
                                     {t('Vecka')}
                                     <DropdownMenuShortcut>
-                                        ⌘1
+                                        W
                                     </DropdownMenuShortcut>
                                 </DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="day">
                                     {t('Dag')}
                                     <DropdownMenuShortcut>
-                                        ⌘2
+                                        D
                                     </DropdownMenuShortcut>
                                 </DropdownMenuRadioItem>
                             </DropdownMenuRadioGroup>
@@ -266,17 +279,53 @@ export function CalendarHeader({
                 </Tooltip>
 
                 {onCreateBooking && (
-                    <Button
-                        size="sm"
-                        className="h-8"
-                        onClick={onCreateBooking}
-                        aria-label={t('Ny bokning')}
-                    >
-                        <Plus className="size-3.5" />
-                        <span className="hidden sm:inline">
-                            {t('Ny bokning')}
-                        </span>
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                size="sm"
+                                className="h-8"
+                                onClick={onCreateBooking}
+                                aria-label={t('Ny bokning')}
+                            >
+                                <Plus className="size-3.5" />
+                                <span className="hidden sm:inline">
+                                    {t('Ny bokning')}
+                                </span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>
+                                {t('Ny bokning')}{' '}
+                                <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                                    N
+                                </kbd>
+                            </p>
+                        </TooltipContent>
+                    </Tooltip>
+                )}
+
+                {onShowShortcuts && (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-8"
+                                onClick={onShowShortcuts}
+                                aria-label={t('Kortkommandon')}
+                            >
+                                <Keyboard className="size-3.5" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>
+                                {t('Kortkommandon')}{' '}
+                                <kbd className="ml-1 rounded bg-muted px-1 py-0.5 text-xs">
+                                    ?
+                                </kbd>
+                            </p>
+                        </TooltipContent>
+                    </Tooltip>
                 )}
             </div>
         </div>
