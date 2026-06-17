@@ -4,6 +4,7 @@ use App\Actions\Congregations\SendInvitation;
 use App\Enums\CongregationRole;
 use App\Models\Congregation;
 use App\Models\CongregationInvitation;
+use App\Models\KingdomHall;
 use App\Models\Membership;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,8 +14,13 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->action = new SendInvitation;
-    $this->congregation = Congregation::factory()->create();
+    $this->kingdomHall = KingdomHall::factory()->create();
+    $this->congregation = Congregation::factory()->create(['kingdom_hall_id' => $this->kingdomHall->id]);
     $this->inviter = User::factory()->create();
+    $this->congregation->memberships()->create([
+        'user_id' => $this->inviter->id,
+        'role' => CongregationRole::Admin,
+    ]);
 });
 
 test('it creates an invitation for a new user with 72-hour expiry', function () {
@@ -195,3 +201,79 @@ test('it does not duplicate membership for existing user already in congregation
     // Invitation is still created and marked as accepted
     expect($invitation->accepted_at)->not->toBeNull();
 });
+
+test('admin inviter cannot assign superadmin role', function () {
+    $kingdomHall = KingdomHall::factory()->create();
+    $congregation = Congregation::factory()->create(['kingdom_hall_id' => $kingdomHall->id]);
+    $admin = User::factory()->create();
+    $congregation->memberships()->create([
+        'user_id' => $admin->id,
+        'role' => CongregationRole::Admin,
+    ]);
+
+    $data = [
+        'name' => 'New Superadmin',
+        'email' => 'superadmin@example.com',
+        'role' => CongregationRole::Superadmin->value,
+    ];
+
+    $this->action->handle($admin, $congregation, $data);
+})->throws(ValidationException::class);
+
+test('superadmin inviter can assign superadmin role', function () {
+    $kingdomHall = KingdomHall::factory()->create();
+    $congregation = Congregation::factory()->create(['kingdom_hall_id' => $kingdomHall->id]);
+    $superadmin = User::factory()->create();
+    $congregation->memberships()->create([
+        'user_id' => $superadmin->id,
+        'role' => CongregationRole::Superadmin,
+    ]);
+
+    $data = [
+        'name' => 'New Superadmin',
+        'email' => 'newsuperadmin@example.com',
+        'role' => CongregationRole::Superadmin->value,
+    ];
+
+    $invitation = $this->action->handle($superadmin, $congregation, $data);
+
+    expect($invitation->role)->toBe(CongregationRole::Superadmin);
+});
+
+test('admin inviter can assign admin role', function () {
+    $kingdomHall = KingdomHall::factory()->create();
+    $congregation = Congregation::factory()->create(['kingdom_hall_id' => $kingdomHall->id]);
+    $admin = User::factory()->create();
+    $congregation->memberships()->create([
+        'user_id' => $admin->id,
+        'role' => CongregationRole::Admin,
+    ]);
+
+    $data = [
+        'name' => 'New Admin',
+        'email' => 'newadmin@example.com',
+        'role' => CongregationRole::Admin->value,
+    ];
+
+    $invitation = $this->action->handle($admin, $congregation, $data);
+
+    expect($invitation->role)->toBe(CongregationRole::Admin);
+});
+
+test('member inviter cannot assign any role', function () {
+    $kingdomHall = KingdomHall::factory()->create();
+    $congregation = Congregation::factory()->create(['kingdom_hall_id' => $kingdomHall->id]);
+    $member = User::factory()->create();
+    $congregation->memberships()->create([
+        'user_id' => $member->id,
+        'role' => CongregationRole::Member,
+    ]);
+
+    $data = [
+        'name' => 'Someone',
+        'email' => 'someone@example.com',
+        'role' => CongregationRole::Member->value,
+    ];
+
+    $this->action->handle($member, $congregation, $data);
+})->throws(ValidationException::class);
