@@ -4,6 +4,7 @@ namespace App\Actions\Bookings;
 
 use App\Enums\CongregationRole;
 use App\Enums\RecurrenceFrequency;
+use App\Events\BookingDeleted;
 use App\Events\BookingUpdated;
 use App\Models\Booking;
 use App\Models\Congregation;
@@ -221,8 +222,15 @@ class UpdateBooking
             }
 
             // If no occurrences were generated, clean up the pattern
+            // and broadcast a deletion so other clients remove stale entries.
             if ($newBookings->isEmpty()) {
                 $newPattern->delete();
+
+                BookingDeleted::dispatch(
+                    collect($futureBookingIds),
+                    $booking->congregation->kingdom_hall_id,
+                    $modifier->name,
+                );
             }
 
             if ($newBookings->isNotEmpty()) {
