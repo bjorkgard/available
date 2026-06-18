@@ -94,7 +94,7 @@ Events are broadcast on a private `kingdom-hall.{id}` channel so all users shari
 
 | Event | Trigger |
 |-------|---------|
-| `BookingCreated` | A new booking (or set of recurring bookings) is created |
+| `BookingCreated` | A new booking is created (broadcasts the first booking only; clients refetch for recurrence series) |
 | `BookingUpdated` | A booking is modified |
 | `BookingDeleted` | A booking is removed |
 

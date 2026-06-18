@@ -307,9 +307,9 @@ Broadcast::channel('kingdom-hall.{kingdomHallId}', function (User $user, string 
 
 ### Event Payloads
 
-**BookingCreated**: Full booking data (with rooms, congregation color, user name) + all occurrence data for recurring bookings.
+**BookingCreated**: Single booking object (with rooms, congregation color, user name). Only the first booking of a recurrence series is broadcast; clients refetch as needed.
 
-**BookingUpdated**: Updated booking data + affected occurrence IDs.
+**BookingUpdated**: Single updated booking object (with rooms, congregation color, user name). Clients refetch as needed for recurrence series.
 
 **BookingDeleted**: Deleted booking ID(s) / occurrence ID(s).
 

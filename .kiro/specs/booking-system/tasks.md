@@ -132,7 +132,7 @@ Implement a room-booking system integrated into the existing calendar. The plan 
     - Implement `ShouldBroadcast` interface
     - Broadcast on `private-kingdom-hall.{kingdomHallId}` channel
     - Use `$this->dontBroadcastToCurrentUser()`
-    - BookingCreated includes all occurrence data for recurring bookings
+    - BookingCreated broadcasts a single booking (first of series for recurring bookings; clients refetch)
     - _Requirements: 15.1, 15.2, 15.8, 15.9_
 
   - [x] 5.2 Register channel authorization in `routes/channels.php`
