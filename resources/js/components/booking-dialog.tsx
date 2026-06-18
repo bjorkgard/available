@@ -275,15 +275,21 @@ export default function BookingDialog({
                     .find((row) => row.startsWith('XSRF-TOKEN='))
                     ?.split('=')[1] ?? '';
 
+            const headers: Record<string, string> = {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-XSRF-TOKEN': decodeURIComponent(csrfToken),
+            };
+
+            if (window.Echo?.socketId()) {
+                headers['X-Socket-ID'] = window.Echo.socketId()!;
+            }
+
             const response = await fetch(action, {
                 method: method === 'put' ? 'PUT' : 'POST',
                 credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-XSRF-TOKEN': decodeURIComponent(csrfToken),
-                },
+                headers,
                 body: JSON.stringify(body),
             });
 
