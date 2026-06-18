@@ -45,6 +45,7 @@ interface Echo {
     private(channel: string): EchoChannel;
     leave(channel: string): void;
     connector: EchoConnector;
+    socketId(): string | undefined;
 }
 
 declare global {
