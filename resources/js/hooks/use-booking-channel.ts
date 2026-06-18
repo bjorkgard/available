@@ -3,11 +3,11 @@ import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
 import type { BookingResource } from '@/types/bookings';
 
 export type BookingCreatedEvent = {
-    bookings: BookingResource[];
+    booking: BookingResource;
 };
 
 export type BookingUpdatedEvent = {
-    bookings: BookingResource[];
+    booking: BookingResource;
 };
 
 export type BookingDeletedEvent = {
@@ -114,12 +114,24 @@ export function useBookingChannel(
 
         channel
             .listen('.booking.created', (event: BookingCreatedEvent) => {
+                console.log('[BookingChannel] booking.created received', {
+                    bookingId: event.booking?.id,
+                    socketId: window.Echo?.socketId?.(),
+                });
                 handlersRef.current.onCreated(event);
             })
             .listen('.booking.updated', (event: BookingUpdatedEvent) => {
+                console.log('[BookingChannel] booking.updated received', {
+                    bookingId: event.booking?.id,
+                    socketId: window.Echo?.socketId?.(),
+                });
                 handlersRef.current.onUpdated(event);
             })
             .listen('.booking.deleted', (event: BookingDeletedEvent) => {
+                console.log('[BookingChannel] booking.deleted received', {
+                    bookingIds: event.booking_ids,
+                    socketId: window.Echo?.socketId?.(),
+                });
                 handlersRef.current.onDeleted(event);
             });
 

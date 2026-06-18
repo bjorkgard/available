@@ -70,7 +70,7 @@ class CreateBooking
                 $bookings->push($booking);
             }
 
-            BookingCreated::dispatch($bookings);
+            BookingCreated::dispatch($bookings->first());
 
             return $bookings;
         });

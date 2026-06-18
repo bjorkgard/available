@@ -67,16 +67,14 @@ class RescheduleBooking
             $booking->update($updates);
             $booking->load('rooms');
 
-            $bookings = collect([$booking]);
-
-            BookingUpdated::dispatch($bookings);
+            BookingUpdated::dispatch($booking);
 
             // Notify original booker if rescheduled by a different user
             if ($modifier->id !== $booking->user_id) {
                 // Notification will be implemented in a later task
             }
 
-            return $bookings;
+            return collect([$booking]);
         });
     }
 
@@ -144,7 +142,7 @@ class RescheduleBooking
                 $updatedBookings->push($entry['booking']);
             }
 
-            BookingUpdated::dispatch($updatedBookings);
+            BookingUpdated::dispatch($updatedBookings->first());
 
             // Notify original booker if rescheduled by a different user
             if ($modifier->id !== $booking->user_id) {

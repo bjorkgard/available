@@ -35,14 +35,14 @@ new PrivateChannel('kingdom-hall.' . $kingdomHallId)
 
 - **Trigger:** `CreateBooking` action completes
 - **Broadcast name:** `booking.created`
-- **Payload:** Array of bookings with id, name, times, congregation info, rooms
+- **Payload:** Single booking object with id, name, times, congregation info, rooms (only the first booking of a recurrence series is broadcast; clients refetch as needed)
 - **Excludes:** The user who created the booking (`dontBroadcastToCurrentUser()`)
 
 ### BookingUpdated
 
 - **Trigger:** `UpdateBooking` action completes
 - **Broadcast name:** `booking.updated`
-- **Payload:** Updated booking data
+- **Payload:** Single updated booking object with id, name, times, congregation info, rooms (clients refetch as needed for recurrence series)
 - **Excludes:** The user who made the update
 
 ### BookingDeleted
@@ -77,9 +77,13 @@ The `use-booking-channel` custom hook manages the Echo subscription:
 4. Shows a Sonner toast notification describing the change
 5. Unsubscribes on unmount
 
+### Sender Exclusion via X-Socket-ID
+
+Backend events use `dontBroadcastToCurrentUser()` to avoid echoing changes back to the user who made them. For this to work on raw `fetch` requests (outside of Inertia's router), the frontend attaches the `X-Socket-ID` header with `window.Echo.socketId()`. Laravel uses this header to identify which connection to exclude when broadcasting.
+
 ### Configuration
 
-The frontend Echo instance is configured in `resources/js/bootstrap.ts` (or equivalent) using:
+The frontend Echo instance is configured in `resources/js/echo.ts` using:
 - **Pusher.js** as the broadcaster client
 - Reverb's host/port/key from Vite environment variables
 

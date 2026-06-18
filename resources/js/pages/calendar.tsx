@@ -203,46 +203,44 @@ export default function Calendar() {
     // in a ref internally so they always see the latest dateRangeKey without
     // needing stable references.
     function handleBookingCreated(event: BookingCreatedEvent) {
-        const newBookings = event.bookings ?? [];
+        const booking = event.booking;
 
-        if (newBookings.length === 0) {
+        if (!booking) {
             return;
         }
 
-        const userName = newBookings[0]?.user_name ?? 'Någon';
+        const userName = booking.user_name ?? 'Någon';
 
         toast.info(`${userName} ${t('skapade en bokning')}`);
 
-        // Filter to only include bookings within the current visible range
+        // If this is a recurring booking, refetch to get all visible occurrences
+        if (booking.recurrence_pattern_id) {
+            refetchBookings();
+
+            return;
+        }
+
+        // For single bookings, add directly if within visible range
         const fromDate = new Date(dateRangeKey.from);
         const toDate = new Date(dateRangeKey.to + 'T23:59:59.999');
+        const start = new Date(booking.starts_at);
+        const end = new Date(booking.ends_at);
 
-        const filtered = newBookings.filter((b) => {
-            const start = new Date(b.starts_at);
-            const end = new Date(b.ends_at);
-
-            return start < toDate && end > fromDate;
-        });
-
-        if (filtered.length === 0) {
+        if (start >= toDate || end <= fromDate) {
             return;
         }
 
         setBookings((prev) => {
-            const existingIds = new Set(prev.map((b) => b.id));
-            const toAdd = filtered.filter((b) => !existingIds.has(b.id));
-
-            if (toAdd.length === 0) {
+            if (prev.some((b) => b.id === booking.id)) {
                 return prev;
             }
 
-            return [...prev, ...toAdd];
+            return [...prev, booking];
         });
     }
 
     function handleBookingUpdated(event: BookingUpdatedEvent) {
-        const updatedBookings = event.bookings ?? [];
-        const userName = updatedBookings[0]?.user_name ?? 'Någon';
+        const userName = event.booking?.user_name ?? 'Någon';
 
         toast.info(`${userName} ${t('uppdaterade en bokning')}`);
         refetchBookings();
@@ -484,15 +482,21 @@ export default function Calendar() {
                 booking: deletingBooking.id,
             });
 
+            const headers: Record<string, string> = {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-XSRF-TOKEN': decodeURIComponent(csrfToken),
+            };
+
+            if (window.Echo?.socketId()) {
+                headers['X-Socket-ID'] = window.Echo.socketId()!;
+            }
+
             const response = await fetch(url, {
                 method: 'DELETE',
                 credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-XSRF-TOKEN': decodeURIComponent(csrfToken),
-                },
+                headers,
                 body: JSON.stringify({ scope }),
             });
 
