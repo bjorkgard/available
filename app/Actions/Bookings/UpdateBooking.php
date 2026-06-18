@@ -100,9 +100,7 @@ class UpdateBooking
 
             $booking->load('rooms');
 
-            $bookings = collect([$booking]);
-
-            BookingUpdated::dispatch($bookings);
+            BookingUpdated::dispatch($booking);
 
             // Dispatch notification if modifier is not the booking owner
             if ($modifier->id !== $booking->user_id) {
@@ -129,7 +127,7 @@ class UpdateBooking
                 );
             }
 
-            return $bookings;
+            return collect([$booking]);
         });
     }
 
@@ -227,7 +225,9 @@ class UpdateBooking
                 $newPattern->delete();
             }
 
-            BookingUpdated::dispatch($newBookings);
+            if ($newBookings->isNotEmpty()) {
+                BookingUpdated::dispatch($newBookings->first());
+            }
 
             return $newBookings;
         });
@@ -278,9 +278,7 @@ class UpdateBooking
 
         $booking->load('rooms');
 
-        $bookings = collect([$booking]);
-
-        BookingUpdated::dispatch($bookings);
+        BookingUpdated::dispatch($booking);
 
         // Dispatch notification if modifier is not the booking owner
         if ($modifier->id !== $booking->user_id) {
@@ -307,7 +305,7 @@ class UpdateBooking
             );
         }
 
-        return $bookings;
+        return collect([$booking]);
     }
 
     /**
